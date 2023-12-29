@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <!--每个页面都需要 head link等  -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Java SE基础 - Nuo&#39;s Blog</title>
+<link rel="shortcut icon" href="https://blog.qxxiao.eu.org/favicon.ico">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/tailwind.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/ldbutton.css">
+
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/styles/main.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/light-dark.css">
+
+<link rel="alternate" type="application/atom+xml" title="Java SE基础 - Nuo&#39;s Blog - Atom Feed" href="https://blog.qxxiao.eu.org/atom.xml">
+
+    
+
+      <script src="https://blog.qxxiao.eu.org/media/scripts/ldbutton.js"></script>
+      <meta name="description" content="https://www.acwing.com/blog/content/21860/
+https://www.w3cschool.cn/java/
+变量和输入输出
+Java的所有变量和函数都要定义在class中。
+与C++主要的区别：
+
+
+..." />
+      <meta property="og:title" content="Java SE基础 - Nuo&#39;s Blog" />
+      <meta property="og:description" content="https://www.acwing.com/blog/content/21860/
+https://www.w3cschool.cn/java/
+变量和输入输出
+Java的所有变量和函数都要定义在class中。
+与C++主要的区别：
+
+
+..." />
+      <meta property="og:type" content="articles" />
+      <meta property="og:url" content="https://blog.qxxiao.eu.org/post/Java SE基础/" />
+      <meta property="og:image"
+        content="https://pic.qxxiao.cn/java-logo.png" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:width" content="1200" />
+      <meta name="twitter:title" content="Java SE基础 - Nuo&#39;s Blog" />
+      <meta name="twitter:description" content="https://www.acwing.com/blog/content/21860/
+https://www.w3cschool.cn/java/
+变量和输入输出
+Java的所有变量和函数都要定义在class中。
+与C++主要的区别：
+
+
+..." />
+      <meta name="twitter:card" content="summary_large_image" />
+      <link rel="canonical" href="https://blog.qxxiao.eu.org/post/Java SE基础/" />
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css" />
+
+      
+        <link rel="stylesheet"
+          href="https://blog.qxxiao.eu.org/media/css/prism-vs-dark.css" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.css"
+          rel="stylesheet" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.css"
+          rel="stylesheet" />
+        
+          
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" />
+            
+  </head>
+
+  <body>
+    <div class="antialiased flex flex-col min-h-screen" id="app">
+      <!-- 标题菜单 -->
+<div class="nav py-3 md:py-8 fixed w-full z-10 bg-gray-50 dark:bg-gray-700 transition-all duration-300"
+  :class="{ 'scroll': scrolled }">
+  <div class="flex justify-end px-4">
+    <div class="w-8 h-8 flex justify-center items-center rounded-full md:hidden" @click="showMenu = !showMenu">
+      <i class="ri-close-line" v-show="showMenu"></i>
+      <i class="ri-menu-3-line" v-show="!showMenu"></i>
+    </div>
+  </div>
+  <nav cloak class="max-w-4xl w-full mx-auto text-right flex flex-col md:flex-row justify-center items-center md:block"
+    :class="`${ showMenu ? 'block' : 'hidden' }`">
+    
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            首页
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/archives" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            归档
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/tags" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            标签
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="https://gh.qxxiao.cn/nav" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            导航
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+        <div
+          class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold dark:hover:bg-gray-600 hover:bg-gray-200 nav-time1">
+          时光
+            <div class="transition font-semibold nav-time2">
+              
+                <a href="https://blog.qxxiao.eu.org/diary/" class="">
+                  说说
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/gallery/" class="">
+                  相册
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/book/" class="">
+                  书单
+                </a>
+                
+            </div>
+        </div>
+        
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/post/about" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            关于
+          </a>
+          
+            
+              <!-- <a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+      RSS
+    </a> -->
+              <!-- <span>Test 模式</span> -->
+              <!-- 黑色模式，和亮色模式开关-->
+<div class="py-2 md:py-1 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+  <label for="night-light-checkbox" class="night-light-label">
+    <input type="checkbox" id="night-light-checkbox" />
+    <span v-cloak class="night-light-ball" id="night-light-ball" :class="dark==true?'initDark':'initLight'"></span>
+    <svg viewBox="0 0 512 512" class="sun-svg">
+      <path id="sun-svg"
+        d="M256 160c-52.9 0-96 43.1-96 96s43.1 96 96 96 96-43.1 96-96-43.1-96-96-96zm246.4 80.5l-94.7-47.3 33.5-100.4c4.5-13.6-8.4-26.5-21.9-21.9l-100.4 33.5-47.4-94.8c-6.4-12.8-24.6-12.8-31 0l-47.3 94.7L92.7 70.8c-13.6-4.5-26.5 8.4-21.9 21.9l33.5 100.4-94.7 47.4c-12.8 6.4-12.8 24.6 0 31l94.7 47.3-33.5 100.5c-4.5 13.6 8.4 26.5 21.9 21.9l100.4-33.5 47.3 94.7c6.4 12.8 24.6 12.8 31 0l47.3-94.7 100.4 33.5c13.6 4.5 26.5-8.4 21.9-21.9l-33.5-100.4 94.7-47.3c13-6.5 13-24.7.2-31.1zm-155.9 106c-49.9 49.9-131.1 49.9-181 0-49.9-49.9-49.9-131.1 0-181 49.9-49.9 131.1-49.9 181 0 49.9 49.9 49.9 131.1 0 181z">
+      </path>
+    </svg>
+    <svg viewBox="0 0 512 512" class="moon-svg">
+      <path id="moon-svg"
+        d="M283.211 512c78.962 0 151.079-35.925 198.857-94.792 7.068-8.708-.639-21.43-11.562-19.35-124.203 23.654-238.262-71.576-238.262-196.954 0-72.222 38.662-138.635 101.498-174.394 9.686-5.512 7.25-20.197-3.756-22.23A258.156 258.156 0 0 0 283.211 0c-141.309 0-256 114.511-256 256 0 141.309 114.511 256 256 256z">
+      </path>
+    </svg>
+  </label>
+</div>
+                <form id="gridea-search-form" class="inline-flex ml-4" action="https://blog.qxxiao.eu.org/search/">
+                  <input type="search" autocomplete='off' spellcheck='false' name="q" />
+                </form>
+  </nav>
+
+</div>
+        <a href="https://blog.qxxiao.eu.org"
+          class="fixed top-0 left-0 mt-4 bg-black text-white dark:text-gray-700 dark:bg-yellow-50 dark:hover:bg-black dark:hover:text-white inline-flex p-2 pl-8 hover:text-gray-700 hover:bg-yellow-50 font-bold z-10 transition-fast animated fadeInLeft">
+          Nuo&#39;s Blog
+        </a>
+        <div class="max-w-4xl w-full mx-auto">
+          <div class="shadow-box bg-white dark:bg-gray-600 rounded-lg pt-32 px-4 md:px-8 pb-8 animated fadeIn mb-8">
+            <h1 class="text-5xl font-semibold leading-normal pb-8 mb-8 border-b-8 border-gray-700">
+              Java SE基础
+            </h1>
+            
+              <img src="https://pic.qxxiao.cn/java-logo.png" alt="Java SE基础" class="block w-full mb-8" />
+              
+                <div class="mb-8 flex flex-wrap">
+                  <div class="text-gray-400 text-sm mr-4">
+                    <i class="ri-calendar-2-line"></i>
+                    2022-09-04 ·
+                      <i class="ri-file-word-line"></i>
+                      2731字 ·
+                        <i class="ri-timer-line"></i>
+                        12 min read
+                  </div>
+                  🏷️&nbsp;
+                    <a href="https://blog.qxxiao.eu.org/tag/java/"
+                      class="text-indigo-500 text-sm border-b-2 border-solid border-indigo-500 hover:border-gray-600 transition-all duration-100 inline-flex mr-2">
+                      <i class="ri-hashtag"></i>
+                      Java
+                    </a>
+                    
+                </div>
+                <div class="markdown mb-8" v-pre><p><a href="https://www.acwing.com/blog/content/21860/">https://www.acwing.com/blog/content/21860/</a></p>
+<p><a href="https://www.w3cschool.cn/java/">https://www.w3cschool.cn/java/</a></p>
+<h2 id="变量和输入输出">变量和输入输出</h2>
+<p>Java的所有变量和函数都要定义在<code>class</code>中。</p>
+<p>与C++主要的区别：</p>
+<ul>
+<li>
+<p>Java属于完全面向对象语言，<strong>没有运算符重载</strong>(需要特定的方法实现功能)</p>
+</li>
+<li></li>
+</ul>
+<h3 id="基础类型">基础类型</h3>
+<p>8种内置数据类型/基础类型，<font color='#d44c47'>不支持无符号整数类型</font>。</p>
+<table>
+<thead>
+<tr>
+<th>基础类型</th>
+<th>字节数</th>
+<th>举例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>byte</td>
+<td>1</td>
+<td>123</td>
+</tr>
+<tr>
+<td>short</td>
+<td>2</td>
+<td>12345</td>
+</tr>
+<tr>
+<td>int</td>
+<td>4</td>
+<td>123456789</td>
+</tr>
+<tr>
+<td>long</td>
+<td>8</td>
+<td>1234567891011L</td>
+</tr>
+<tr>
+<td>float</td>
+<td>4</td>
+<td>1.2F</td>
+</tr>
+<tr>
+<td>double</td>
+<td>8</td>
+<td>1.2，1.2D</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>1</td>
+<td>true，false</td>
+</tr>
+<tr>
+<td>char</td>
+<td>2</td>
+<td>'A'，'\u0041'</td>
+</tr>
+</tbody>
+</table>
+<h3 id="输出输出">输出输出</h3>
+<p><strong>输入</strong></p>
+<p>方式1 ，使用<code>Scanner</code>类输入，效率较低，输入规模较小时使用</p>
+<pre><code class="language-java">Scanner sc = new Scanner(System.in);
+String str = sc.next();  // 读入下一个字符串
+int x = sc.nextInt();  // 读入下一个整数
+float y = sc.nextFloat();  // 读入下一个单精度浮点数
+double z = sc.nextDouble();  // 读入下一个双精度浮点数
+String line = sc.nextLine();  // 读入下一行
+</code></pre>
+<p>方式2，使用<code>输入流和缓存</code>，效率较高，输入规模较大时使用。注意需要抛异常。</p>
+<pre><code class="language-java">import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String str = br.readLine();
+        System.out.println(str);
+    }
+}
+</code></pre>
+<p><strong>输出</strong></p>
+<p>方式1，使用<code>print</code>系列方法，效率较低，输出规模较小时使用。</p>
+<pre><code class="language-java">System.out.println(123);  // 输出整数 + 换行
+System.out.println(&quot;Hello World&quot;);  // 输出字符串 + 换行
+System.out.print(123);  // 输出整数
+System.out.print(&quot;yxc\n&quot;);  // 输出字符串
+System.out.printf(&quot;%04d %.2f\n&quot;, 4, 123.456D);  // 格式化输出，float与double都用%f输出
+</code></pre>
+<p>方式2，使用<code>输出流和缓存</code>效率较高，输出规模较大时使用。注意需要抛异常。</p>
+<pre><code class="language-java">import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        bw.write(&quot;Hello World\n&quot;);
+        bw.flush();  // 需要手动刷新缓冲区
+    }
+}
+</code></pre>
+<h2 id="字符串和数组">字符串和数组</h2>
+<h3 id="字符串"><strong>字符串</strong></h3>
+<p>字符串类<code>String</code>的常用初始化方式：</p>
+<pre><code class="language-java">String a = &quot;Hello World&quot;;
+String b = &quot;My name is&quot;;
+String x = b;  // 存储到了相同地址
+String c = b + &quot;yxc&quot;;  // String可以通过+拼接
+String d = &quot;My age is &quot; + 18;  // int会被隐式转化成字符串&quot;18&quot;
+String str = String.format(&quot;My age is %d&quot;, 18);  // 格式化字符串，类似于C++中的sprintf
+String money_str = &quot;123.45&quot;;
+double money = Double.parseDouble(money_str);  // String转double;其余包装类型具有类似方法
+</code></pre>
+<p><font color='#d44c47'><strong>注意</strong></font>：Java 中的字符串是只读变量(底层使用 final 修饰)，<strong>不能修改</strong>；每次拼接会构造一个新的字符串。</p>
+<p>注意访问<code>String</code>中的字符方式：</p>
+<ul>
+<li>
+<p><code>str.length()</code>返回该字符串 Unicode 码点数量（字符的数量）</p>
+</li>
+<li>
+<p>使用<code>str.charAt(int index)</code>访问第<code>index</code>个字符</p>
+</li>
+</ul>
+<p>说明：底层使用 char(16bit) 存储，UTF16编码思想：从<code>U+D800</code>到<code>U+DFFF</code>之间的码位区段是永久保留不映射到Unicode字符。UTF-16就利用保留下来的0xD800-0xDFFF区段的码位来对**辅助平面的字符(从U+10000到U+10FFFF)**的码位进行编码。<a href="https://zh.m.wikipedia.org/zh-hans/UTF-16">https://zh.m.wikipedia.org/zh-hans/UTF-16</a></p>
+<pre><code class="language-java">String str = &quot;Hello World&quot;;
+for (int i = 0; i &lt; str.length(); i ++ ) {
+    System.out.print(str.charAt(i));  // 只能读取，不能写入
+}
+</code></pre>
+<p>字符串类常用 API:</p>
+<ul>
+<li>
+<p><code>length()</code>：返回长度</p>
+</li>
+<li>
+<p><code>split(String regex)</code>：分割字符串</p>
+</li>
+<li>
+<p><code>indexOf(int c)</code>、<code>indexOf(String str)</code>：查找，返回第一次找到下标，找不到返回-1</p>
+</li>
+<li>
+<p><code>equals()</code>：判断两个字符串是否相等，<strong>注意不能直接用</strong> <code>==</code></p>
+</li>
+<li>
+<p><code>compareTo()</code>：判断两个字符串的<strong>字典序大小</strong>，负数表示小于，0表示相等，正数表示大于</p>
+</li>
+<li>
+<p><code>startsWith()</code>：判断是否以某个前缀开头</p>
+</li>
+<li>
+<p><code>endsWith()</code>：判断是否以某个后缀结尾</p>
+</li>
+<li>
+<p><code>trim()</code>：去掉首尾的空白字符</p>
+</li>
+<li>
+<p><code>toLowerCase()</code>：全部用小写字符</p>
+</li>
+<li>
+<p><code>toUpperCase()</code>：全部用大写字符</p>
+</li>
+<li>
+<p><code>replace(char oldChar, char newChar)</code>：替换字符(所有位置)</p>
+</li>
+<li>
+<p><code>replace(CharSequence target, CharSequence rep)</code>：替换字符串(replaceFirst,replaceAll)</p>
+</li>
+<li>
+<p><code>substring(int beginIndex, int endIndex)</code>：返回<code>[beginIndex, endIndex)</code>中的子串</p>
+</li>
+</ul>
+<p><strong>可修改的字符串类型</strong>：<strong><code>StringBuilder</code></strong>、<strong><code>StringBuffer</code></strong></p>
+<p>如果打算修改字符串，可以使用<code>StringBuilder</code>和<code>StringBuffer</code>。</p>
+<p><code>StringBuilder</code>线程不安全，速度较快；而<code>StringBuffer</code>线程安全，速度较慢。</p>
+<pre><code class="language-java">StringBuilder sb = new StringBuilder(&quot;Hello &quot;);  // 初始化
+sb.append(&quot;World&quot;);  // 拼接字符串
+System.out.println(sb);
+
+for (int i = 0; i &lt; sb.length(); i ++ ) {
+    sb.setCharAt(i, (char)(sb.charAt(i) + 1));  // 读取和写入字符
+}
+
+System.out.println(sb);
+</code></pre>
+<p>常用 API：</p>
+<ul>
+<li><code>reverse()</code>：翻转字符串</li>
+</ul>
+<hr>
+<h3 id="数组">数组</h3>
+<p>Java 数组是<u>引用类型</u>，推荐使用 Java风格<code>int[] arr</code></p>
+<p>初始化定长数组，长度可以是<strong>变量</strong>，并且可以在初始化时赋值</p>
+<pre><code class="language-java">int[] a = new int[5];  // 初始化长度为5的int数组，初始值为0
+int n = 10;
+float[] b = new float[n];  // 初始化长度为n的float数组，初始值为0.0F
+char[] c = {'a', 'b', 'c'};  // 初始化长度为3的char数组，初始值为：'a', 'b', 'c'
+char[] d = c;  // d与c地址相同，更改c中的元素，d中的元素也会改变【引用类型】
+</code></pre>
+<p><strong>多维数组</strong></p>
+<p>注意数组是引用类型，多维数组的变量也是引用类型，使用应该申请空间。</p>
+<pre><code class="language-java">int[][] a = new int[2][3];
+a[1][2] = 1;
+int[][] b = {
+        {1, 2, 3},
+        {4, 5, 6},
+}; // 声明和初始化赋值
+System.out.println(a[1][2]);
+System.out.println(b[0][1]);
+</code></pre>
+<p>数组常用 API：(使用<code>Arrays</code>工具类操作)</p>
+<ul>
+<li>
+<p><font color='#d44c47'><strong>属性</strong></font> <code>length</code>：返回数组长度，<u><strong>注意不加小括号(属性)</strong></u></p>
+</li>
+<li>
+<p><code>Arrays.sort()</code>：数组排序</p>
+</li>
+<li>
+<p><code>Arrays.fill(int[] a, int val)</code>：填充数组</p>
+</li>
+<li>
+<p><code>Arrays.toString()</code>：将数组转化为字符串</p>
+</li>
+<li>
+<p><code>Arrays.deepToString()</code>：将多维数组转化为字符串</p>
+</li>
+<li>
+<p><code>Arrays.asList(T…)</code>返回自己实现的一个<strong>内部类</strong>ArrayList(实现了List接口)—保存了参数数组的引用，是该数组的一个视图(修改会反映到原数组)；说明：如果要得到一个可独立修改并可以添加/删除的List，使用***<code>ArrayList&lt;&gt;(Arrays.asList(array))</code>***<em><strong>。</strong></em></p>
+</li>
+<li>
+<p><code>copyOf</code>复制数组(一维)；<code>binarySearch()</code>二分查找，需要先排序；<code>equals()</code>判断两个数组是否相等，如果元素是对象使用<code>(e1==null ? e2==null : e1.equals(e2))</code>判断对应位置元素相等；对于多维数组使用<code>deepEquals()</code>；<code>stream()</code>返回对应元素的流；</p>
+</li>
+<li>
+<p><u><strong>数组是不可变长度的</strong></u></p>
+</li>
+</ul>
+<h2 id="类和接口">类和接口</h2>
+<p>Java 中<u>所有变量和函数都要定义在类中</u>。</p>
+<p><strong>源文件声明规则</strong></p>
+<ul>
+<li>
+<p>一个源文件中<strong>最多</strong>只能有一个<code>public</code>类(其它类都为默认)</p>
+</li>
+<li>
+<p>源文件的名称应该和<code>public</code>类的类名保持一致</p>
+</li>
+<li>
+<p>每个源文件中，先写<code>package</code>语句，再写<code>import</code>语句，最后定义类</p>
+</li>
+</ul>
+<hr>
+<p>变量或方法前加<code>static</code>表示静态变量(类变量)/静态方法(类方法)，属于<code>class</code>，而不属于<code>class</code>的具体实例。static 可以修饰 Block 即静态块，用来初始化静态数据成员。static也可用来修饰内部类。</p>
+<ul>
+<li>
+<p><u>静态方法</u>中只能调用静态方法和静态变量即类成员；</p>
+</li>
+<li>
+<p><u>静态方法</u>不能使用<code>this</code>,<code>super</code></p>
+</li>
+</ul>
+<h3 id="内部类">内部类</h3>
+<p>内部类主要分为非静态内部类和静态内部类。</p>
+<p>说明：非静态内部类，其对象总有一个隐式引用，指向了创建它的外部类对象，所以可以访问外部类变量/方法。可以定义 static变量但是不能定义静态块(java8)。</p>
+<p>静态内部类，属于外部类本身，但是<strong>不属于外部类的任何对象</strong>。</p>
+<ul>
+<li>
+<p>静态内部类只能访问外部类的<strong>类成员</strong>。</p>
+</li>
+<li>
+<p>外部类可以使用静态内部类的类名作为调用者来访问静态内部类的<strong>类成员</strong>，也可以使用<strong>静态内部类对象</strong>访问其实例成员。</p>
+</li>
+</ul>
+<h3 id="4种访问修饰符"><strong>4种访问修饰符</strong></h3>
+<p>Java 中有4中访问修饰符，<code>public, protected, friendly(default), private</code>。</p>
+<p>Java访问控制符的含义和可访问情况：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>类内部</th>
+<th>本包</th>
+<th>子类</th>
+<th>外部包</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public</td>
+<td>✔️</td>
+<td>✔️</td>
+<td>✔️</td>
+<td>✔️</td>
+</tr>
+<tr>
+<td>protected</td>
+<td>✔️</td>
+<td>✔️</td>
+<td>✔️</td>
+<td>✖️</td>
+</tr>
+<tr>
+<td>friendly<code>(default)</code></td>
+<td>✔️</td>
+<td>✔️</td>
+<td>✖️</td>
+<td>✖️</td>
+</tr>
+<tr>
+<td>private</td>
+<td>✔️</td>
+<td>✖️</td>
+<td>✖️</td>
+<td>✖️</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>public：可以被所有其他类所访问</p>
+</li>
+<li>
+<p>protected：<strong>自身，子类及同一个包中类</strong>可以访问</p>
+</li>
+<li>
+<p>friendly：<strong>同一包中的类</strong>可以访问，声明时没有加修饰符，认为是friendly</p>
+</li>
+<li>
+<p>private：只能被自己访问和修改</p>
+</li>
+</ul>
+<p>注意：Java的访问控制是停留在编译层的，也就是它不会在<code>.class</code>文件中留下任何的痕迹，只在编译的时候进行访问控制的检查。通过反射的手段，是可以访问任何包下任何类中的成员。</p>
+<h3 id="类继承">类继承</h3>
+<p>每个类<font color='#d44c47'><strong>最多只能继承一个类</strong></font>。</p>
+<p>示例：使用<code>super</code>来调用父类构造函数或者访问其成员。</p>
+<pre><code class="language-java">class ColorPoint extends Point {
+    private String color;
+
+    public ColorPoint(int x, int y, String color) {
+        super(x, y);
+        this.color = color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String toString() {
+        return String.format(&quot;(%d, %d, %s)&quot;, super.getX(), super.getY(), this.color);
+    }
+}
+</code></pre>
+<p><strong>方法重载</strong></p>
+<p>方法签名不同，即参数个数或者对应类型不相同的同名函数称作方法重载。</p>
+<p><strong>类(及接口)的多态</strong></p>
+<p>父类引用(或者接口)可以指向不同子类(接口变量指向不同是的实现类对象)，调用相同方法运行结果不同。【根据指向具体类型，调用其对应的方法实现】</p>
+<h3 id="接口和实现">接口和实现</h3>
+<p>接口主要用来<strong>定义行为</strong>，即定义类需要实现的方法(抽象方法的集合)。</p>
+<p><strong>接口可以</strong><u><strong>继承其他多个接口</strong></u><strong>，每个</strong><u><strong>类可以实现多个接口</strong></u><strong>(具有不同的行为)</strong>。</p>
+<ul>
+<li>
+<p>接口中可以定义(默认修饰符是<code>public static final</code>) 变量，以及抽象方法(默认使用<code>public abstract</code>修饰)；可以定义方法的默认实现(方法前添加<code>default</code>关键字)。</p>
+</li>
+<li>
+<p><font color='#d44c47'><strong>除非实现接口的类是抽象类，否则该类要定义/实现接口中的所有方法</strong></font>(默认方法可以不用)；</p>
+</li>
+<li>
+<p>接口无法被实例化，但是可以被实现；</p>
+</li>
+<li>
+<p>接口类型可用来声明一个变量，可以是null，或是被绑定在实现接口的类对象。</p>
+</li>
+</ul>
+<div class="markdown notion" style="padding: 10px; color: #37352f; background-color: #e7f3f8; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span style="font-size: 18px;">🌈</span></div>
+<p style="line-height: 28px; margin: 0px 5px 0px 38px !important"><strong>标记接口:</strong>没有包含任何方法的接口，仅表明它的类属于一个特定的类型。作用在于向类<strong>添加数据类型</strong>(添加该接口类型)以及建立公共的父接口。</p></div>
+<p>实例：</p>
+<pre><code class="language-java">// 接口定义
+interface Role {
+    public void greet(); // public abstract
+}
+// 接口的继承，可以继承多个
+interface Hero extends Role {
+    public void attack();
+}
+// 接口的实现
+class Zeus implements Hero {
+    private final String name = &quot;Zeus&quot;;
+    public void attack() {
+        System.out.println(name + &quot;: attack!&quot;);
+    }
+    public void greet() {
+        System.out.println(name + &quot;: Hi!&quot;);
+    }
+}
+// 接口的多态
+class Athena implements Hero {
+    private final String name = &quot;Athena&quot;;
+    public void attack() {
+        System.out.println(name + &quot;: attack!&quot;);
+    }
+
+    public void greet() {
+        System.out.println(name + &quot;: Hi!&quot;);
+    }
+}
+// -------------------------------------------------
+public class Main {
+    public static void main(String[] args) {
+        Hero[] heros = {new Zeus(), new Athena()};
+        for (Hero hero: heros) {
+            hero.greet();
+        }
+    }
+}
+</code></pre>
+<h3 id="泛型">泛型</h3>
+<p>Java的类和接口也可以定义泛型，即同一套函数可以作用于不同的对象类型。</p>
+<p><font color='#d44c47'><strong>注意</strong></font>：<font color='#d44c47'><u>Java 泛型只能使用对象类型，不能用于基本变量类型</u></font>。并且只是编译期泛型，运行时会擦除。</p>
+<h2 id="其它">其它</h2>
+<p><a href="./subpages/%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6%EF%BD%9C%E6%B3%9B%E5%9E%8B.md">集合框架｜泛型</a></p>
+<p><a href="./subpages/IO%E5%92%8C%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6.md">IO和反射机制</a></p>
+<p><a href="./subpages/%E6%B3%A8%E8%A7%A3.md">注解</a></p>
+<p><a href="./subpages/%E5%A4%9A%E7%BA%BF%E7%A8%8B.md">多线程</a></p>
+<p><a href="./subpages/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B.md">网络编程</a></p>
+<p><a href="./subpages/XML.md">XML</a></p>
+</div>
+
+                <!-- 新加的模块的，应该使用模版-->
+                <!-- 版权声明 -->
+                <div class="jumbotron">
+                  <div class="container">
+                    <p>
+                      <i class="ri-article-line"></i>
+                      <b>本文链接:</b>
+                      <a href="" target="_blank">
+                        Java SE基础
+                      </a>
+                    </p>
+                    <p>
+                      <i class="ri-creative-commons-line"></i>
+                      <b>版权声明:</b>
+                      本博客所有文章除特别声明外，均采用
+                      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC BY-NC-SA
+                        4.0</a>
+                      许可协议，转载请注明出处。
+                    </p>
+                    <p>
+                      <i class="ri-time-line"></i>
+                      <b>发布日期:</b>
+                      2022-09-04
+                    </p>
+                  </div>
+                </div>
+                <!-- 新加的模块的，应该使用模版-->
+                <!--阅读次数-->
+                <div class="text-center text-gray-400">
+                  <i class="ri-eye-line"></i>
+                  本文已被阅读
+                  <span id="twikoo_visitors">0</span>
+                  次，该数据仅供参考
+                </div>
+
+                <!-- Share to Twitter, Weibo, Telegram -->
+                <div class="flex items-center">
+                  <div class="mr-4 flex items-center">
+                    <i class="ri-share-forward-line text-gray-500"></i>
+                  </div>
+                  <div class="px-4 cursor-pointer text-blue-500 hover:bg-blue-100 dark:hover:bg-gray-600 inline-flex"
+                    @click="shareToTwitter">
+                    <i class="ri-twitter-line"></i>
+                  </div>
+                  <div class="px-4 cursor-pointer text-red-500 hover:bg-red-100 dark:hover:bg-gray-600 inline-flex"
+                    @click="shareToWeibo">
+                    <i class="ri-weibo-line"></i>
+                  </div>
+                  <div
+                    class="px-4 cursor-pointer text-indigo-500 hover:bg-indigo-100 dark:hover:bg-gray-600 inline-flex"
+                    @click="shareToTelegram">
+                    <i class="ri-telegram-line"></i>
+                  </div>
+                </div>
+          </div>
+
+          <!-- 新加的模块的，应该使用模版-->
+          <!-- 评论说明-->
+          <div class="jumbotron-comment">
+            <div class="container">
+              <p>
+                <i class="ri-message-3-line"></i>
+                欢迎任何与文章内容相关并保持尊重的评论😊 !
+              </p>
+            </div>
+          </div>
+
+          
+                        
+                            
+                              <div id="tcomment"></div>
+                               <footer class="py-12 text-center px-4 md:px-0" v-pre>
+  共 36 篇文章 | Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <i class="ri-rss-line"></i><a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" target="_blank">RSS</a></br>
+©2020-2024 <a href="https://blog.qxxiao.eu.org/index.html" target="_blank">Nuo</a>. All rights reserved.
+</footer>
+
+<!--没有添加/用到app 中的主题footer配置消息，如果使用，将上面的 href 替换为原地址-->
+<!---->
+
+        </div>
+
+        <!-- TOC Container -->
+        <div
+          class="fixed right-0 bottom-0 mb-16 mr-4 shadow w-8 h-8 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white dark:bg-gray-500 dark:text-gray-200 hover:shadow-lg transition-all animated fadeInRight"
+          @click="showToc = true">
+          <i class="ri-file-list-line"></i>
+        </div>
+
+        <div v-cloak
+          class="fixed right-0 top-0 bottom-0 overflow-y-auto w-64 bg-white dark:bg-gray-800 p-4 border-l border-gray-100 dark:border-gray-600 z-10 transition-fast"
+          :class="{ '-mr-64': !showToc }">
+          <div class="flex mb-4 justify-end">
+            <div
+              class="w-8 h-8 inline-flex justify-center items-center rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-fast"
+              @click="showToc = false">
+              <i class="ri-close-line text-lg"></i>
+            </div>
+          </div>
+          <div class="post-toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%8F%98%E9%87%8F%E5%92%8C%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA">变量和输入输出</a>
+<ul>
+<li><a href="#%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B">基础类型</a></li>
+<li><a href="#%E8%BE%93%E5%87%BA%E8%BE%93%E5%87%BA">输出输出</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%92%8C%E6%95%B0%E7%BB%84">字符串和数组</a>
+<ul>
+<li><a href="#%E5%AD%97%E7%AC%A6%E4%B8%B2"><strong>字符串</strong></a></li>
+<li><a href="#%E6%95%B0%E7%BB%84">数组</a></li>
+</ul>
+</li>
+<li><a href="#%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3">类和接口</a>
+<ul>
+<li><a href="#%E5%86%85%E9%83%A8%E7%B1%BB">内部类</a></li>
+<li><a href="#4%E7%A7%8D%E8%AE%BF%E9%97%AE%E4%BF%AE%E9%A5%B0%E7%AC%A6"><strong>4种访问修饰符</strong></a></li>
+<li><a href="#%E7%B1%BB%E7%BB%A7%E6%89%BF">类继承</a></li>
+<li><a href="#%E6%8E%A5%E5%8F%A3%E5%92%8C%E5%AE%9E%E7%8E%B0">接口和实现</a></li>
+<li><a href="#%E6%B3%9B%E5%9E%8B">泛型</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%B6%E5%AE%83">其它</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+
+        <!-- Back to top -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-4 mr-4 shadow w-8 h-8 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg transition-all dark:bg-gray-500 dark:text-gray-200"
+          @click="backToUp" v-show="scrolled">
+          <i class="ri-arrow-up-line"></i>
+        </div>
+    </div>
+
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- Background of PhotoSwipe. 
+        It's a separate element as animating opacity is faster than rgba(). -->
+  <div class="pswp__bg">
+  </div>
+  <!-- Slides wrapper with overflow:hidden. -->
+  <div class="pswp__scroll-wrap">
+    <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+    <div class="pswp__container">
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+    </div>
+    <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        <!--  Controls are self-explanatory. Order can be changed. -->
+        <div class="pswp__counter">
+        </div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+        <!-- element will get class pswp__preloader--active when preloader is running -->
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip">
+        </div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://blog.qxxiao.eu.org/media/scripts/main.js"></script>
+
+      <!-- Code Highlight -->
+      
+        <script src="https://blog.qxxiao.eu.org/media/prism.js"></script>
+        <script>
+          Prism.highlightAll();
+        </script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/show-language/prism-show-language.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+        
+
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+          <script>
+            //拿到预览框架，也就是上面的html代码
+            var pswpElement = document.querySelectorAll('.pswp')[0]
+            //定义图片数组变量
+            var imgitems
+            /**
+             * 用于显示预览界面
+             * @param index 图片数组下标
+             */
+            function viewImg(index) {
+              var pswpoptions = {
+                index: parseInt(index, 10), // 开始幻灯片索引。0是第一张幻灯片。必须是整数，而不是字符串。
+                bgOpacity: 0.7, // 背景透明度，0-1
+                maxSpreadZoom: 3, // 缩放级别，不要太大
+              }
+              //初始化并打开PhotoSwipe，pswpElement对应上面预览框架，PhotoSwipeUI_Default为皮肤，imgitems为图片数组，pswpoptions为选项
+              var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, imgitems, pswpoptions)
+              gallery.init()
+            }
+            /**
+             * 用于添加图片点击事件
+             * @param img 图片元素
+             * @param index 所属下标（在imgitems中的位置）
+             */
+            function addImgClick(img, index) {
+              img.onclick = function () {
+                viewImg(index)
+              }
+            }
+            /**
+             * 轮询所有图片，获取src、width、height等数据，加入imgitems，并给图片元素添加事件
+             * 最好在onload中执行该方法，本站因放在最底部，所以直接初始化
+             * 异步加载图片可在图片元素创建完成后调用此方法
+             */
+            function initImg() {
+              //重置图片数组
+              imgitems = []
+              //查找class:markdown 下的所有img元素并遍历
+              var imgs = document.querySelectorAll('.markdown img')
+              for (var i = 0; i < imgs.length; i++) {
+                var img = imgs[i]
+                //本站相册初始为loading图片，真实图片放在data-src
+                var ds = img.getAttribute('data-src')
+                //创建image对象，用于获取图片宽高
+                var imgtemp = new Image()
+                //判断是否存在data-src
+                if (ds != null && ds.length > 0) {
+                  imgtemp.src = ds
+                } else {
+                  imgtemp.src = img.src
+                }
+                //判断是否存在缓存
+                if (imgtemp.complete) {
+                  var imgobj = {
+                    src: imgtemp.src,
+                    w: imgtemp.width,
+                    h: imgtemp.height,
+                  }
+                  imgitems[i] = imgobj
+                  addImgClick(img, i)
+                } else {
+                  imgtemp.index = i
+                  imgtemp.img = img
+                  imgtemp.onload = function () {
+                    var imgobj = {
+                      src: this.src,
+                      w: this.width,
+                      h: this.height,
+                    }
+                    //不要使用push，因为onload前后顺序会不同
+                    imgitems[this.index] = imgobj
+                    //添加点击事件
+                    addImgClick(this.img, this.index)
+                  }
+                }
+              }
+            }
+            //初始化
+            initImg();
+          </script>
+          
+                
+                          
+                            <script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.27/dist/twikoo.all.min.js"></script>
+                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+                              integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+                              crossorigin="anonymous" />
+                            <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+                              integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+                              crossorigin="anonymous"></script>
+                            <script defer
+                              src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+                              integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"
+                              crossorigin="anonymous"></script>
+                            <script>
+                              twikoo.init({
+                                envId: 'https://twikoo.qxxiao.cn/',
+                                el: '#tcomment',
+                                katex: {
+                                  delimiters: [
+                                    { left: '$$', right: '$$', display: true },
+                                    { left: '$', right: '$', display: false },
+                                    { left: '\\(', right: '\\)', display: false },
+                                    { left: '\\[', right: '\\]', display: true },
+                                  ],
+                                  throwOnError: false,
+                                },
+                                // region: 'ap-guangzhou', // 环境地域，默认为 ap-shanghai，如果您的环境地域不是上海，需传此参数
+                                // path: 'window.location.pathname', // 用于区分不同文章的自定义 js 路径，如果您的文章路径不是 location.pathname，需传此参数
+                              });
+                            </script>
+                            
+
+                              <!-- line number for code block -->
+                              <script>
+                                var pres = document.getElementsByTagName('pre')
+                                for (var i = 0; i < pres.length; i++) {
+                                  var pre = pres[i]
+                                  if (pre.childNodes[0].nodeName == 'CODE') {
+                                    pre.setAttribute('class', 'line-numbers')
+                                  }
+                                }
+                              </script>
+                              
+                                <script src="https://blog.qxxiao.eu.org/media/scripts/ldbutton.js"></script>
+
+  </body>
+
+</html>
