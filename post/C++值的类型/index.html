@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title>理解Git和实战 - Nuo&#39;s Blog</title>
+<title>C++值的类型 - Nuo&#39;s Blog</title>
 <link rel="shortcut icon" href="https://blog.qxxiao.eu.org/favicon.ico">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css">
@@ -16,39 +16,45 @@
 <link rel="stylesheet" href="https://blog.qxxiao.eu.org/styles/main.css">
 <link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/light-dark.css">
 
-<link rel="alternate" type="application/atom+xml" title="理解Git和实战 - Nuo&#39;s Blog - Atom Feed" href="https://blog.qxxiao.eu.org/atom.xml">
+<link rel="alternate" type="application/atom+xml" title="C++值的类型 - Nuo&#39;s Blog - Atom Feed" href="https://blog.qxxiao.eu.org/atom.xml">
 
     
 
       <script src="https://blog.qxxiao.eu.org/media/scripts/ldbutton.js"></script>
-      <meta name="description" content="Git原理
-.git 文件夹说明
--rw-r--r--    HEAD    # 当前的头部commit/指向
--rw-r--r--    config  # 本地仓库的配置
-drwxr-xr-x    hooks   # hooks模版
-..." />
-      <meta property="og:title" content="理解Git和实战 - Nuo&#39;s Blog" />
-      <meta property="og:description" content="Git原理
-.git 文件夹说明
--rw-r--r--    HEAD    # 当前的头部commit/指向
--rw-r--r--    config  # 本地仓库的配置
-drwxr-xr-x    hooks   # hooks模版
-..." />
+      <meta name="description" content="C++值的类型说明
+
+C++表达式(操作符表达式，字面量，变量名等)都有值类型，通常将值的类型划分为左值和右值：
+
+一个表达式，如果能对它进行取地址运算/确定的内存地址，则它是左值；（包括左值的引用）
+否则，它就是右值
+
+C++11后出现了..." />
+      <meta property="og:title" content="C++值的类型 - Nuo&#39;s Blog" />
+      <meta property="og:description" content="C++值的类型说明
+
+C++表达式(操作符表达式，字面量，变量名等)都有值类型，通常将值的类型划分为左值和右值：
+
+一个表达式，如果能对它进行取地址运算/确定的内存地址，则它是左值；（包括左值的引用）
+否则，它就是右值
+
+C++11后出现了..." />
       <meta property="og:type" content="articles" />
-      <meta property="og:url" content="https://blog.qxxiao.eu.org/post/理解Git和实战/" />
+      <meta property="og:url" content="https://blog.qxxiao.eu.org/post/C++值的类型/" />
       <meta property="og:image"
-        content="https://images.unsplash.com/photo-1556075798-4825dfaaf498?ixlib=rb-4.0.3&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb" />
+        content="https://pic.qxxiao.cn/cpp-logo.png" />
       <meta property="og:image:height" content="630" />
       <meta property="og:image:width" content="1200" />
-      <meta name="twitter:title" content="理解Git和实战 - Nuo&#39;s Blog" />
-      <meta name="twitter:description" content="Git原理
-.git 文件夹说明
--rw-r--r--    HEAD    # 当前的头部commit/指向
--rw-r--r--    config  # 本地仓库的配置
-drwxr-xr-x    hooks   # hooks模版
-..." />
+      <meta name="twitter:title" content="C++值的类型 - Nuo&#39;s Blog" />
+      <meta name="twitter:description" content="C++值的类型说明
+
+C++表达式(操作符表达式，字面量，变量名等)都有值类型，通常将值的类型划分为左值和右值：
+
+一个表达式，如果能对它进行取地址运算/确定的内存地址，则它是左值；（包括左值的引用）
+否则，它就是右值
+
+C++11后出现了..." />
       <meta name="twitter:card" content="summary_large_image" />
-      <link rel="canonical" href="https://blog.qxxiao.eu.org/post/理解Git和实战/" />
+      <link rel="canonical" href="https://blog.qxxiao.eu.org/post/C++值的类型/" />
 
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css" />
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css" />
@@ -177,217 +183,70 @@ drwxr-xr-x    hooks   # hooks模版
         <div class="max-w-4xl w-full mx-auto">
           <div class="shadow-box bg-white dark:bg-gray-600 rounded-lg pt-32 px-4 md:px-8 pb-8 animated fadeIn mb-8">
             <h1 class="text-5xl font-semibold leading-normal pb-8 mb-8 border-b-8 border-gray-700">
-              理解Git和实战
+              C++值的类型
             </h1>
             
-              <img src="https://images.unsplash.com/photo-1556075798-4825dfaaf498?ixlib=rb-4.0.3&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb" alt="理解Git和实战" class="block w-full mb-8" />
+              <img src="https://pic.qxxiao.cn/cpp-logo.png" alt="C++值的类型" class="block w-full mb-8" />
               
                 <div class="mb-8 flex flex-wrap">
                   <div class="text-gray-400 text-sm mr-4">
                     <i class="ri-calendar-2-line" style="vertical-align: middle;"></i>
-                    2022-10-17 ·
+                    2022-04-10 ·
                       <i class="ri-file-word-line" style="vertical-align: middle;"></i>
-                      1888字 ·
+                      521字 ·
                         <i class="ri-timer-line" style="vertical-align: middle;"></i>
-                        8 min read
+                        2 min read
                   </div>
                   🏷️&nbsp;
                       
-                        <a href="https://blog.qxxiao.eu.org/tag/git/"
+                        <a href="https://blog.qxxiao.eu.org/tag/c/"
                           class="text-indigo-500 text-sm border-b-2 border-solid border-indigo-500 hover:border-gray-600 transition-all duration-100 inline-flex mr-2">
                           <i class="ri-hashtag" style="vertical-align: middle;"></i>
-                          Git
+                          C++
                         </a>
                         
                 </div>
-                <div class="markdown mb-8" v-pre><h2 id="git原理">Git原理</h2>
-<p><code>.git</code> 文件夹说明</p>
-<pre><code class="language-bash">-rw-r--r--    HEAD    # 当前的头部commit/指向
--rw-r--r--    config  # 本地仓库的配置
-drwxr-xr-x    hooks   # hooks模版
--rw-r--r--    index   # 暂存区的索引[被追踪的文件信息](添加到暂存区会持久化)
-drwxr-xr-x    logs    # HEAD 的记录[分支记录以及HEAD移动记录]
-drwxr-xr-x    objects # 文件对象[commit对象文件，tree对象文件，bob普通文件]
-drwxr-xr-x    refs    # 分支的头部和tags(对应的commitID)
-</code></pre>
-<p>commit对象表示了此次提交的一次<font color='#d44c47'><strong>快照/版本</strong></font>，而暂存区是当前的修改版本，等到提交时将<u>当前的状态</u>建立一个commit保存归档。</p>
-<p>例如一个commit对象关联的对象：</p>
-<figure data-type="image" tabindex="1"><img src="https://pic.qxxiao.cn/20221019201446.png" alt="" loading="lazy"></figure>
+                <div class="markdown mb-8" v-pre><p>C++值的类型说明</p>
+<!-- more -->
+<p>C++表达式(操作符表达式，字面量，变量名等)都有值类型，通常将值的类型划分为左值和右值：</p>
 <ul>
-<li>
-<p>commit对象包含一个tree对象(指针)，表示了当前文件树形组织的快照版本</p>
-</li>
-<li>
-<p>commit对象之间通过parent指针联系</p>
-</li>
-<li>
-<p>暂存区，<u>上次提交+后续添加到暂存的文件修改</u>的文件状态</p>
-</li>
+<li>一个表达式，如果能对它进行取地址运算/确定的内存地址，则它是左值；（包括左值的引用）</li>
+<li>否则，它就是右值</li>
 </ul>
-<p>说明：</p>
-<ol>
-<li>
-<p>commit之间，相同的文件对象是共享的；</p>
-</li>
-<li>
-<p>每次修改添加到暂存区后，只会影响bob文件对象【tree对象等到<strong>提交</strong>才会生成】</p>
+<p>C++11后出现了5种值的类型，简单解释：</p>
 <ul>
-<li>每个文件的<u>权限、文件路径和Hash</u>存储在<code>.git/index</code>文件</li>
+<li><code>glvalue</code>  广义左值，（运算结果）是具有身份/内存地址的对象/函数的表达式，包括<code>xvalue</code>和<code>lvalue</code></li>
+<li><code>xvalue</code>   即将过期值/亡值，属于<code>glvalue</code>广义左值，<strong>表示其资源可以被重复使用/移动的对象</strong>
+<ul>
+<li>返回类型是右值引用的函数调用，如std::move(x)；</li>
+<li>a[n]，a.m，a.*mp表达式(其中a是rvalue，m是非引用类型的非静态成员，mp是指针)</li>
+<li>转换为对象类型的右值引用的cast表达式，如static_cast&lt;int&amp;&amp;&gt;(x)</li>
 </ul>
 </li>
-<li>
-<p>Git的hash指针/内容寻址/DAG结构被广泛用于 <font color='#d44c47'><strong>IPFS</strong></font> 的存储架构中。</p>
-</li>
-</ol>
-<details class="markdown">
-<summary><b><font color='#da720f'>Git对象简单测试</font></b></summary>
-<pre><code class="language-bash"># git sha-1 hash
-echo &quot;Hello&quot; | git hash-object --stdin
-# 查看暂存区的内容[由git追踪的文件]
-git ls-files --stage
-# 查看git对象的类型
-git cat-file -t ID
-# 查看git对象的内容
-git cat-file -p ID
-</code></pre>
-</details>
-<h2 id="实战">实战</h2>
-<h3 id="比较命令">比较命令</h3>
-<ul>
-<li><code>git diff commitID1 commitID2 [-- file1 ...]</code></li>
+<li><code>lvalue</code>   历史上叫法(可以出现在赋值运算符的左边)，属于glvalue但不是<code>xvalue</code></li>
+<li><code>prvalue</code>  纯右值，例如字面量(字符串除外)、算术表达式(a+b, &amp;a, 后置加加等)、临时对象、lamda表达式等。</li>
+<li><code>rvalue</code>   历史叫法(可以出现在赋值运算符的右边)，包括<code>prvalue</code>和<code>xvalue</code></li>
 </ul>
-<p>比较两个提交的[部分]文件差异，可以使用分支名代替ID</p>
+<p>可以将值大概分为3种：</p>
 <ul>
-<li>
-<p><code>git diff [-- file1 ...]</code></p>
-<p>比较工作区和暂存区的文件差异</p>
-</li>
-<li>
-<p><code>git diff --cached [-- file1 ...]</code></p>
-<p>比较暂存区和<font color='#d44c47'><strong>HEAD/最近提交</strong></font>的文件差异</p>
-</li>
+<li><code>xvalue</code> 广义左值，但是其资源可以重复使用/移动【有身份，可以移动】</li>
+<li><code>lvalue</code>  传统左值，资源不能移动【有身份，不可以移动】</li>
+<li><code>prvalue</code> 传统右值，资源可以移动【没有身份，可以移动】</li>
 </ul>
-<h3 id="分离头指针">分离头指针</h3>
-<p>分离头指针，即HEAD指向了非<u>分支的头部提交</u>，如果新建提交不属于任何分支，不会被git管理后续会被清理。</p>
-<p>但是，基于该提交进行试验产生新提交是可行的</p>
-<ul>
-<li>
-<p>如果新提交需要保留，应该基于新提交建立新分支/tag</p>
-</li>
-<li>
-<p>对于基于分离头指针的提交 为 <code>unreachable object</code> 会在默认策略下被清理【分支/tag/index/reflog不能到达的对象】并且默认2weeks不变(不修改)[<a href="https://github.blog/2022-09-13-scaling-gits-garbage-collection/">缓解竞争条件</a>]的话会被清理</p>
-<ul>
-<li>
-<p>如果想要及时删除，例如大文件提交</p>
-<p>将对应的提交变为<code>unreachable</code> 后(注意ref/reflog等都不能索引到它)，执行 <code>git gc --prune=now</code></p>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="修改u本地提交u">修改<u>本地提交</u></h3>
-<ol>
-<li>修改最新commit的message</li>
-</ol>
-<p><code>git commit --amend</code></p>
-<ol>
-<li>
-<p>使用变基<code>rebase</code>修改、合并<u>提交</u></p>
-<p>变基，改变当前分支<font color='#9065b0'><strong>base提交位置</strong></font>，使用 <code>rebase</code> 命令将提交到某一分支上的所有修改都移至另一分支上，就好像<code>重新播放</code>一样。<font color='#d44c47'>用于合并分支</font>【会将分支的提交整理成线性】<br>
-git rebase 目标分支 [源分支] （会先切换到源分支[默认为当前分支]，<font color='#d44c47'>并将当前分支指向目标分支的位置</font>，应用源分支上的每个提交）</p>
-</li>
-</ol>
-<figure data-type="image" tabindex="2"><img src="https://pic.qxxiao.cn/q1vuial6fp.gif" alt="" loading="lazy"></figure>
-<p>(1) 修改本分支上的旧commit的提交信息<br>
-对自己进行变基，重新修改base提交后续的提交<br>
-<code>git rebase -i commitID</code> commitID应该选取为需要修改的前一个提交ID，通过交互式命令操作后续提交的状态，从而修改后续的所有提交<br>
-(2) 合并分支上的几个commit<br>
-<code>git rebase -i commitID</code>  同样可以操作不同的commit</p>
-<h3 id="不同场景的恢复">不同场景的恢复</h3>
-<p>首先需要知道工作区、暂存区和最近提交commit三者之间的关系</p>
-<ol>
-<li>让<font color='#9065b0'><strong>暂存区</strong></font>恢复成HEAD一样</li>
-</ol>
-<p><code>git reset HEAD [file1 ...]</code><br>
-含义：清理距离上次提交添加的所有暂存，工作区修改取消持久化<br>
-可以添加指定的文件名称，来撤销暂存区该文件修改，从而实现对部分文件的提交。</p>
-<ol>
-<li>
-<p>将<font color='#9065b0'><strong>工作区</strong></font>恢复成暂存区一样</p>
-<p>如果当前的工作区需要<font color='#d44c47'><strong>丢弃</strong></font><font color='#d44c47'><u><strong>距离上一次暂存</strong></u></font><font color='#d44c47'><strong>所做的修改</strong></font>[一个暂存状态]<br>
-<code>git checkout -- '*'</code></p>
-</li>
-</ol>
-<h3 id="丢弃最近的几次提交代码回滚">丢弃最近的几次提交【代码回滚】</h3>
-<p><code>git reset —hard commitID</code></p>
-<p>将当前分支重置到 <code>commitID</code> 的位置(修改当前分支的头/最近的提交)，<font color='#d44c47'><strong>并且重置工作区和暂存区</strong></font>与该位置的 commit 保持一致。(使用前应保持工作区clean)</p>
-<p><u>说明：由于丢弃的提交处于游离部分/不属于分支或tag关联的提交，可能会被清理，想切换分支请使用 </u><u><code>checkout</code></u><u> 命令</u></p>
-<h3 id="cherry-pick-复制提交">cherry-pick 复制提交</h3>
-<p>与分支合并(merge/rebase)不同，在只需要复制其他分支<font color='#da720f'><strong>某一个 commit</strong></font>，使用 <code>cherry-pick</code><br>
-命令，即可复制一个特定的提交到当前分支并生成一次新的提交，避免了相同的工作或分支的合并操作。</p>
-<p><code>git cherry-pick commitID</code>  在当前分支应用特定的提交</p>
-<h3 id="贮藏font-colorc04d8a工作区与暂存区font">贮藏<font color='#c04d8a'>工作区与暂存区</font></h3>
-<p><a href="https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E8%B4%AE%E8%97%8F%E4%B8%8E%E6%B8%85%E7%90%86">https://git-scm.com/book/zh/v2/Git-工具-贮藏与清理</a></p>
-<p>场景：当正在自己分支上开发，并修改和暂存了部分文件，临时需要切换到其它分支工作，但是此时不想提交自己未完成的工作。需要临时保存自己的工作状态，使用 <code>git stash</code> 来保存。</p>
-<ul>
-<li>
-<p><code>git stash</code>  将工作区和暂存区中尚未提交的修改存入栈中</p>
-</li>
-<li>
-<p><code>git stash list</code> 查看栈中所有元素</p>
-</li>
-<li>
-<p><code>git stash pop --index</code></p>
-<p><font color='#d44c47'>将栈顶存储的修改恢复到当前分支，同时删除栈顶元素</font><br>
-默认会将先前暂存区的存储的内容撤销到工作区(暂存区修改的内容被清空)，<u>使用<code>--index</code>恢复暂存区的内容/恢复得和原来一样 </u></p>
-</li>
-<li>
-<p><code>git stash apply --index</code></p>
-<p>将栈顶存储的修改恢复到当前分支，但不删除栈顶元素</p>
-</li>
-<li>
-<p><code>git stash drop</code> 删除栈顶存储的贮藏</p>
-</li>
-</ul>
-<h3 id="远程分支操作">远程分支操作</h3>
-<p><a href="https://learngitbranching.js.org/?locale=zh_CN"><font color='#d44c47'>https://learngitbranching.js.org/?locale=zh_CN</font></a></p>
-<h3 id="gitignore-配置"><code>.gitignore</code> 配置</h3>
-<p>添加忽略文件列表到 <code>.gitignore</code> ，让git忽略这些文件/不管理</p>
-<p>有时一些文件最好不要用 Git 跟踪。这通常在名为 <code>.gitignore</code> 的特殊文件中完成。你可以在  <a href="https://github.com/github/gitignore">github.com/github/gitignore</a> 找到有用的 <code>.gitignore</code>文件模板。或者：<a href="https://www.toptal.com/developers/gitignore">https://www.toptal.com/developers/gitignore</a></p>
-<p>简单示例：</p>
-<pre><code class="language-bash">*.class
-doc/ # 忽略doc文件夹
-doc/*.txt # 非递归
-doc/**/*.pdf # 递归，忽略doc/下所有pdf
+<p>在C++中右值rvalue的语义就是可移动的。<br>
+只需要记住特殊的广义左值<code>xvalue</code>，它是有身份的但是其资源可以移动，常见情形：</p>
+<pre><code class="language-cpp">// 1. 返回右值引用的函数调用
+std::move(x);
+func(); //func的声明：Foo&amp;&amp; func();
 
-# 不忽略.gitignore和App.class:
-!.gitignore
-!App.class
+// 2. 转换为右值引用的cast
+static_cast&lt;int&amp;&amp;&gt;(x);
+
+// 3. rvalue的成员
+std::move(x).m_data; // 非引用类型的非静态成员
+func().m_data;  //func的声明：Foo&amp;&amp; func();
+static_cast&lt;Foo&amp;&amp;&gt;(x).m_data;
 </code></pre>
-<hr>
-<h2 id="font-colord44c47git集成使用禁忌font"><font color='#d44c47'><strong>Git集成使用禁忌</strong></font></h2>
-<h3 id="禁止向团队集成的分支强制推送">禁止向团队集成的分支强制推送</h3>
-<p><code>push -f</code> 强制推送分支，发生冲突会强制覆盖远程分支的内容。会导致原来分支内容全部丢失/或部分丢失。</p>
-<p>因此，对<font color='#9065b0'><u>团队的集成分支</u></font>严禁使用 <code>push -f</code> 命令</p>
-<h3 id="禁止对团队的集成分支作变基操作">禁止对团队的集成分支作变基操作</h3>
-<p>团队的集成分支，是不能修改历史提交的，只能通过增加 <code>commit</code> 提交来改进<br>
-如果使用rebase修改历史，会导致其他成员与集成分支的冲突。</p>
-<div class="markdown notion" style="padding: 10px; color: #37352f; background-color: #edf3ec; border-radius: 6px; border:1px solid #dfdfde">
-<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span style="font-size: 18px;">💡</span></div>
-<p style="line-height: 28px; margin: 0px 5px 0px 38px !important">总的原则是，只对尚未推送或分享给别人的本地修改执行变基操作清理历史， 从不对已推送至别处的提交执行变基操作.</p></div>
-<h2 id="手册">手册</h2>
-<ol>
-<li>
-<p><a href="https://git-scm.com/book/zh/v2/Git-%E5%88%86%E6%94%AF-%E5%8F%98%E5%9F%BA">https://git-scm.com/book/zh/v2/Git-分支-变基</a></p>
-</li>
-<li>
-<p>可视化Git命令</p>
-<p><a href="https://ndpsoftware.com/git-cheatsheet.html#loc=workspace">https://ndpsoftware.com/git-cheatsheet.html#loc=workspace</a>;</p>
-</li>
-</ol>
-<h3 id="git相关文章">Git相关文章</h3>
-<ul>
-<li><a href="https://github.blog/2022-09-13-scaling-gits-garbage-collection/">https://github.blog/2022-09-13-scaling-gits-garbage-collection/</a></li>
-</ul>
 </div>
 
                 <!-- 新加的模块的，应该使用模版-->
@@ -398,7 +257,7 @@ doc/**/*.pdf # 递归，忽略doc/下所有pdf
                       <i class="ri-article-line"></i>
                       <b>本文链接:</b>
                       <a href="" target="_blank">
-                        理解Git和实战
+                        C++值的类型
                       </a>
                     </p>
                     <p>
@@ -412,7 +271,7 @@ doc/**/*.pdf # 递归，忽略doc/下所有pdf
                     <p>
                       <i class="ri-time-line"></i>
                       <b>发布日期:</b>
-                      2022-10-17
+                      2022-04-10
                     </p>
                   </div>
                 </div>
@@ -488,38 +347,7 @@ doc/**/*.pdf # 递归，忽略doc/下所有pdf
               <i class="ri-close-line text-lg"></i>
             </div>
           </div>
-          <div class="post-toc-container"><ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#git%E5%8E%9F%E7%90%86">Git原理</a></li>
-<li><a href="#%E5%AE%9E%E6%88%98">实战</a>
-<ul>
-<li><a href="#%E6%AF%94%E8%BE%83%E5%91%BD%E4%BB%A4">比较命令</a></li>
-<li><a href="#%E5%88%86%E7%A6%BB%E5%A4%B4%E6%8C%87%E9%92%88">分离头指针</a></li>
-<li><a href="#%E4%BF%AE%E6%94%B9u%E6%9C%AC%E5%9C%B0%E6%8F%90%E4%BA%A4u">修改<u>本地提交</u></a></li>
-<li><a href="#%E4%B8%8D%E5%90%8C%E5%9C%BA%E6%99%AF%E7%9A%84%E6%81%A2%E5%A4%8D">不同场景的恢复</a></li>
-<li><a href="#%E4%B8%A2%E5%BC%83%E6%9C%80%E8%BF%91%E7%9A%84%E5%87%A0%E6%AC%A1%E6%8F%90%E4%BA%A4%E4%BB%A3%E7%A0%81%E5%9B%9E%E6%BB%9A">丢弃最近的几次提交【代码回滚】</a></li>
-<li><a href="#cherry-pick-%E5%A4%8D%E5%88%B6%E6%8F%90%E4%BA%A4">cherry-pick 复制提交</a></li>
-<li><a href="#%E8%B4%AE%E8%97%8Ffont-colorc04d8a%E5%B7%A5%E4%BD%9C%E5%8C%BA%E4%B8%8E%E6%9A%82%E5%AD%98%E5%8C%BAfont">贮藏<font color='#c04d8a'>工作区与暂存区</font></a></li>
-<li><a href="#%E8%BF%9C%E7%A8%8B%E5%88%86%E6%94%AF%E6%93%8D%E4%BD%9C">远程分支操作</a></li>
-<li><a href="#gitignore-%E9%85%8D%E7%BD%AE"><code>.gitignore</code> 配置</a></li>
-</ul>
-</li>
-<li><a href="#font-colord44c47git%E9%9B%86%E6%88%90%E4%BD%BF%E7%94%A8%E7%A6%81%E5%BF%8Cfont"><font color='#d44c47'><strong>Git集成使用禁忌</strong></font></a>
-<ul>
-<li><a href="#%E7%A6%81%E6%AD%A2%E5%90%91%E5%9B%A2%E9%98%9F%E9%9B%86%E6%88%90%E7%9A%84%E5%88%86%E6%94%AF%E5%BC%BA%E5%88%B6%E6%8E%A8%E9%80%81">禁止向团队集成的分支强制推送</a></li>
-<li><a href="#%E7%A6%81%E6%AD%A2%E5%AF%B9%E5%9B%A2%E9%98%9F%E7%9A%84%E9%9B%86%E6%88%90%E5%88%86%E6%94%AF%E4%BD%9C%E5%8F%98%E5%9F%BA%E6%93%8D%E4%BD%9C">禁止对团队的集成分支作变基操作</a></li>
-</ul>
-</li>
-<li><a href="#%E6%89%8B%E5%86%8C">手册</a>
-<ul>
-<li><a href="#git%E7%9B%B8%E5%85%B3%E6%96%87%E7%AB%A0">Git相关文章</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</div>
+          <div class="post-toc-container"></div>
         </div>
 
         <!-- Back to top -->
