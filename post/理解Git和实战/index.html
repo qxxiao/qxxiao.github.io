@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <!--每个页面都需要 head link等  -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>理解Git和实战 - Nuo&#39;s Blog</title>
+<link rel="shortcut icon" href="https://blog.qxxiao.eu.org/favicon.ico">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/tailwind.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/ldbutton.css">
+
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/styles/main.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/light-dark.css">
+
+<link rel="alternate" type="application/atom+xml" title="理解Git和实战 - Nuo&#39;s Blog - Atom Feed" href="https://blog.qxxiao.eu.org/atom.xml">
+
+    
+
+      <script src="https://blog.qxxiao.eu.org/media/scripts/ldbutton.js"></script>
+      <meta name="description" content="Git原理
+.git 文件夹说明
+-rw-r--r--    HEAD    # 当前的头部commit/指向
+-rw-r--r--    config  # 本地仓库的配置
+drwxr-xr-x    hooks   # hooks模版
+..." />
+      <meta property="og:title" content="理解Git和实战 - Nuo&#39;s Blog" />
+      <meta property="og:description" content="Git原理
+.git 文件夹说明
+-rw-r--r--    HEAD    # 当前的头部commit/指向
+-rw-r--r--    config  # 本地仓库的配置
+drwxr-xr-x    hooks   # hooks模版
+..." />
+      <meta property="og:type" content="articles" />
+      <meta property="og:url" content="https://blog.qxxiao.eu.org/post/理解Git和实战/" />
+      <meta property="og:image"
+        content="https://images.unsplash.com/photo-1556075798-4825dfaaf498?ixlib=rb-4.0.3&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:width" content="1200" />
+      <meta name="twitter:title" content="理解Git和实战 - Nuo&#39;s Blog" />
+      <meta name="twitter:description" content="Git原理
+.git 文件夹说明
+-rw-r--r--    HEAD    # 当前的头部commit/指向
+-rw-r--r--    config  # 本地仓库的配置
+drwxr-xr-x    hooks   # hooks模版
+..." />
+      <meta name="twitter:card" content="summary_large_image" />
+      <link rel="canonical" href="https://blog.qxxiao.eu.org/post/理解Git和实战/" />
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css" />
+
+      
+        <link rel="stylesheet"
+          href="https://blog.qxxiao.eu.org/media/css/prism-vs-dark.css" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.css"
+          rel="stylesheet" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.css"
+          rel="stylesheet" />
+        
+          
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" />
+            
+  </head>
+
+  <body>
+    <div class="antialiased flex flex-col min-h-screen" id="app">
+      <!-- 标题菜单 -->
+<div class="nav py-3 md:py-8 fixed w-full z-10 bg-gray-50 dark:bg-gray-700 transition-all duration-300"
+  :class="{ 'scroll': scrolled }">
+  <div class="flex justify-end px-4">
+    <div class="w-8 h-8 flex justify-center items-center rounded-full md:hidden" @click="showMenu = !showMenu">
+      <i class="ri-close-line" v-show="showMenu"></i>
+      <i class="ri-menu-3-line" v-show="!showMenu"></i>
+    </div>
+  </div>
+  <nav cloak class="max-w-4xl w-full mx-auto text-right flex flex-col md:flex-row justify-center items-center md:block"
+    :class="`${ showMenu ? 'block' : 'hidden' }`">
+    
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            首页
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/archives" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            归档
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/tags" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            标签
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="https://gh.qxxiao.cn/nav" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            导航
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+        <div
+          class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold dark:hover:bg-gray-600 hover:bg-gray-200 nav-time1">
+          时光
+            <div class="transition font-semibold nav-time2">
+              
+                <a href="https://blog.qxxiao.eu.org/diary/" class="">
+                  说说
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/gallery/" class="">
+                  相册
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/book/" class="">
+                  书单
+                </a>
+                
+            </div>
+        </div>
+        
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/post/about" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            关于
+          </a>
+          
+            
+              <!-- <a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+      RSS
+    </a> -->
+              <!-- <span>Test 模式</span> -->
+              <!-- 黑色模式，和亮色模式开关-->
+<div class="py-2 md:py-1 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+  <label for="night-light-checkbox" class="night-light-label">
+    <input type="checkbox" id="night-light-checkbox" />
+    <span v-cloak class="night-light-ball" id="night-light-ball" :class="dark==true?'initDark':'initLight'"></span>
+    <svg viewBox="0 0 512 512" class="sun-svg">
+      <path id="sun-svg"
+        d="M256 160c-52.9 0-96 43.1-96 96s43.1 96 96 96 96-43.1 96-96-43.1-96-96-96zm246.4 80.5l-94.7-47.3 33.5-100.4c4.5-13.6-8.4-26.5-21.9-21.9l-100.4 33.5-47.4-94.8c-6.4-12.8-24.6-12.8-31 0l-47.3 94.7L92.7 70.8c-13.6-4.5-26.5 8.4-21.9 21.9l33.5 100.4-94.7 47.4c-12.8 6.4-12.8 24.6 0 31l94.7 47.3-33.5 100.5c-4.5 13.6 8.4 26.5 21.9 21.9l100.4-33.5 47.3 94.7c6.4 12.8 24.6 12.8 31 0l47.3-94.7 100.4 33.5c13.6 4.5 26.5-8.4 21.9-21.9l-33.5-100.4 94.7-47.3c13-6.5 13-24.7.2-31.1zm-155.9 106c-49.9 49.9-131.1 49.9-181 0-49.9-49.9-49.9-131.1 0-181 49.9-49.9 131.1-49.9 181 0 49.9 49.9 49.9 131.1 0 181z">
+      </path>
+    </svg>
+    <svg viewBox="0 0 512 512" class="moon-svg">
+      <path id="moon-svg"
+        d="M283.211 512c78.962 0 151.079-35.925 198.857-94.792 7.068-8.708-.639-21.43-11.562-19.35-124.203 23.654-238.262-71.576-238.262-196.954 0-72.222 38.662-138.635 101.498-174.394 9.686-5.512 7.25-20.197-3.756-22.23A258.156 258.156 0 0 0 283.211 0c-141.309 0-256 114.511-256 256 0 141.309 114.511 256 256 256z">
+      </path>
+    </svg>
+  </label>
+</div>
+                <form id="gridea-search-form" class="inline-flex ml-4" action="https://blog.qxxiao.eu.org/search/">
+                  <input type="search" autocomplete='off' spellcheck='false' name="q" />
+                </form>
+  </nav>
+
+</div>
+        <a href="https://blog.qxxiao.eu.org"
+          class="fixed top-0 left-0 mt-4 bg-black text-white dark:text-gray-700 dark:bg-yellow-50 dark:hover:bg-black dark:hover:text-white inline-flex p-2 pl-8 hover:text-gray-700 hover:bg-yellow-50 font-bold z-10 transition-fast animated fadeInLeft">
+          Nuo&#39;s Blog
+        </a>
+        <div class="max-w-4xl w-full mx-auto">
+          <div class="shadow-box bg-white dark:bg-gray-600 rounded-lg pt-32 px-4 md:px-8 pb-8 animated fadeIn mb-8">
+            <h1 class="text-5xl font-semibold leading-normal pb-8 mb-8 border-b-8 border-gray-700">
+              理解Git和实战
+            </h1>
+            
+              <img src="https://images.unsplash.com/photo-1556075798-4825dfaaf498?ixlib=rb-4.0.3&amp;q=80&amp;fm=jpg&amp;crop=entropy&amp;cs=tinysrgb" alt="理解Git和实战" class="block w-full mb-8" />
+              
+                <div class="mb-8 flex flex-wrap">
+                  <div class="text-gray-400 text-sm mr-4">
+                    <i class="ri-calendar-2-line" style="vertical-align: middle;"></i>
+                    2022-10-17 ·
+                      <i class="ri-file-word-line" style="vertical-align: middle;"></i>
+                      1888字 ·
+                        <i class="ri-timer-line" style="vertical-align: middle;"></i>
+                        8 min read
+                  </div>
+                  🏷️&nbsp;
+                      
+                        <a href="https://blog.qxxiao.eu.org/tag/git/"
+                          class="text-indigo-500 text-sm border-b-2 border-solid border-indigo-500 hover:border-gray-600 transition-all duration-100 inline-flex mr-2">
+                          <i class="ri-hashtag" style="vertical-align: middle;"></i>
+                          Git
+                        </a>
+                        
+                </div>
+                <div class="markdown mb-8" v-pre><h2 id="git原理">Git原理</h2>
+<p><code>.git</code> 文件夹说明</p>
+<pre><code class="language-bash">-rw-r--r--    HEAD    # 当前的头部commit/指向
+-rw-r--r--    config  # 本地仓库的配置
+drwxr-xr-x    hooks   # hooks模版
+-rw-r--r--    index   # 暂存区的索引[被追踪的文件信息](添加到暂存区会持久化)
+drwxr-xr-x    logs    # HEAD 的记录[分支记录以及HEAD移动记录]
+drwxr-xr-x    objects # 文件对象[commit对象文件，tree对象文件，bob普通文件]
+drwxr-xr-x    refs    # 分支的头部和tags(对应的commitID)
+</code></pre>
+<p>commit对象表示了此次提交的一次<font color='#d44c47'><strong>快照/版本</strong></font>，而暂存区是当前的修改版本，等到提交时将<u>当前的状态</u>建立一个commit保存归档。</p>
+<p>例如一个commit对象关联的对象：</p>
+<figure data-type="image" tabindex="1"><img src="https://pic.qxxiao.cn/20221019201446.png" alt="" loading="lazy"></figure>
+<ul>
+<li>
+<p>commit对象包含一个tree对象(指针)，表示了当前文件树形组织的快照版本</p>
+</li>
+<li>
+<p>commit对象之间通过parent指针联系</p>
+</li>
+<li>
+<p>暂存区，<u>上次提交+后续添加到暂存的文件修改</u>的文件状态</p>
+</li>
+</ul>
+<p>说明：</p>
+<ol>
+<li>
+<p>commit之间，相同的文件对象是共享的；</p>
+</li>
+<li>
+<p>每次修改添加到暂存区后，只会影响bob文件对象【tree对象等到<strong>提交</strong>才会生成】</p>
+<ul>
+<li>每个文件的<u>权限、文件路径和Hash</u>存储在<code>.git/index</code>文件</li>
+</ul>
+</li>
+<li>
+<p>Git的hash指针/内容寻址/DAG结构被广泛用于 <font color='#d44c47'><strong>IPFS</strong></font> 的存储架构中。</p>
+</li>
+</ol>
+<details class="markdown">
+<summary><b><font color='#da720f'>Git对象简单测试</font></b></summary>
+<pre><code class="language-bash"># git sha-1 hash
+echo &quot;Hello&quot; | git hash-object --stdin
+# 查看暂存区的内容[由git追踪的文件]
+git ls-files --stage
+# 查看git对象的类型
+git cat-file -t ID
+# 查看git对象的内容
+git cat-file -p ID
+</code></pre>
+</details>
+<h2 id="实战">实战</h2>
+<h3 id="比较命令">比较命令</h3>
+<ul>
+<li><code>git diff commitID1 commitID2 [-- file1 ...]</code></li>
+</ul>
+<p>比较两个提交的[部分]文件差异，可以使用分支名代替ID</p>
+<ul>
+<li>
+<p><code>git diff [-- file1 ...]</code></p>
+<p>比较工作区和暂存区的文件差异</p>
+</li>
+<li>
+<p><code>git diff --cached [-- file1 ...]</code></p>
+<p>比较暂存区和<font color='#d44c47'><strong>HEAD/最近提交</strong></font>的文件差异</p>
+</li>
+</ul>
+<h3 id="分离头指针">分离头指针</h3>
+<p>分离头指针，即HEAD指向了非<u>分支的头部提交</u>，如果新建提交不属于任何分支，不会被git管理后续会被清理。</p>
+<p>但是，基于该提交进行试验产生新提交是可行的</p>
+<ul>
+<li>
+<p>如果新提交需要保留，应该基于新提交建立新分支/tag</p>
+</li>
+<li>
+<p>对于基于分离头指针的提交 为 <code>unreachable object</code> 会在默认策略下被清理【分支/tag/index/reflog不能到达的对象】并且默认2weeks不变(不修改)[<a href="https://github.blog/2022-09-13-scaling-gits-garbage-collection/">缓解竞争条件</a>]的话会被清理</p>
+<ul>
+<li>
+<p>如果想要及时删除，例如大文件提交</p>
+<p>将对应的提交变为<code>unreachable</code> 后(注意ref/reflog等都不能索引到它)，执行 <code>git gc --prune=now</code></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="修改u本地提交u">修改<u>本地提交</u></h3>
+<ol>
+<li>修改最新commit的message</li>
+</ol>
+<p><code>git commit --amend</code></p>
+<ol>
+<li>
+<p>使用变基<code>rebase</code>修改、合并<u>提交</u></p>
+<p>变基，改变当前分支<font color='#9065b0'><strong>base提交位置</strong></font>，使用 <code>rebase</code> 命令将提交到某一分支上的所有修改都移至另一分支上，就好像<code>重新播放</code>一样。<font color='#d44c47'>用于合并分支</font>【会将分支的提交整理成线性】<br>
+git rebase 目标分支 [源分支] （会先切换到源分支[默认为当前分支]，<font color='#d44c47'>并将当前分支指向目标分支的位置</font>，应用源分支上的每个提交）</p>
+</li>
+</ol>
+<figure data-type="image" tabindex="2"><img src="https://pic.qxxiao.cn/q1vuial6fp.gif" alt="" loading="lazy"></figure>
+<p>(1) 修改本分支上的旧commit的提交信息<br>
+对自己进行变基，重新修改base提交后续的提交<br>
+<code>git rebase -i commitID</code> commitID应该选取为需要修改的前一个提交ID，通过交互式命令操作后续提交的状态，从而修改后续的所有提交<br>
+(2) 合并分支上的几个commit<br>
+<code>git rebase -i commitID</code>  同样可以操作不同的commit</p>
+<h3 id="不同场景的恢复">不同场景的恢复</h3>
+<p>首先需要知道工作区、暂存区和最近提交commit三者之间的关系</p>
+<ol>
+<li>让<font color='#9065b0'><strong>暂存区</strong></font>恢复成HEAD一样</li>
+</ol>
+<p><code>git reset HEAD [file1 ...]</code><br>
+含义：清理距离上次提交添加的所有暂存，工作区修改取消持久化<br>
+可以添加指定的文件名称，来撤销暂存区该文件修改，从而实现对部分文件的提交。</p>
+<ol>
+<li>
+<p>将<font color='#9065b0'><strong>工作区</strong></font>恢复成暂存区一样</p>
+<p>如果当前的工作区需要<font color='#d44c47'><strong>丢弃</strong></font><font color='#d44c47'><u><strong>距离上一次暂存</strong></u></font><font color='#d44c47'><strong>所做的修改</strong></font>[一个暂存状态]<br>
+<code>git checkout -- '*'</code></p>
+</li>
+</ol>
+<h3 id="丢弃最近的几次提交代码回滚">丢弃最近的几次提交【代码回滚】</h3>
+<p><code>git reset —hard commitID</code></p>
+<p>将当前分支重置到 <code>commitID</code> 的位置(修改当前分支的头/最近的提交)，<font color='#d44c47'><strong>并且重置工作区和暂存区</strong></font>与该位置的 commit 保持一致。(使用前应保持工作区clean)</p>
+<p><u>说明：由于丢弃的提交处于游离部分/不属于分支或tag关联的提交，可能会被清理，想切换分支请使用 </u><u><code>checkout</code></u><u> 命令</u></p>
+<h3 id="cherry-pick-复制提交">cherry-pick 复制提交</h3>
+<p>与分支合并(merge/rebase)不同，在只需要复制其他分支<font color='#da720f'><strong>某一个 commit</strong></font>，使用 <code>cherry-pick</code><br>
+命令，即可复制一个特定的提交到当前分支并生成一次新的提交，避免了相同的工作或分支的合并操作。</p>
+<p><code>git cherry-pick commitID</code>  在当前分支应用特定的提交</p>
+<h3 id="贮藏font-colorc04d8a工作区与暂存区font">贮藏<font color='#c04d8a'>工作区与暂存区</font></h3>
+<p><a href="https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E8%B4%AE%E8%97%8F%E4%B8%8E%E6%B8%85%E7%90%86">https://git-scm.com/book/zh/v2/Git-工具-贮藏与清理</a></p>
+<p>场景：当正在自己分支上开发，并修改和暂存了部分文件，临时需要切换到其它分支工作，但是此时不想提交自己未完成的工作。需要临时保存自己的工作状态，使用 <code>git stash</code> 来保存。</p>
+<ul>
+<li>
+<p><code>git stash</code>  将工作区和暂存区中尚未提交的修改存入栈中</p>
+</li>
+<li>
+<p><code>git stash list</code> 查看栈中所有元素</p>
+</li>
+<li>
+<p><code>git stash pop --index</code></p>
+<p><font color='#d44c47'>将栈顶存储的修改恢复到当前分支，同时删除栈顶元素</font><br>
+默认会将先前暂存区的存储的内容撤销到工作区(暂存区修改的内容被清空)，<u>使用<code>--index</code>恢复暂存区的内容/恢复得和原来一样 </u></p>
+</li>
+<li>
+<p><code>git stash apply --index</code></p>
+<p>将栈顶存储的修改恢复到当前分支，但不删除栈顶元素</p>
+</li>
+<li>
+<p><code>git stash drop</code> 删除栈顶存储的贮藏</p>
+</li>
+</ul>
+<h3 id="远程分支操作">远程分支操作</h3>
+<p><a href="https://learngitbranching.js.org/?locale=zh_CN"><font color='#d44c47'>https://learngitbranching.js.org/?locale=zh_CN</font></a></p>
+<h3 id="gitignore-配置"><code>.gitignore</code> 配置</h3>
+<p>添加忽略文件列表到 <code>.gitignore</code> ，让git忽略这些文件/不管理</p>
+<p>有时一些文件最好不要用 Git 跟踪。这通常在名为 <code>.gitignore</code> 的特殊文件中完成。你可以在  <a href="https://github.com/github/gitignore">github.com/github/gitignore</a> 找到有用的 <code>.gitignore</code>文件模板。或者：<a href="https://www.toptal.com/developers/gitignore">https://www.toptal.com/developers/gitignore</a></p>
+<p>简单示例：</p>
+<pre><code class="language-bash">*.class
+doc/ # 忽略doc文件夹
+doc/*.txt # 非递归
+doc/**/*.pdf # 递归，忽略doc/下所有pdf
+
+# 不忽略.gitignore和App.class:
+!.gitignore
+!App.class
+</code></pre>
+<hr>
+<h2 id="font-colord44c47git集成使用禁忌font"><font color='#d44c47'><strong>Git集成使用禁忌</strong></font></h2>
+<h3 id="禁止向团队集成的分支强制推送">禁止向团队集成的分支强制推送</h3>
+<p><code>push -f</code> 强制推送分支，发生冲突会强制覆盖远程分支的内容。会导致原来分支内容全部丢失/或部分丢失。</p>
+<p>因此，对<font color='#9065b0'><u>团队的集成分支</u></font>严禁使用 <code>push -f</code> 命令</p>
+<h3 id="禁止对团队的集成分支作变基操作">禁止对团队的集成分支作变基操作</h3>
+<p>团队的集成分支，是不能修改历史提交的，只能通过增加 <code>commit</code> 提交来改进<br>
+如果使用rebase修改历史，会导致其他成员与集成分支的冲突。</p>
+<div class="markdown notion" style="padding: 10px; color: #37352f; background-color: #edf3ec; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span style="font-size: 18px;">💡</span></div>
+<p style="line-height: 28px; margin: 0px 5px 0px 38px !important">总的原则是，只对尚未推送或分享给别人的本地修改执行变基操作清理历史， 从不对已推送至别处的提交执行变基操作.</p></div>
+<h2 id="手册">手册</h2>
+<ol>
+<li>
+<p><a href="https://git-scm.com/book/zh/v2/Git-%E5%88%86%E6%94%AF-%E5%8F%98%E5%9F%BA">https://git-scm.com/book/zh/v2/Git-分支-变基</a></p>
+</li>
+<li>
+<p>可视化Git命令</p>
+<p><a href="https://ndpsoftware.com/git-cheatsheet.html#loc=workspace">https://ndpsoftware.com/git-cheatsheet.html#loc=workspace</a>;</p>
+</li>
+</ol>
+<h3 id="git相关文章">Git相关文章</h3>
+<ul>
+<li><a href="https://github.blog/2022-09-13-scaling-gits-garbage-collection/">https://github.blog/2022-09-13-scaling-gits-garbage-collection/</a></li>
+</ul>
+</div>
+
+                <!-- 新加的模块的，应该使用模版-->
+                <!-- 版权声明 -->
+                <div class="jumbotron">
+                  <div class="container">
+                    <p>
+                      <i class="ri-article-line"></i>
+                      <b>本文链接:</b>
+                      <a href="" target="_blank">
+                        理解Git和实战
+                      </a>
+                    </p>
+                    <p>
+                      <i class="ri-creative-commons-line"></i>
+                      <b>版权声明:</b>
+                      本博客所有文章除特别声明外，均采用
+                      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC BY-NC-SA
+                        4.0</a>
+                      许可协议，转载请注明出处。
+                    </p>
+                    <p>
+                      <i class="ri-time-line"></i>
+                      <b>发布日期:</b>
+                      2022-10-17
+                    </p>
+                  </div>
+                </div>
+                <!-- 新加的模块的，应该使用模版-->
+                <!--阅读次数-->
+                <div class="text-center text-gray-400">
+                  <i class="ri-eye-line"></i>
+                  本文已被阅读
+                  <span id="twikoo_visitors">0</span>
+                  次，该数据仅供参考
+                </div>
+
+                <!-- Share to Twitter, Weibo, Telegram -->
+                <div class="flex items-center">
+                  <div class="mr-4 flex items-center">
+                    <i class="ri-share-forward-line text-gray-500"></i>
+                  </div>
+                  <div class="px-4 cursor-pointer text-blue-500 hover:bg-blue-100 dark:hover:bg-gray-600 inline-flex"
+                    @click="shareToTwitter">
+                    <i class="ri-twitter-line"></i>
+                  </div>
+                  <div class="px-4 cursor-pointer text-red-500 hover:bg-red-100 dark:hover:bg-gray-600 inline-flex"
+                    @click="shareToWeibo">
+                    <i class="ri-weibo-line"></i>
+                  </div>
+                  <div
+                    class="px-4 cursor-pointer text-indigo-500 hover:bg-indigo-100 dark:hover:bg-gray-600 inline-flex"
+                    @click="shareToTelegram">
+                    <i class="ri-telegram-line"></i>
+                  </div>
+                </div>
+          </div>
+
+          <!-- 新加的模块的，应该使用模版-->
+          <!-- 评论说明-->
+          <div class="jumbotron-comment">
+            <div class="container">
+              <p>
+                <i class="ri-message-3-line"></i>
+                欢迎任何与文章内容相关并保持尊重的评论😊 !
+              </p>
+            </div>
+          </div>
+
+          
+                        
+                            
+                              <div id="tcomment"></div>
+                               <footer class="py-12 text-center px-4 md:px-0" v-pre>
+  共 38 篇文章 | Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <i class="ri-rss-line"></i><a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" target="_blank">RSS</a></br>
+©2020-2024 <a href="https://blog.qxxiao.eu.org/index.html" target="_blank">Nuo</a>. All rights reserved.
+</footer>
+
+<!--没有添加/用到app 中的主题footer配置消息，如果使用，将上面的 href 替换为原地址-->
+<!---->
+
+        </div>
+
+        <!-- TOC Container -->
+        <div
+          class="fixed right-0 bottom-0 mb-16 mr-4 shadow w-8 h-8 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white dark:bg-gray-500 dark:text-gray-200 hover:shadow-lg transition-all animated fadeInRight"
+          @click="showToc = true">
+          <i class="ri-file-list-line"></i>
+        </div>
+
+        <div v-cloak
+          class="fixed right-0 top-0 bottom-0 overflow-y-auto w-64 bg-white dark:bg-gray-800 p-4 border-l border-gray-100 dark:border-gray-600 z-10 transition-fast"
+          :class="{ '-mr-64': !showToc }">
+          <div class="flex mb-4 justify-end">
+            <div
+              class="w-8 h-8 inline-flex justify-center items-center rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-fast"
+              @click="showToc = false">
+              <i class="ri-close-line text-lg"></i>
+            </div>
+          </div>
+          <div class="post-toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#git%E5%8E%9F%E7%90%86">Git原理</a></li>
+<li><a href="#%E5%AE%9E%E6%88%98">实战</a>
+<ul>
+<li><a href="#%E6%AF%94%E8%BE%83%E5%91%BD%E4%BB%A4">比较命令</a></li>
+<li><a href="#%E5%88%86%E7%A6%BB%E5%A4%B4%E6%8C%87%E9%92%88">分离头指针</a></li>
+<li><a href="#%E4%BF%AE%E6%94%B9u%E6%9C%AC%E5%9C%B0%E6%8F%90%E4%BA%A4u">修改<u>本地提交</u></a></li>
+<li><a href="#%E4%B8%8D%E5%90%8C%E5%9C%BA%E6%99%AF%E7%9A%84%E6%81%A2%E5%A4%8D">不同场景的恢复</a></li>
+<li><a href="#%E4%B8%A2%E5%BC%83%E6%9C%80%E8%BF%91%E7%9A%84%E5%87%A0%E6%AC%A1%E6%8F%90%E4%BA%A4%E4%BB%A3%E7%A0%81%E5%9B%9E%E6%BB%9A">丢弃最近的几次提交【代码回滚】</a></li>
+<li><a href="#cherry-pick-%E5%A4%8D%E5%88%B6%E6%8F%90%E4%BA%A4">cherry-pick 复制提交</a></li>
+<li><a href="#%E8%B4%AE%E8%97%8Ffont-colorc04d8a%E5%B7%A5%E4%BD%9C%E5%8C%BA%E4%B8%8E%E6%9A%82%E5%AD%98%E5%8C%BAfont">贮藏<font color='#c04d8a'>工作区与暂存区</font></a></li>
+<li><a href="#%E8%BF%9C%E7%A8%8B%E5%88%86%E6%94%AF%E6%93%8D%E4%BD%9C">远程分支操作</a></li>
+<li><a href="#gitignore-%E9%85%8D%E7%BD%AE"><code>.gitignore</code> 配置</a></li>
+</ul>
+</li>
+<li><a href="#font-colord44c47git%E9%9B%86%E6%88%90%E4%BD%BF%E7%94%A8%E7%A6%81%E5%BF%8Cfont"><font color='#d44c47'><strong>Git集成使用禁忌</strong></font></a>
+<ul>
+<li><a href="#%E7%A6%81%E6%AD%A2%E5%90%91%E5%9B%A2%E9%98%9F%E9%9B%86%E6%88%90%E7%9A%84%E5%88%86%E6%94%AF%E5%BC%BA%E5%88%B6%E6%8E%A8%E9%80%81">禁止向团队集成的分支强制推送</a></li>
+<li><a href="#%E7%A6%81%E6%AD%A2%E5%AF%B9%E5%9B%A2%E9%98%9F%E7%9A%84%E9%9B%86%E6%88%90%E5%88%86%E6%94%AF%E4%BD%9C%E5%8F%98%E5%9F%BA%E6%93%8D%E4%BD%9C">禁止对团队的集成分支作变基操作</a></li>
+</ul>
+</li>
+<li><a href="#%E6%89%8B%E5%86%8C">手册</a>
+<ul>
+<li><a href="#git%E7%9B%B8%E5%85%B3%E6%96%87%E7%AB%A0">Git相关文章</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+
+        <!-- Back to top -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-4 mr-4 shadow w-8 h-8 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg transition-all dark:bg-gray-500 dark:text-gray-200"
+          @click="backToUp" v-show="scrolled">
+          <i class="ri-arrow-up-line"></i>
+        </div>
+    </div>
+
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- Background of PhotoSwipe. 
+        It's a separate element as animating opacity is faster than rgba(). -->
+  <div class="pswp__bg">
+  </div>
+  <!-- Slides wrapper with overflow:hidden. -->
+  <div class="pswp__scroll-wrap">
+    <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+    <div class="pswp__container">
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+    </div>
+    <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        <!--  Controls are self-explanatory. Order can be changed. -->
+        <div class="pswp__counter">
+        </div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+        <!-- element will get class pswp__preloader--active when preloader is running -->
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip">
+        </div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://blog.qxxiao.eu.org/media/scripts/main.js"></script>
+
+      <!-- Code Highlight -->
+      
+        <script src="https://blog.qxxiao.eu.org/media/prism.js"></script>
+        <script>
+          Prism.highlightAll();
+        </script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/show-language/prism-show-language.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+        
+
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+          <script>
+            //拿到预览框架，也就是上面的html代码
+            var pswpElement = document.querySelectorAll('.pswp')[0]
+            //定义图片数组变量
+            var imgitems
+            /**
+             * 用于显示预览界面
+             * @param index 图片数组下标
+             */
+            function viewImg(index) {
+              var pswpoptions = {
+                index: parseInt(index, 10), // 开始幻灯片索引。0是第一张幻灯片。必须是整数，而不是字符串。
+                bgOpacity: 0.7, // 背景透明度，0-1
+                maxSpreadZoom: 3, // 缩放级别，不要太大
+              }
+              //初始化并打开PhotoSwipe，pswpElement对应上面预览框架，PhotoSwipeUI_Default为皮肤，imgitems为图片数组，pswpoptions为选项
+              var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, imgitems, pswpoptions)
+              gallery.init()
+            }
+            /**
+             * 用于添加图片点击事件
+             * @param img 图片元素
+             * @param index 所属下标（在imgitems中的位置）
+             */
+            function addImgClick(img, index) {
+              img.onclick = function () {
+                viewImg(index)
+              }
+            }
+            /**
+             * 轮询所有图片，获取src、width、height等数据，加入imgitems，并给图片元素添加事件
+             * 最好在onload中执行该方法，本站因放在最底部，所以直接初始化
+             * 异步加载图片可在图片元素创建完成后调用此方法
+             */
+            function initImg() {
+              //重置图片数组
+              imgitems = []
+              //查找class:markdown 下的所有img元素并遍历
+              var imgs = document.querySelectorAll('.markdown img')
+              for (var i = 0; i < imgs.length; i++) {
+                var img = imgs[i]
+                //本站相册初始为loading图片，真实图片放在data-src
+                var ds = img.getAttribute('data-src')
+                //创建image对象，用于获取图片宽高
+                var imgtemp = new Image()
+                //判断是否存在data-src
+                if (ds != null && ds.length > 0) {
+                  imgtemp.src = ds
+                } else {
+                  imgtemp.src = img.src
+                }
+                //判断是否存在缓存
+                if (imgtemp.complete) {
+                  var imgobj = {
+                    src: imgtemp.src,
+                    w: imgtemp.width,
+                    h: imgtemp.height,
+                  }
+                  imgitems[i] = imgobj
+                  addImgClick(img, i)
+                } else {
+                  imgtemp.index = i
+                  imgtemp.img = img
+                  imgtemp.onload = function () {
+                    var imgobj = {
+                      src: this.src,
+                      w: this.width,
+                      h: this.height,
+                    }
+                    //不要使用push，因为onload前后顺序会不同
+                    imgitems[this.index] = imgobj
+                    //添加点击事件
+                    addImgClick(this.img, this.index)
+                  }
+                }
+              }
+            }
+            //初始化
+            initImg();
+          </script>
+          
+                
+                          
+                            <script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.27/dist/twikoo.all.min.js"></script>
+                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+                              integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+                              crossorigin="anonymous" />
+                            <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+                              integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+                              crossorigin="anonymous"></script>
+                            <script defer
+                              src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+                              integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"
+                              crossorigin="anonymous"></script>
+                            <script>
+                              twikoo.init({
+                                envId: 'https://twikoo.qxxiao.cn/',
+                                el: '#tcomment',
+                                katex: {
+                                  delimiters: [
+                                    { left: '$$', right: '$$', display: true },
+                                    { left: '$', right: '$', display: false },
+                                    { left: '\\(', right: '\\)', display: false },
+                                    { left: '\\[', right: '\\]', display: true },
+                                  ],
+                                  throwOnError: false,
+                                },
+                                // region: 'ap-guangzhou', // 环境地域，默认为 ap-shanghai，如果您的环境地域不是上海，需传此参数
+                                // path: 'window.location.pathname', // 用于区分不同文章的自定义 js 路径，如果您的文章路径不是 location.pathname，需传此参数
+                              });
+                            </script>
+                            
+
+                              <!-- line number for code block -->
+                              <script>
+                                var pres = document.getElementsByTagName('pre')
+                                for (var i = 0; i < pres.length; i++) {
+                                  var pre = pres[i]
+                                  if (pre.childNodes[0].nodeName == 'CODE') {
+                                    pre.setAttribute('class', 'line-numbers')
+                                  }
+                                }
+                              </script>
+                              
+                                <script src="https://blog.qxxiao.eu.org/media/scripts/ldbutton.js"></script>
+
+  </body>
+
+</html>
