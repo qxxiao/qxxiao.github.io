@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <!--每个页面都需要 head link等  -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>
+  cmake示例 - Nuo&#39;s Blog
+</title>
+<link rel="shortcut icon" href="https://blog.qxxiao.eu.org/favicon.ico">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/tailwind.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/ldbutton.css">
+
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/styles/main.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/light-dark.css">
+
+<link rel="alternate" type="application/atom+xml" title="cmake示例 - Nuo&#39;s Blog - Atom Feed"
+  href="https://blog.qxxiao.eu.org/atom.xml">
+
+
+      <script src="https://blog.qxxiao.eu.org/media/scripts/ldbutton.js"></script>
+      <meta name="description" content="
+官方教程：https://cmake.org/cmake/help/latest/guide/tutorial/index.html
+一些总结：https://wangpengcheng.github.io/2019/08/13/lear..." />
+      <meta property="og:title" content="cmake示例 - Nuo&#39;s Blog" />
+      <meta property="og:description" content="
+官方教程：https://cmake.org/cmake/help/latest/guide/tutorial/index.html
+一些总结：https://wangpengcheng.github.io/2019/08/13/lear..." />
+      <meta property="og:type" content="articles" />
+      <meta property="og:url" content="https://blog.qxxiao.eu.org/post/cmake示例/" />
+      <meta property="og:image"
+        content="https://pic.qxxiao.cn/20221031044602.png" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:width" content="1200" />
+      <meta name="twitter:title" content="cmake示例 - Nuo&#39;s Blog" />
+      <meta name="twitter:description" content="
+官方教程：https://cmake.org/cmake/help/latest/guide/tutorial/index.html
+一些总结：https://wangpengcheng.github.io/2019/08/13/lear..." />
+      <meta name="twitter:card" content="summary_large_image" />
+      <link rel="canonical" href="https://blog.qxxiao.eu.org/post/cmake示例/" />
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css" />
+
+      
+        <link rel="stylesheet"
+          href="https://blog.qxxiao.eu.org/media/css/prism-vs-dark.css" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.css"
+          rel="stylesheet" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.css"
+          rel="stylesheet" />
+        
+          
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" />
+            
+  </head>
+
+  <body>
+    <div class="antialiased flex flex-col min-h-screen" id="app">
+      <!-- 标题菜单 -->
+<div class="nav py-3 md:py-8 fixed w-full z-10 bg-gray-50 dark:bg-gray-700 transition-all duration-300"
+  :class="{ 'scroll': scrolled }">
+  <div class="flex justify-end px-4">
+    <div class="w-8 h-8 flex justify-center items-center rounded-full md:hidden" @click="showMenu = !showMenu">
+      <i class="ri-close-line" v-show="showMenu"></i>
+      <i class="ri-menu-3-line" v-show="!showMenu"></i>
+    </div>
+  </div>
+  <nav cloak class="max-w-4xl w-full mx-auto text-right flex flex-col md:flex-row justify-center items-center md:block"
+    :class="`${ showMenu ? 'block' : 'hidden' }`">
+    
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            首页
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/archives" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            归档
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/tags" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            标签
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="https://gh.qxxiao.cn/nav" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            导航
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+        <div
+          class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold dark:hover:bg-gray-600 hover:bg-gray-200 nav-time1">
+          时光
+            <div class="transition font-semibold nav-time2">
+              
+                <a href="https://blog.qxxiao.eu.org/diary/" class="">
+                  说说
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/gallery/" class="">
+                  相册
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/book/" class="">
+                  书单
+                </a>
+                
+            </div>
+        </div>
+        
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/post/about" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            关于
+          </a>
+          
+            
+              <!-- <a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+      RSS
+    </a> -->
+              <!-- 黑色模式，和亮色模式开关-->
+<div class="py-2 md:py-1 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+  <label for="night-light-checkbox" class="night-light-label">
+    <input type="checkbox" id="night-light-checkbox" />
+    <span v-cloak class="night-light-ball" id="night-light-ball" :class="dark==true?'initDark':'initLight'"></span>
+    <svg viewBox="0 0 512 512" class="sun-svg">
+      <path id="sun-svg"
+        d="M256 160c-52.9 0-96 43.1-96 96s43.1 96 96 96 96-43.1 96-96-43.1-96-96-96zm246.4 80.5l-94.7-47.3 33.5-100.4c4.5-13.6-8.4-26.5-21.9-21.9l-100.4 33.5-47.4-94.8c-6.4-12.8-24.6-12.8-31 0l-47.3 94.7L92.7 70.8c-13.6-4.5-26.5 8.4-21.9 21.9l33.5 100.4-94.7 47.4c-12.8 6.4-12.8 24.6 0 31l94.7 47.3-33.5 100.5c-4.5 13.6 8.4 26.5 21.9 21.9l100.4-33.5 47.3 94.7c6.4 12.8 24.6 12.8 31 0l47.3-94.7 100.4 33.5c13.6 4.5 26.5-8.4 21.9-21.9l-33.5-100.4 94.7-47.3c13-6.5 13-24.7.2-31.1zm-155.9 106c-49.9 49.9-131.1 49.9-181 0-49.9-49.9-49.9-131.1 0-181 49.9-49.9 131.1-49.9 181 0 49.9 49.9 49.9 131.1 0 181z">
+      </path>
+    </svg>
+    <svg viewBox="0 0 512 512" class="moon-svg">
+      <path id="moon-svg"
+        d="M283.211 512c78.962 0 151.079-35.925 198.857-94.792 7.068-8.708-.639-21.43-11.562-19.35-124.203 23.654-238.262-71.576-238.262-196.954 0-72.222 38.662-138.635 101.498-174.394 9.686-5.512 7.25-20.197-3.756-22.23A258.156 258.156 0 0 0 283.211 0c-141.309 0-256 114.511-256 256 0 141.309 114.511 256 256 256z">
+      </path>
+    </svg>
+  </label>
+</div>
+                <form id="gridea-search-form" class="inline-flex ml-4" action="https://blog.qxxiao.eu.org/search/">
+                  <input type="search" autocomplete='off' spellcheck='false' name="q" />
+                </form>
+  </nav>
+
+</div>
+        <a href="https://blog.qxxiao.eu.org"
+          class="fixed top-0 left-0 mt-4 bg-black text-white dark:text-gray-700 dark:bg-yellow-50 dark:hover:bg-black dark:hover:text-white inline-flex p-2 pl-8 hover:text-gray-700 hover:bg-yellow-50 font-bold z-10">
+          Nuo&#39;s Blog
+        </a>
+        <div class="max-w-4xl w-full mx-auto">
+          <div class="shadow-box bg-white dark:bg-gray-600 rounded-lg pt-32 px-4 md:px-8 pb-8 mb-8">
+            <h1 class="text-5xl font-semibold leading-normal pb-8 mb-8 border-b-8 border-gray-700">
+              cmake示例
+            </h1>
+            
+              <img src="https://pic.qxxiao.cn/20221031044602.png" alt="cmake示例" class="block w-full mb-8" />
+              
+                <div class="mb-8 flex flex-wrap">
+                  <div class="text-gray-400 text-sm mr-4">
+                    <i class="ri-calendar-2-line" style="vertical-align: middle;"></i>
+                    2022-10-29 ·
+                      <i class="ri-file-word-line" style="vertical-align: middle;"></i>
+                      2060字 ·
+                        <i class="ri-timer-line" style="vertical-align: middle;"></i>
+                        10 min read
+                  </div>
+                  🏷️&nbsp;
+                      
+                        <a href="https://blog.qxxiao.eu.org/tag/cmake/"
+                          class="text-indigo-500 text-sm border-b-2 border-solid border-indigo-500 hover:border-gray-600 transition-all duration-100 inline-flex mr-2">
+                          <i class="ri-hashtag" style="vertical-align: middle;"></i>
+                          CMake
+                        </a>
+                        
+                </div>
+                <div class="markdown mb-8" v-pre><blockquote>
+<p>官方教程：<a href="https://cmake.org/cmake/help/latest/guide/tutorial/index.html">https://cmake.org/cmake/help/latest/guide/tutorial/index.html</a><br>
+一些总结：<a href="https://wangpengcheng.github.io/2019/08/13/learn_cmake/">https://wangpengcheng.github.io/2019/08/13/learn_cmake/</a></p>
+</blockquote>
+<h2 id="基础">基础</h2>
+<p>最小配置的 <code>CMakeLists.txt</code></p>
+<pre><code class="language-shell"># Set the minimum required version of CMake to be 3.10
+cmake_minimum_required(VERSION 3.10)
+
+# Create a project named Tutorial
+project(Tutorial VERSION 1.0)
+# set(Tutorial_VERSION_MAJOR 1)
+# set(Tutorial_VERSION_MINOR 0)
+
+# Set the variable CMAKE_CXX_STANDARD to 11
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# Add an executable called Tutorial to the project
+add_executable(Tutorial tutorial.cpp)
+</code></pre>
+<ul>
+<li>如果文件较多，<code>aux_source_directory(. DIR_SRCS)</code> 将当前目录所有源文件的文件名赋值给变量 <code>DIR_SRCS</code>，使用 <code>add_executable(Tutorial ${DIR_SRCS})</code></li>
+</ul>
+<p>可选：MacOS + gcc + clangd 最小配置</p>
+<pre><code class="language-shell"># Set the minimum required version of CMake to be 3.10
+cmake_minimum_required(VERSION 3.10)
+
+# Create a project named Tutorial
+project(Tutorial VERSION 1.0)
+# set(Tutorial_VERSION_MAJOR 1)
+# set(Tutorial_VERSION_MINOR 0)
+
+# Set the variable CMAKE_CXX_STANDARD to 11
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# set -isysroot for macOS # default to macOS [according to gcc version]
+if(APPLE)
+    set(CMAKE_OSX_SYSROOT /Library/Developer/CommandLineTools/SDKs/MacOSX12.sdk)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET 12.0) # [according to gcc built for macos version]
+endif()
+
+# Add an executable called Tutorial to the project
+aux_source_directory(. DIR_SRCS)
+add_executable(Tutorial ${DIR_SRCS})
+</code></pre>
+<h2 id="生成lib并可选使用">生成lib并可选使用</h2>
+<ul>
+<li>生成lib，并在项目中<font color='#458361'>可选地</font>使用</li>
+</ul>
+<p>项目中会生成 lib 库文件，并在其他部分可选的链接使用该库</p>
+<pre><code class="language-shell">cmake_minimum_required(VERSION 3.10)
+
+# set the project name and version
+project(Tutorial VERSION 1.0)
+
+# specify the C++ standard
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+option(USE_MYMATH &quot;Use tutorial provided math implementation&quot; ON)
+configure_file(TutorialConfig.h.in TutorialConfig.h)
+
+if(USE_MYMATH)
+  add_subdirectory(MathFunctions) # 子目录会生成 MathFunctions lib
+  list(APPEND EXTRA_LIBS MathFunctions)
+  list(APPEND EXTRA_INCLUDES &quot;${PROJECT_SOURCE_DIR}/MathFunctions&quot;)
+endif()
+
+# add the executable
+add_executable(Tutorial tutorial.cxx)
+
+target_link_libraries(Tutorial PUBLIC ${EXTRA_LIBS})
+target_include_directories(Tutorial PUBLIC
+                           &quot;${PROJECT_BINARY_DIR}&quot;
+                           ${EXTRA_INCLUDES})
+</code></pre>
+<ol>
+<li>
+<p>使用 <code>option</code> 命令，可以定义一个boolean变量</p>
+</li>
+<li>
+<p>使用 <code>configure_file</code>  命令，将配置头文件，经过变量替换生成C++ header file:</p>
+<ul>
+<li><code>@var@</code>  变量，使用 CMakeLists.txt 中定义个变量进行替换；</li>
+<li><code>#cmakedefine</code>  替换为 <code>#define</code> ，如果后面定义的boolean变量是 <code>ON</code> 则进行替换</li>
+<li>生成的头文件放置在 <code>${PROJECT_BINARY_DIR}</code> 目录，即 cmake 的 build 目录</li>
+</ul>
+</li>
+<li>
+<p>使用 <code>if()</code>  来控制添加 lib 生成，定义 <code>EXTRA_LIBS 列表</code>，<code>EXTRA_INCLUDES 列表</code>，默认为空</p>
+</li>
+<li>
+<p>使用 <code>target_link_libraries</code>  对 target 链接指定的库</p>
+</li>
+<li>
+<p>使用 <code>target_include_directories</code> 对 target 添加指定的头文件目录</p>
+</li>
+</ol>
+<p>说明：可以在配置项目时，指定 <code>cmake .. -DUSE_MYMATH=OFF</code>  来覆盖定义的值</p>
+<h2 id="生成lib并可选使用interface">生成lib并可选使用(<code>INTERFACE</code>)</h2>
+<p>对上一个 cmake 改进，之前的做法需要链接 <code>lib</code> 库文件，并且在上层中<font color='#d44c47'>需要显示的指定库对应的 include 头文件目录</font>，非常繁琐。</p>
+<p>通过 <code>Usage Requirements</code> 来控制库在链接时的传递属性，使用 <code>INTERFACE</code> 来表达该语义：任意链接该库 target 必须 include 当前/指定的源目录(用于搜索头文件)。<code>INTERFACE</code> 表示<font color='#d44c47'>消费者</font>需要，但是生产者不需要。(对于库而言，生成的 lib target 不需要，但是需要链接该库的 target 必须包含指定的目录)</p>
+<p>子目录生成 lib 并指定 <code>Usage Requirements</code> 的 <code>CMakeLists.txt</code> ：</p>
+<pre><code class="language-shell">add_library(MathFunctions mysqrt.cxx)
+
+# Hint: Use target_include_directories with the INTERFACE keyword
+# 尽管 MathFunctions 库不需要包含当前源目录，但是任何链接到 MathFunctions 的库都需要包含当前源目录
+target_include_directories(MathFunctions INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+</code></pre>
+<hr>
+<p>top-level <code>CMakeLists.txt</code> ：</p>
+<pre><code class="language-shell">cmake_minimum_required(VERSION 3.10)
+
+# set the project name and version
+project(Tutorial VERSION 1.0)
+
+# specify the C++ standard
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# should we use our own math functions
+option(USE_MYMATH &quot;Use tutorial provided math implementation&quot; ON)
+
+# configure a header file to pass some of the CMake settings
+# to the source code
+configure_file(TutorialConfig.h.in TutorialConfig.h)
+
+# add the MathFunctions library
+if(USE_MYMATH)
+  add_subdirectory(MathFunctions)
+  list(APPEND EXTRA_LIBS MathFunctions)
+endif()
+
+# add the executable
+add_executable(Tutorial tutorial.cxx)
+
+target_link_libraries(Tutorial PUBLIC ${EXTRA_LIBS})
+# find TutorialConfig.h
+target_include_directories(Tutorial PUBLIC &quot;${PROJECT_BINARY_DIR}&quot;)
+</code></pre>
+<h2 id="使用生成器表达式">使用生成器表达式</h2>
+<blockquote>
+<p><a href="https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#manual:cmake-generator-expressions(7)">https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#manual:cmake-generator-expressions(7)</a></p>
+</blockquote>
+<p>生成器表达式，主要可以生成复杂的条件表达式，用于条件编译，条件链接等等。</p>
+<p>例如，使用一个 interface library 来指定编译选项，使用生成器表达式对不同的编译器选择不同的编译选项：</p>
+<pre><code class="language-shell">cmake_minimum_required(VERSION 3.15)
+
+# set the project name and version
+project(Tutorial VERSION 1.0)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# * Creating an interface library called tutorial_compiler_flags
+add_library(tutorial_compiler_flags INTERFACE)
+target_compile_features(tutorial_compiler_flags INTERFACE cxx_std_11)
+
+# Create helper variables to determine which compiler we are using
+set(gcc_like_cxx &quot;$&lt;COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC&gt;&quot;)
+set(msvc_cxx &quot;$&lt;COMPILE_LANG_AND_ID:CXX,MSVC&gt;&quot;)
+
+# With nested generator expressions, only use the flags for the build-tree
+target_compile_options(tutorial_compiler_flags INTERFACE
+  &quot;$&lt;${gcc_like_cxx}:$&lt;BUILD_INTERFACE:-Wall;-Wextra;-Wshadow;-Wformat=2;-Wunused&gt;&gt;&quot;
+  &quot;$&lt;${msvc_cxx}:$&lt;BUILD_INTERFACE:-W3&gt;&gt;&quot;
+)
+
+# should we use our own math functions
+option(USE_MYMATH &quot;Use tutorial provided math implementation&quot; ON)
+configure_file(TutorialConfig.h.in TutorialConfig.h)
+
+# add the MathFunctions library
+if(USE_MYMATH)
+  add_subdirectory(MathFunctions)
+  list(APPEND EXTRA_LIBS MathFunctions)
+endif()
+
+# add the executable
+add_executable(Tutorial tutorial.cxx)
+
+# Link to tutorial_compiler_flags
+target_link_libraries(Tutorial PUBLIC tutorial_compiler_flags ${EXTRA_LIBS})
+target_include_directories(Tutorial PUBLIC &quot;${PROJECT_BINARY_DIR}&quot;)
+</code></pre>
+<ul>
+<li>
+<p>使用生成器表达式，指定 cmake 最小版本为 <code>3.15</code></p>
+</li>
+<li>
+<p>使用 <code>INTERFACE</code>  来创建一个接口库，用于传递/指定 <code>Usage Requirements</code></p>
+</li>
+<li>
+<p>表达式：</p>
+<ul>
+<li><code>$&lt;COMPILE_LANG_AND_ID:CXX,...&gt;</code> 如果编译单元的语言是CXX，并且编译器ID与后面之一匹配，表达式为1否则为0</li>
+<li><code>$&lt;BUILD_INTERFACE: STRING&gt;</code> 在相同build为<code>STRING</code>，否则为空；上面的目的是：为了使得我们 <code>installed project</code> 的其他消费者不会继承编译选项；</li>
+</ul>
+</li>
+</ul>
+<h2 id="install-and-test">install and test</h2>
+<p>安装 executable | lib | headers</p>
+<pre><code class="language-shell">set(installable_libs MathFunctions tutorial_compiler_flags)
+install(TARGETS ${installable_libs} DESTINATION lib)
+install(FILES MathFunctions.h DESTINATION include/MathFunc)
+# bin file
+install(TARGETS Tutorial DESTINATION bin)
+</code></pre>
+<p>构建和安装：</p>
+<pre><code class="language-shell">cmake --build .
+cmake --install . --prefix &quot;/home/myuser/installdir&quot; # 有默认的位置，例如 /usr/local
+</code></pre>
+<p>或者</p>
+<pre><code class="language-shell">cmake --build . --target install
+</code></pre>
+<h3 id="简单的测试样例">简单的测试样例</h3>
+<pre><code class="language-shell"># enable testing
+enable_testing()
+# basic test, return value is zero
+add_test(NAME Runs COMMAND Tutorial 25)
+# verify that the output of the test contains certain strings.
+add_test(NAME Correctness COMMAND Tutorial 4 )
+set_tests_properties(Correctness PROPERTIES PASS_REGULAR_EXPRESSION &quot;4 is 2&quot;)
+
+# 定义函数 do_test 添加多个测试
+function(do_test target arg result)
+  add_test(NAME Comp${arg} COMMAND ${target} ${arg})
+  set_tests_properties(Comp${arg}
+    PROPERTIES PASS_REGULAR_EXPRESSION ${result}
+    )
+endfunction()
+
+# do a bunch of result based tests
+do_test(Tutorial 4 &quot;4 is 2&quot;)
+do_test(Tutorial 9 &quot;9 is 3&quot;)
+do_test(Tutorial 5 &quot;5 is 2.236&quot;)
+do_test(Tutorial 7 &quot;7 is 2.645&quot;)
+do_test(Tutorial 25 &quot;25 is 5&quot;)
+do_test(Tutorial -25 &quot;-25 is (-nan|nan|0)&quot;)
+do_test(Tutorial 0.0001 &quot;0.0001 is 0.01&quot;)
+</code></pre>
+<p>构建完成后，使用 <code>ctest -VV</code> 进行测试</p>
+<h2 id="添加系统检查">添加系统检查</h2>
+<p>例如测试系统是否支持某个库/函数：</p>
+<pre><code class="language-shell"># does this system provide the log and exp functions?
+include(CheckCXXSourceCompiles)
+check_cxx_source_compiles(&quot;
+  #include &lt;cmath&gt;
+  int main() {
+    std::log(1.0);
+    return 0;
+  }
+&quot; HAVE_LOG)
+check_cxx_source_compiles(&quot;
+  #include &lt;cmath&gt;
+  int main() {
+    std::exp(1.0);
+    return 0;
+  }
+&quot; HAVE_EXP)
+
+if(HAVE_LOG AND HAVE_EXP)
+  target_compile_definitions(MathFunctions
+                             PRIVATE &quot;HAVE_LOG&quot; &quot;HAVE_EXP&quot;)
+endif()
+</code></pre>
+<p>根据测试结果，添加编译定义 <code>target_compile_definitions()</code></p>
+<p>其最终指令结果：<code>g++ -DHAVE_EXP -DHAVE_LOG</code></p>
+<h2 id="添加自定义命令">添加自定义命令</h2>
+<p>在build开始可以先生成 output，用于后续的 target build:</p>
+<pre><code class="language-shell">add_executable(MakeTable MakeTable.cxx)
+# add a custom command that specifies how to produce Table.h by running MakeTable.
+add_custom_command(
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/Table.h
+  COMMAND MakeTable ${CMAKE_CURRENT_BINARY_DIR}/Table.h
+  DEPENDS MakeTable
+  )
+</code></pre>
+<p>build 会先指定自定义命令中的指定，生成 output 文件，在 <code>cmake --build .</code> 执行</p>
+<p>【说明：在指定 add_library 等，可以指定依赖的头文件用于说明构建的依赖关系】</p>
+<h2 id="打包程序">打包程序</h2>
+<p>使用 <code>CPack</code> 将生成的二进制文件，库和头文件打包成压缩文件，并生成简易的提取安装脚本。</p>
+<pre><code class="language-shell"># 该模块将包括当前平台项目所需的任何运行时库
+include(InstallRequiredSystemLibraries)
+set(CPACK_RESOURCE_FILE_LICENSE &quot;${CMAKE_CURRENT_SOURCE_DIR}/License.txt&quot;)
+set(CPACK_PACKAGE_VERSION_MAJOR &quot;${Tutorial_VERSION_MAJOR}&quot;)
+set(CPACK_PACKAGE_VERSION_MINOR &quot;${Tutorial_VERSION_MINOR}&quot;)
+set(CPACK_SOURCE_GENERATOR &quot;TGZ&quot;) # selects a file format for the source package
+include(CPack)
+</code></pre>
+<p>构建 build 后，使用 <code>cpack</code>  打包即可，主要工作：</p>
+<ul>
+<li>
+<p>导入 InstallRequiredSystemLibraries 模块，以便之后导入 CPack 模块；</p>
+</li>
+<li>
+<p>设置一些 CPack 相关变量，包括版权信息，版本信息，压缩格式；</p>
+</li>
+<li>
+<p>导入 CPack 模块。</p>
+</li>
+</ul>
+<h2 id="font-colord44c47添加导出配置font"><font color='#d44c47'>添加导出配置</font></h2>
+<blockquote>
+<p><a href="https://cmake.org/cmake/help/latest/guide/tutorial/Adding%20Export%20Configuration.html#cmakelists-txt-install-export">https://cmake.org/cmake/help/latest/guide/tutorial/Adding Export Configuration.html#cmakelists-txt-install-export</a></p>
+</blockquote>
+<p>便于<strong>其他 CMake 项目</strong>可以复用我们的项目，无论是通过我们的构建目录、本地安装还是打包时。</p>
+<p>行为：在构建目录build，本地安装(<code>/usr/local/lib/cmake</code>)或者在打包的文件夹中生成<font color='#d44c47'>cmake配置文件。</font></p>
+<p><font color='#d44c47'>好处：不用特别指定项目/库的相关 include/lib 路径，方便使用（指定 package 目录）</font></p>
+<p>生成的文件：</p>
+<ul>
+<li>
+<p><code>xxx.cmake</code> 目标信息</p>
+</li>
+<li>
+<p><code>xxxConfig.cmake</code> 通过 <code>Config.cmake.in</code>  文件生成，以便 CMake <code>**find_package()**</code>命令可以找到该项目(用于修改包的 <code>PREFIX_DIR</code> 路径)</p>
+</li>
+<li>
+<p><code>xxxConfigVersion.cmake</code> 记录软件包的版本和兼容性</p>
+</li>
+</ul>
+<p>使用package，例如打包后的目录为：</p>
+<pre><code class="language-shell">Tutorial-1.0-Darwin
+├── bin
+│   └── Tutorial
+├── include
+│   ├── MathFunctions.h
+│   └── TutorialConfig.h
+└── lib
+    ├── cmake
+    │   └── MathFunctions
+    │       ├── MathFunctionsConfig.cmake
+    │       ├── MathFunctionsConfigVersion.cmake
+    │       ├── MathFunctionsTargets-noconfig.cmake
+    │       └── MathFunctionsTargets.cmake
+    ├── libMathFunctions.dylib
+    └── libSqrtLibrary.a
+</code></pre>
+<p>使用非常方便：</p>
+<pre><code class="language-shell">list(APPEND CMAKE_PREFIX_PATH  &quot;${PROJECT_SOURCE_DIR}/Tutorial-1.0-Darwin&quot;)
+find_package(MathFunctions REQUIRED) 
+
+# add the executable
+add_executable(Tutorial tutorial.cxx)
+target_link_libraries(Tutorial PUBLIC MathFunctions) # no namespace
+</code></pre>
+<ul>
+<li>使用 <code>INTERFACE</code> 自动包含链接库的头文件目录</li>
+</ul>
+</div>
+
+                <!-- 新加的模块的，应该使用模版-->
+                <!-- 版权声明 -->
+                <div class="jumbotron">
+                  <div class="container">
+                    <p>
+                      <i class="ri-article-line"></i>
+                      <b>本文链接:</b>
+                      <a href="" target="_blank">
+                        cmake示例
+                      </a>
+                    </p>
+                    <p>
+                      <i class="ri-creative-commons-line"></i>
+                      <b>版权声明:</b>
+                      本博客所有文章除特别声明外，均采用
+                      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC BY-NC-SA
+                        4.0</a>
+                      许可协议，转载请注明出处。
+                    </p>
+                    <p>
+                      <i class="ri-time-line"></i>
+                      <b>发布日期:</b>
+                      2022-10-29
+                    </p>
+                  </div>
+                </div>
+                <!-- 新加的模块的，应该使用模版-->
+                <!--阅读次数-->
+                <div class="text-center text-gray-400">
+                  <i class="ri-eye-line"></i>
+                  本文已被阅读
+                  <span id="twikoo_visitors">0</span>
+                  次，该数据仅供参考
+                </div>
+
+                <!-- Share to Twitter, Weibo, Telegram -->
+                <div class="flex items-center">
+                  <div class="mr-4 flex items-center">
+                    <i class="ri-share-forward-line text-gray-500"></i>
+                  </div>
+                  <div class="px-4 cursor-pointer text-blue-500 hover:bg-blue-100 dark:hover:bg-gray-600 inline-flex"
+                    @click="shareToTwitter">
+                    <i class="ri-twitter-line"></i>
+                  </div>
+                  <div class="px-4 cursor-pointer text-red-500 hover:bg-red-100 dark:hover:bg-gray-600 inline-flex"
+                    @click="shareToWeibo">
+                    <i class="ri-weibo-line"></i>
+                  </div>
+                  <div
+                    class="px-4 cursor-pointer text-indigo-500 hover:bg-indigo-100 dark:hover:bg-gray-600 inline-flex"
+                    @click="shareToTelegram">
+                    <i class="ri-telegram-line"></i>
+                  </div>
+                </div>
+          </div>
+
+          <!-- 新加的模块的，应该使用模版-->
+          <!-- 评论说明-->
+          <div class="jumbotron-comment">
+            <div class="container">
+              <p>
+                <i class="ri-message-3-line"></i>
+                欢迎任何与文章内容相关并保持尊重的评论😊 !
+              </p>
+            </div>
+          </div>
+
+          
+                        
+                            
+                              <div id="tcomment"></div>
+                               <footer class="py-12 text-center px-4 md:px-0" v-pre>
+  共 42 篇文章 | Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <i class="ri-rss-line"></i><a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" target="_blank">RSS</a></br>
+©2020-2024 <a href="https://blog.qxxiao.eu.org/index.html" target="_blank">Nuo</a>. All rights reserved.
+</footer>
+
+<!--没有添加/用到app 中的主题footer配置消息，如果使用，将上面的 href 替换为原地址-->
+<!---->
+
+        </div>
+
+        <!-- TOC Container -->
+        <div
+          class="fixed right-0 bottom-0 mb-16 mr-4 shadow w-8 h-8 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white dark:bg-gray-500 dark:text-gray-200 hover:shadow-lg transition-all"
+          @click="showToc = true">
+          <i class="ri-file-list-line"></i>
+        </div>
+
+        <div v-cloak
+          class="fixed right-0 top-0 bottom-0 overflow-y-auto w-64 bg-white dark:bg-gray-800 p-4 border-l border-gray-100 dark:border-gray-600 z-10 transition-fast"
+          :class="{ '-mr-64': !showToc }">
+          <div class="flex mb-4 justify-end">
+            <div
+              class="w-8 h-8 inline-flex justify-center items-center rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-fast"
+              @click="showToc = false">
+              <i class="ri-close-line text-lg"></i>
+            </div>
+          </div>
+          <div class="post-toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%9F%BA%E7%A1%80">基础</a></li>
+<li><a href="#%E7%94%9F%E6%88%90lib%E5%B9%B6%E5%8F%AF%E9%80%89%E4%BD%BF%E7%94%A8">生成lib并可选使用</a></li>
+<li><a href="#%E7%94%9F%E6%88%90lib%E5%B9%B6%E5%8F%AF%E9%80%89%E4%BD%BF%E7%94%A8interface">生成lib并可选使用(<code>INTERFACE</code>)</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E7%94%9F%E6%88%90%E5%99%A8%E8%A1%A8%E8%BE%BE%E5%BC%8F">使用生成器表达式</a></li>
+<li><a href="#install-and-test">install and test</a>
+<ul>
+<li><a href="#%E7%AE%80%E5%8D%95%E7%9A%84%E6%B5%8B%E8%AF%95%E6%A0%B7%E4%BE%8B">简单的测试样例</a></li>
+</ul>
+</li>
+<li><a href="#%E6%B7%BB%E5%8A%A0%E7%B3%BB%E7%BB%9F%E6%A3%80%E6%9F%A5">添加系统检查</a></li>
+<li><a href="#%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E5%91%BD%E4%BB%A4">添加自定义命令</a></li>
+<li><a href="#%E6%89%93%E5%8C%85%E7%A8%8B%E5%BA%8F">打包程序</a></li>
+<li><a href="#font-colord44c47%E6%B7%BB%E5%8A%A0%E5%AF%BC%E5%87%BA%E9%85%8D%E7%BD%AEfont"><font color='#d44c47'>添加导出配置</font></a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+
+        <!-- Back to top -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-4 mr-4 shadow w-8 h-8 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToUp" v-show="scrolled">
+          <i class="ri-arrow-up-line"></i>
+        </div>
+    </div>
+
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- Background of PhotoSwipe. 
+        It's a separate element as animating opacity is faster than rgba(). -->
+  <div class="pswp__bg">
+  </div>
+  <!-- Slides wrapper with overflow:hidden. -->
+  <div class="pswp__scroll-wrap">
+    <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+    <div class="pswp__container">
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+    </div>
+    <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        <!--  Controls are self-explanatory. Order can be changed. -->
+        <div class="pswp__counter">
+        </div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+        <!-- element will get class pswp__preloader--active when preloader is running -->
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip">
+        </div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://blog.qxxiao.eu.org/media/scripts/main.js"></script>
+
+      <!-- Code Highlight -->
+      
+        <script src="https://blog.qxxiao.eu.org/media/prism.js"></script>
+        <script>
+          Prism.highlightAll();
+        </script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/show-language/prism-show-language.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+        
+
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+          <script>
+            //拿到预览框架，也就是上面的html代码
+            var pswpElement = document.querySelectorAll('.pswp')[0]
+            //定义图片数组变量
+            var imgitems
+            /**
+             * 用于显示预览界面
+             * @param index 图片数组下标
+             */
+            function viewImg(index) {
+              var pswpoptions = {
+                index: parseInt(index, 10), // 开始幻灯片索引。0是第一张幻灯片。必须是整数，而不是字符串。
+                bgOpacity: 0.7, // 背景透明度，0-1
+                maxSpreadZoom: 3, // 缩放级别，不要太大
+              }
+              //初始化并打开PhotoSwipe，pswpElement对应上面预览框架，PhotoSwipeUI_Default为皮肤，imgitems为图片数组，pswpoptions为选项
+              var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, imgitems, pswpoptions)
+              gallery.init()
+            }
+            /**
+             * 用于添加图片点击事件
+             * @param img 图片元素
+             * @param index 所属下标（在imgitems中的位置）
+             */
+            function addImgClick(img, index) {
+              img.onclick = function () {
+                viewImg(index)
+              }
+            }
+            /**
+             * 轮询所有图片，获取src、width、height等数据，加入imgitems，并给图片元素添加事件
+             * 最好在onload中执行该方法，本站因放在最底部，所以直接初始化
+             * 异步加载图片可在图片元素创建完成后调用此方法
+             */
+            function initImg() {
+              //重置图片数组
+              imgitems = []
+              //查找class:markdown 下的所有img元素并遍历
+              var imgs = document.querySelectorAll('.markdown img')
+              for (var i = 0; i < imgs.length; i++) {
+                var img = imgs[i]
+                //本站相册初始为loading图片，真实图片放在data-src
+                var ds = img.getAttribute('data-src')
+                //创建image对象，用于获取图片宽高
+                var imgtemp = new Image()
+                //判断是否存在data-src
+                if (ds != null && ds.length > 0) {
+                  imgtemp.src = ds
+                } else {
+                  imgtemp.src = img.src
+                }
+                //判断是否存在缓存
+                if (imgtemp.complete) {
+                  var imgobj = {
+                    src: imgtemp.src,
+                    w: imgtemp.width,
+                    h: imgtemp.height,
+                  }
+                  imgitems[i] = imgobj
+                  addImgClick(img, i)
+                } else {
+                  imgtemp.index = i
+                  imgtemp.img = img
+                  imgtemp.onload = function () {
+                    var imgobj = {
+                      src: this.src,
+                      w: this.width,
+                      h: this.height,
+                    }
+                    //不要使用push，因为onload前后顺序会不同
+                    imgitems[this.index] = imgobj
+                    //添加点击事件
+                    addImgClick(this.img, this.index)
+                  }
+                }
+              }
+            }
+            //初始化
+            initImg();
+          </script>
+          
+                
+                          
+                            <script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.27/dist/twikoo.all.min.js"></script>
+                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+                              integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+                              crossorigin="anonymous" />
+                            <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+                              integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+                              crossorigin="anonymous"></script>
+                            <script defer
+                              src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+                              integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"
+                              crossorigin="anonymous"></script>
+                            <script>
+                              twikoo.init({
+                                envId: 'https://twikoo.qxxiao.cn/',
+                                el: '#tcomment',
+                                katex: {
+                                  delimiters: [
+                                    { left: '$$', right: '$$', display: true },
+                                    { left: '$', right: '$', display: false },
+                                    { left: '\\(', right: '\\)', display: false },
+                                    { left: '\\[', right: '\\]', display: true },
+                                  ],
+                                  throwOnError: false,
+                                },
+                                // region: 'ap-guangzhou', // 环境地域，默认为 ap-shanghai，如果您的环境地域不是上海，需传此参数
+                                // path: 'window.location.pathname', // 用于区分不同文章的自定义 js 路径，如果您的文章路径不是 location.pathname，需传此参数
+                              });
+                            </script>
+                            
+
+                              <!-- line number for code block -->
+                              <script>
+                                var pres = document.getElementsByTagName('pre')
+                                for (var i = 0; i < pres.length; i++) {
+                                  var pre = pres[i]
+                                  if (pre.childNodes[0].nodeName == 'CODE') {
+                                    pre.setAttribute('class', 'line-numbers')
+                                  }
+                                }
+                              </script>
+                              
+                                <script src="https://blog.qxxiao.eu.org/media/scripts/ldbutton.js"></script>
+
+  </body>
+
+</html>
