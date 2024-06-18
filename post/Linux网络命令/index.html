@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <!--每个页面都需要 head link等  -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>
+  Linux网络命令 - Nuo&#39;s Blog
+</title>
+<link rel="shortcut icon" href="https://blog.qxxiao.eu.org/favicon.ico">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/tailwind.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/ldbutton.css">
+
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/styles/main.css">
+<script src="https://blog.qxxiao.eu.org/media/scripts/initTheme.js"></script>
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/light-dark.css">
+
+<link rel="alternate" type="application/atom+xml" title="Linux网络命令 - Nuo&#39;s Blog - Atom Feed"
+  href="https://blog.qxxiao.eu.org/atom.xml">
+
+
+      <meta name="description" content="常见的网络命令
+
+1. 网络配置管理
+ip 命令
+说明：是 net-tools 包中的 ifconfig(网卡信息管理), arp(arp 缓存表的管理), route(路由表的管理) 等命令的替代品。但该软件包在 2001 年已经停止维护..." />
+      <meta property="og:title" content="Linux网络命令 - Nuo&#39;s Blog" />
+      <meta property="og:description" content="常见的网络命令
+
+1. 网络配置管理
+ip 命令
+说明：是 net-tools 包中的 ifconfig(网卡信息管理), arp(arp 缓存表的管理), route(路由表的管理) 等命令的替代品。但该软件包在 2001 年已经停止维护..." />
+      <meta property="og:type" content="articles" />
+      <meta property="og:url" content="https://blog.qxxiao.eu.org/post/Linux网络命令/" />
+      <meta property="og:image"
+        content="https://blog.qxxiao.eu.org/images/avatar.png" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:width" content="1200" />
+      <meta name="twitter:title" content="Linux网络命令 - Nuo&#39;s Blog" />
+      <meta name="twitter:description" content="常见的网络命令
+
+1. 网络配置管理
+ip 命令
+说明：是 net-tools 包中的 ifconfig(网卡信息管理), arp(arp 缓存表的管理), route(路由表的管理) 等命令的替代品。但该软件包在 2001 年已经停止维护..." />
+      <meta name="twitter:card" content="summary_large_image" />
+      <link rel="canonical" href="https://blog.qxxiao.eu.org/post/Linux网络命令/" />
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css" />
+
+      
+        <link rel="stylesheet"
+          href="https://blog.qxxiao.eu.org/media/css/prism-vs-dark.css" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.css"
+          rel="stylesheet" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.css"
+          rel="stylesheet" />
+        
+          
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" />
+            
+  </head>
+
+  <body>
+    <div class="antialiased flex flex-col min-h-screen" id="app">
+      <!-- 标题菜单 -->
+<div class="nav py-3 md:py-8 fixed w-full z-10 bg-gray-50 dark:bg-gray-700 transition-all duration-300"
+  :class="{ 'scroll': scrolled }">
+  <div class="flex justify-end px-4">
+    <div class="w-8 h-8 flex justify-center items-center rounded-full md:hidden" @click="showMenu = !showMenu">
+      <i class="ri-close-line" v-show="showMenu"></i>
+      <i class="ri-menu-3-line" v-show="!showMenu"></i>
+    </div>
+  </div>
+  <nav cloak class="max-w-4xl w-full mx-auto text-right flex flex-col md:flex-row justify-between items-center md:flex"
+    :class="`${ showMenu ? 'flex' : 'hidden' }`">
+    
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            首页
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/archives" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            归档
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/tags" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            标签
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="https://gh.qxxiao.cn/nav" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            导航
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+        <div
+          class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold dark:hover:bg-gray-600 hover:bg-gray-200 nav-time1">
+          时光
+            <div class="transition font-semibold nav-time2">
+              
+                <a href="https://blog.qxxiao.eu.org/diary/" class="">
+                  说说
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/gallery/" class="">
+                  相册
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/post/book/" class="">
+                  书单
+                </a>
+                
+            </div>
+        </div>
+        
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/post/about" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            关于
+          </a>
+          
+            
+              <!-- <a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+      RSS
+    </a> -->
+              <!-- 黑色模式，和亮色模式开关-->
+<div class="py-2 md:py-1 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+  <label for="night-light-checkbox" class="night-light-label">
+    <input type="checkbox" id="night-light-checkbox" @change="toggleDarkMode" />
+    <span v-cloak class="night-light-ball" id="night-light-ball"></span>
+    <svg viewBox="0 0 512 512" class="sun-svg">
+      <path id="sun-svg"
+        d="M256 160c-52.9 0-96 43.1-96 96s43.1 96 96 96 96-43.1 96-96-43.1-96-96-96zm246.4 80.5l-94.7-47.3 33.5-100.4c4.5-13.6-8.4-26.5-21.9-21.9l-100.4 33.5-47.4-94.8c-6.4-12.8-24.6-12.8-31 0l-47.3 94.7L92.7 70.8c-13.6-4.5-26.5 8.4-21.9 21.9l33.5 100.4-94.7 47.4c-12.8 6.4-12.8 24.6 0 31l94.7 47.3-33.5 100.5c-4.5 13.6 8.4 26.5 21.9 21.9l100.4-33.5 47.3 94.7c6.4 12.8 24.6 12.8 31 0l47.3-94.7 100.4 33.5c13.6 4.5 26.5-8.4 21.9-21.9l-33.5-100.4 94.7-47.3c13-6.5 13-24.7.2-31.1zm-155.9 106c-49.9 49.9-131.1 49.9-181 0-49.9-49.9-49.9-131.1 0-181 49.9-49.9 131.1-49.9 181 0 49.9 49.9 49.9 131.1 0 181z">
+      </path>
+    </svg>
+    <svg viewBox="0 0 512 512" class="moon-svg">
+      <path id="moon-svg"
+        d="M283.211 512c78.962 0 151.079-35.925 198.857-94.792 7.068-8.708-.639-21.43-11.562-19.35-124.203 23.654-238.262-71.576-238.262-196.954 0-72.222 38.662-138.635 101.498-174.394 9.686-5.512 7.25-20.197-3.756-22.23A258.156 258.156 0 0 0 283.211 0c-141.309 0-256 114.511-256 256 0 141.309 114.511 256 256 256z">
+      </path>
+    </svg>
+  </label>
+</div>
+                <form id="gridea-search-form" class="inline-flex mx-4 px-4" action="https://blog.qxxiao.eu.org/search/">
+                  <input type="search" autocomplete='off' spellcheck='false' name="q" />
+                </form>
+  </nav>
+
+</div>
+        <a href="https://blog.qxxiao.eu.org"
+          class="fixed top-0 left-0 mt-4 bg-black text-white dark:text-gray-700 dark:bg-yellow-50 dark:hover:bg-black dark:hover:text-white inline-flex p-2 pl-8 hover:text-gray-700 hover:bg-yellow-50 font-bold z-10">
+          Nuo&#39;s Blog
+        </a>
+        <div class="max-w-4xl w-full mx-auto">
+          <div class="shadow-box bg-white dark:bg-gray-600 rounded-lg pt-32 px-4 md:px-8 pb-8 mb-8">
+            <h1 class="text-5xl font-semibold leading-normal pb-8 mb-8 border-b-8 border-gray-700">
+              Linux网络命令
+            </h1>
+            
+                <div class="mb-8 flex flex-wrap">
+                  <div class="text-gray-400 text-sm mr-4">
+                    <i class="ri-calendar-2-line" style="vertical-align: middle;"></i>
+                    2024-06-06 ·
+                      <i class="ri-file-word-line" style="vertical-align: middle;"></i>
+                      932字 ·
+                        <i class="ri-timer-line" style="vertical-align: middle;"></i>
+                        4 min read
+                  </div>
+                  🏷️&nbsp;
+                      
+                        <a href="https://blog.qxxiao.eu.org/tag/linux/"
+                          class="text-indigo-500 text-sm border-b-2 border-solid border-indigo-500 hover:border-gray-600 transition-all duration-100 inline-flex mr-2">
+                          <i class="ri-hashtag" style="vertical-align: middle;"></i>
+                          Linux
+                        </a>
+                        
+                </div>
+                <div class="markdown mb-8" v-pre><p>常见的网络命令</p>
+<!-- more -->
+<h2 id="1-网络配置管理">1. 网络配置管理</h2>
+<h3 id="ip-命令"><code>ip</code> 命令</h3>
+<p>说明：是 net-tools 包中的 <code>ifconfig</code>(网卡信息管理), <code>arp</code>(arp 缓存表的管理), <code>route</code>(路由表的管理) 等命令的替代品。但该软件包在 2001 年已经停止维护，取而代之的是 <code>iproute2</code> 包。</p>
+<p>帮助命令：<code>ip help</code> 或 <code>ip addr help</code>...</p>
+<ul>
+<li>
+<p><code>ip addr [subcommand]</code>：显示和配置网络设备的 IP 地址。</p>
+<ul>
+<li><code>ip addr show</code>: 显示网络设备的 IP 地址。</li>
+<li><code>ip addr add</code>: 添加 IP 地址。</li>
+<li><code>ip addr del</code>: 删除 IP 地址。</li>
+<li><code>ip addr flush</code>: 清空所有网络接口的 IP 地址。</li>
+</ul>
+</li>
+<li>
+<p><code>ip link [subcommand]</code>：显示和配置网络设备/接口的状态。</p>
+<ul>
+<li><code>ip link show</code>: 显示网络设备的状态。</li>
+<li><code>ip link set</code>: 设置网络设备的状态。</li>
+<li><code>ip link add</code>: 添加网络设备。</li>
+<li><code>ip link del</code>: 删除网络设备。</li>
+</ul>
+</li>
+<li>
+<p><code>ip route [subcommand]</code>：显示和配置路由表。</p>
+<ul>
+<li><code>ip route show</code>: 显示路由表。</li>
+<li><code>ip route add</code>: 添加路由。格式：<code>ip route add &lt;目标网络&gt; via &lt;网关地址&gt; dev &lt;接口&gt;</code>，添加默认路由：<code>ip route add default via &lt;网关地址&gt; dev &lt;接口&gt;</code>。</li>
+<li><code>ip route del</code>: 删除路由。格式：<code>ip route del &lt;目标网络&gt;</code>。</li>
+<li><code>ip route change</code>: 修改路由。格式：<code>ip route change &lt;目标网络&gt; via &lt;网关地址&gt; dev &lt;接口&gt;</code>。</li>
+<li><code>ip route flush</code>: 清空路由表。</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-连通性探测">2. 连通性探测</h2>
+<ul>
+<li>
+<p><code>ping</code>: 发送 ICMP 报文到目标主机，测试网络连通性。<br>
+如果服务器禁用了 ICMP 协议，可以使用 <code>telnet</code> 或 <code>nc</code> 命令测试端口连通性。</p>
+</li>
+<li>
+<p><code>telnet</code>: 连接到远程主机的指定端口，进行远程登录和交互操作。<br>
+语法：<code>telnet &lt;主机名/IP&gt; &lt;端口号&gt;</code>。注意，该协议是明文传输。</p>
+</li>
+<li>
+<p><code>traceroute</code>：跟踪数据包到达目标主机的路径。<br>
+语法：<code>traceroute &lt;主机名/IP&gt;</code>。</p>
+</li>
+</ul>
+<h2 id="3-网络连接情况">3. 网络连接情况</h2>
+<h3 id="ss-命令"><code>ss</code> 命令</h3>
+<p>查看网络连接情况，包括 TCP、UDP、RAW(直接访问网络层)、UNIX 等连接，是 <code>netstat</code> 命令的替代命令。<br>
+语法：<code>ss [options]</code>，常用 <code>ss -4anp</code>。</p>
+<ul>
+<li><code>-t</code>：只显示 TCP 连接。</li>
+<li><code>-u</code>：只显示 UDP 连接。</li>
+<li><code>-a</code>：显示所有连接。</li>
+<li><code>-n</code>：显示数字形式的 IP 地址和端口号。</li>
+<li><code>-l</code>：显示监听状态的连接。</li>
+<li><code>-p</code>：显示进程信息。</li>
+<li><code>-4</code>：只显示 IPv4 地址。</li>
+</ul>
+<h3 id="lsof-命令"><code>lsof</code> 命令</h3>
+<p>查看系统打开的文件，包括网络连接、文件描述符等。</p>
+<ul>
+<li><code>lsof -i</code>：显示网络连接情况。</li>
+<li><code>lsof -i:&lt;端口号&gt;</code>：显示指定端口的网络连接情况（打开的文件）。</li>
+<li><code>lsof -U</code>：显示 UNIX 域套接字连接情况。</li>
+<li><code>lsof -p &lt;进程ID&gt;</code>：显示指定进程打开的文件。</li>
+</ul>
+<h2 id="4-流量统计">4. 流量统计</h2>
+<h3 id="ifstat-命令"><code>ifstat</code> 命令</h3>
+<p>用于显示网络接口的流量统计信息。</p>
+<h3 id="iftop-命令"><code>iftop</code> 命令</h3>
+<p>用于实时监控每个连接网络流量和速率。</p>
+<h2 id="5-域名相关">5. 域名相关</h2>
+<h3 id="host-命令"><code>host</code> 命令</h3>
+<p>查询 DNS 服务器，获取域名对应的 IP 地址等等。<br>
+语法：<code>host &lt;域名&gt;</code>。</p>
+<h3 id="dig-命令"><code>dig</code> 命令</h3>
+<p>类似 <code>nslookup</code> 命令，用于查询 DNS 服务器，获取域名对应的 IP 地址等等。</p>
+<pre><code class="language-shell">dig google.com # 查询域名对应的 IP 地址
+dig -x 8.8.8.8 # 查询 IP 地址对应的域名
+dig example.com TXT # 查询域名的 TXT 记录
+dig example.com NS # 查询域名的 NS 记录
+dig example.com MX # 查询域名的 MX 记录
+dig @8.8.8.8 example.com # 指定 DNS 服务器查询域名
+dig +trace example.com # 追踪 DNS 解析过程
+</code></pre>
+<h2 id="6-抓包工具">6. 抓包工具</h2>
+<h3 id="tcpdump-命令"><code>tcpdump</code> 命令</h3>
+<p>参考：<a href="https://www.comparitech.com/net-admin/tcpdump-cheat-sheet/">https://www.comparitech.com/net-admin/tcpdump-cheat-sheet/</a><br>
+<img src="https://pic.qxxiao.cn/202406070109333.png" alt="tcpdump" loading="lazy"></p>
+<h2 id="其它命令">其它命令</h2>
+<p>netcat 是一个网络工具，用于连接 TCP/UDP 端口，发送文件，扫描端口等。<br>
+nmap 是一个网络扫描工具，用于扫描主机开放的端口，检测主机的操作系统等。</p>
+</div>
+
+                <!-- 新加的模块的，应该使用模版-->
+                <!-- 版权声明 -->
+                
+                  <div class="jumbotron">
+                    <div class="container">
+                      <p>
+                        <i class="ri-article-line"></i>
+                        <b>本文链接:</b>
+                        <a href="https://blog.qxxiao.eu.org/post/Linux网络命令/" target="_blank">
+                          Linux网络命令
+                        </a>
+                      </p>
+                      <p>
+                        <i class="ri-creative-commons-line"></i>
+                        <b>版权声明:</b>
+                        本博客所有文章除特别声明外，均采用
+                        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC
+                          BY-NC-SA
+                          4.0</a>
+                        许可协议，转载请注明出处。
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>发布日期:</b>
+                        2024-06-06
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>最后更新:</b>
+                        <!-- 使用 themeConfig.dateFormat 格式对日期格式化，例如YY-MM-DD -->
+                        
+                              2024-06-06
+                                
+                      </p>
+                    </div>
+                  </div>
+                  
+                    <!-- 新加的模块的，应该使用模版-->
+                    <!--阅读次数-->
+                    <div class="text-center text-gray-400">
+                      <i class="ri-eye-line"></i>
+                      本文已被阅读
+                      <span id="twikoo_visitors">0</span>
+                      次，该数据仅供参考
+                    </div>
+
+                    <!-- Share to Twitter, Weibo, Telegram -->
+                    <div class="flex items-center">
+                      <div class="mr-4 flex items-center">
+                        <i class="ri-share-forward-line text-gray-500"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-blue-500 hover:bg-blue-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTwitter">
+                        <i class="ri-twitter-line"></i>
+                      </div>
+                      <div class="px-4 cursor-pointer text-red-500 hover:bg-red-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToWeibo">
+                        <i class="ri-weibo-line"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-indigo-500 hover:bg-indigo-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTelegram">
+                        <i class="ri-telegram-line"></i>
+                      </div>
+                    </div>
+          </div>
+
+          <!-- 新加的模块的，应该使用模版-->
+          <!-- 评论说明-->
+          <div class="jumbotron-comment">
+            <div class="container">
+              <p>
+                <i class="ri-message-3-line"></i>
+                欢迎任何与文章内容相关并保持尊重的评论😊 !
+              </p>
+            </div>
+          </div>
+
+          
+                        
+                            
+                              <div id="tcomment"></div>
+                               <footer class="py-12 text-center px-4 md:px-0" v-pre>
+  共 43 篇文章 | Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <i class="ri-rss-line"></i><a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" target="_blank">RSS</a></br>
+©2020-2024 <a href="https://blog.qxxiao.eu.org/index.html" target="_blank">Nuo</a>. All rights reserved.
+</footer>
+
+<!--没有添加/用到app 中的主题footer配置消息，如果使用，将上面的 href 替换为原地址-->
+<!---->
+
+        </div>
+
+        <!-- TOC Container -->
+        <div
+          class="fixed right-0 bottom-0 mb-40 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white dark:bg-gray-500 dark:text-gray-200 hover:shadow-lg transition-all"
+          @click="showToc = true">
+          <i class="ri-file-list-line"></i>
+        </div>
+
+        <div v-cloak
+          class="fixed right-0 top-0 bottom-0 overflow-y-auto w-16-24 bg-white dark:bg-gray-800 p-4 border-l border-gray-100 dark:border-gray-600 z-10 transition-fast"
+          :class="{ '-mr-64': !showToc }">
+          <div class="flex mb-4 justify-end">
+            <div
+              class="w-8 h-8 inline-flex justify-center items-center rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-fast"
+              @click="showToc = false">
+              <i class="ri-close-line text-lg"></i>
+            </div>
+          </div>
+          <div class="post-toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#1-%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86">1. 网络配置管理</a>
+<ul>
+<li><a href="#ip-%E5%91%BD%E4%BB%A4"><code>ip</code> 命令</a></li>
+</ul>
+</li>
+<li><a href="#2-%E8%BF%9E%E9%80%9A%E6%80%A7%E6%8E%A2%E6%B5%8B">2. 连通性探测</a></li>
+<li><a href="#3-%E7%BD%91%E7%BB%9C%E8%BF%9E%E6%8E%A5%E6%83%85%E5%86%B5">3. 网络连接情况</a>
+<ul>
+<li><a href="#ss-%E5%91%BD%E4%BB%A4"><code>ss</code> 命令</a></li>
+<li><a href="#lsof-%E5%91%BD%E4%BB%A4"><code>lsof</code> 命令</a></li>
+</ul>
+</li>
+<li><a href="#4-%E6%B5%81%E9%87%8F%E7%BB%9F%E8%AE%A1">4. 流量统计</a>
+<ul>
+<li><a href="#ifstat-%E5%91%BD%E4%BB%A4"><code>ifstat</code> 命令</a></li>
+<li><a href="#iftop-%E5%91%BD%E4%BB%A4"><code>iftop</code> 命令</a></li>
+</ul>
+</li>
+<li><a href="#5-%E5%9F%9F%E5%90%8D%E7%9B%B8%E5%85%B3">5. 域名相关</a>
+<ul>
+<li><a href="#host-%E5%91%BD%E4%BB%A4"><code>host</code> 命令</a></li>
+<li><a href="#dig-%E5%91%BD%E4%BB%A4"><code>dig</code> 命令</a></li>
+</ul>
+</li>
+<li><a href="#6-%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7">6. 抓包工具</a>
+<ul>
+<li><a href="#tcpdump-%E5%91%BD%E4%BB%A4"><code>tcpdump</code> 命令</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%B6%E5%AE%83%E5%91%BD%E4%BB%A4">其它命令</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+
+        <!-- Back to top -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-20 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToUp" v-show="scrolled">
+          <i class="ri-arrow-up-line"></i>
+        </div>
+        <!-- Back to bottom -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-4 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToBottom" v-show="!atBottom">
+          <i class="ri-arrow-down-line"></i>
+        </div>
+    </div>
+
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- Background of PhotoSwipe. 
+        It's a separate element as animating opacity is faster than rgba(). -->
+  <div class="pswp__bg">
+  </div>
+  <!-- Slides wrapper with overflow:hidden. -->
+  <div class="pswp__scroll-wrap">
+    <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+    <div class="pswp__container">
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+    </div>
+    <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        <!--  Controls are self-explanatory. Order can be changed. -->
+        <div class="pswp__counter">
+        </div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+        <!-- element will get class pswp__preloader--active when preloader is running -->
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip">
+        </div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://blog.qxxiao.eu.org/media/scripts/main.js"></script>
+
+      <!-- Code Highlight -->
+      
+        <script src="https://blog.qxxiao.eu.org/media/prism.js"></script>
+        <script>
+          Prism.highlightAll();
+        </script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/show-language/prism-show-language.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+        
+
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+          <script>
+            //拿到预览框架，也就是上面的html代码
+            var pswpElement = document.querySelectorAll('.pswp')[0]
+            //定义图片数组变量
+            var imgitems
+            /**
+             * 用于显示预览界面
+             * @param index 图片数组下标
+             */
+            function viewImg(index) {
+              var pswpoptions = {
+                index: parseInt(index, 10), // 开始幻灯片索引。0是第一张幻灯片。必须是整数，而不是字符串。
+                bgOpacity: 0.7, // 背景透明度，0-1
+                maxSpreadZoom: 3, // 缩放级别，不要太大
+              }
+              //初始化并打开PhotoSwipe，pswpElement对应上面预览框架，PhotoSwipeUI_Default为皮肤，imgitems为图片数组，pswpoptions为选项
+              var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, imgitems, pswpoptions)
+              gallery.init()
+            }
+            /**
+             * 用于添加图片点击事件
+             * @param img 图片元素
+             * @param index 所属下标（在imgitems中的位置）
+             */
+            function addImgClick(img, index) {
+              img.onclick = function () {
+                viewImg(index)
+              }
+            }
+            /**
+             * 轮询所有图片，获取src、width、height等数据，加入imgitems，并给图片元素添加事件
+             * 最好在onload中执行该方法，本站因放在最底部，所以直接初始化
+             * 异步加载图片可在图片元素创建完成后调用此方法
+             */
+            function initImg() {
+              //重置图片数组
+              imgitems = []
+              //查找class:markdown 下的所有img元素并遍历
+              var imgs = document.querySelectorAll('.markdown img')
+              for (var i = 0; i < imgs.length; i++) {
+                var img = imgs[i]
+                //本站相册初始为loading图片，真实图片放在data-src
+                var ds = img.getAttribute('data-src')
+                //创建image对象，用于获取图片宽高
+                var imgtemp = new Image()
+                //判断是否存在data-src
+                if (ds != null && ds.length > 0) {
+                  imgtemp.src = ds
+                } else {
+                  imgtemp.src = img.src
+                }
+                //判断是否存在缓存
+                if (imgtemp.complete) {
+                  var imgobj = {
+                    src: imgtemp.src,
+                    w: imgtemp.width,
+                    h: imgtemp.height,
+                  }
+                  imgitems[i] = imgobj
+                  addImgClick(img, i)
+                } else {
+                  imgtemp.index = i
+                  imgtemp.img = img
+                  imgtemp.onload = function () {
+                    var imgobj = {
+                      src: this.src,
+                      w: this.width,
+                      h: this.height,
+                    }
+                    //不要使用push，因为onload前后顺序会不同
+                    imgitems[this.index] = imgobj
+                    //添加点击事件
+                    addImgClick(this.img, this.index)
+                  }
+                }
+              }
+            }
+            //初始化
+            initImg();
+          </script>
+          
+                
+                          
+                            <script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.36/dist/twikoo.all.min.js"></script>
+                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+                              integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+                              crossorigin="anonymous" />
+                            <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+                              integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+                              crossorigin="anonymous"></script>
+                            <script defer
+                              src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+                              integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"
+                              crossorigin="anonymous"></script>
+                            <script>
+                              twikoo.init({
+                                envId: 'https://twikoo.qxxiao.cn/',
+                                el: '#tcomment',
+                                katex: {
+                                  delimiters: [
+                                    { left: '$$', right: '$$', display: true },
+                                    { left: '$', right: '$', display: false },
+                                    { left: '\\(', right: '\\)', display: false },
+                                    { left: '\\[', right: '\\]', display: true },
+                                  ],
+                                  throwOnError: false,
+                                },
+                                // region: 'ap-guangzhou', // 环境地域，默认为 ap-shanghai，如果您的环境地域不是上海，需传此参数
+                                // path: 'window.location.pathname', // 用于区分不同文章的自定义 js 路径，如果您的文章路径不是 location.pathname，需传此参数
+                              });
+                            </script>
+                            
+
+                              <!-- line number for code block -->
+                              <script>
+                                var pres = document.getElementsByTagName('pre')
+                                for (var i = 0; i < pres.length; i++) {
+                                  var pre = pres[i]
+                                  if (pre.childNodes[0].nodeName == 'CODE') {
+                                    pre.setAttribute('class', 'line-numbers')
+                                  }
+                                }
+                              </script>
+                              
+
+  </body>
+
+</html>
