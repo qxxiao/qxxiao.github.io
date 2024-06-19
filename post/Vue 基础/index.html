@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <!--每个页面都需要 head link等  -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>
+  Vue 基础 - Unique&#39;s Blog
+</title>
+<link rel="shortcut icon" href="https://blog.qxxiao.eu.org/favicon.ico">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/tailwind.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/ldbutton.css">
+
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/styles/main.css">
+<script src="https://blog.qxxiao.eu.org/media/scripts/initTheme.js"></script>
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/light-dark.css">
+
+<link rel="alternate" type="application/atom+xml" title="Vue 基础 - Unique&#39;s Blog - Atom Feed"
+  href="https://blog.qxxiao.eu.org/atom.xml">
+
+
+      <meta name="description" content="基于官方文档总结
+
+[TOC]
+阅读
+
+
+简介 | Vue.jsVue.js - 渐进式的 JavaScript 框架 https://staging-cn.vuejs.org/guide/introduction.html
+模版语法
+Vu..." />
+      <meta property="og:title" content="Vue 基础 - Unique&#39;s Blog" />
+      <meta property="og:description" content="基于官方文档总结
+
+[TOC]
+阅读
+
+
+简介 | Vue.jsVue.js - 渐进式的 JavaScript 框架 https://staging-cn.vuejs.org/guide/introduction.html
+模版语法
+Vu..." />
+      <meta property="og:type" content="articles" />
+      <meta property="og:url" content="https://blog.qxxiao.eu.org/post/Vue 基础/" />
+      <meta property="og:image"
+        content="https://pic.qxxiao.cn/vuejs.png" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:width" content="1200" />
+      <meta name="twitter:title" content="Vue 基础 - Unique&#39;s Blog" />
+      <meta name="twitter:description" content="基于官方文档总结
+
+[TOC]
+阅读
+
+
+简介 | Vue.jsVue.js - 渐进式的 JavaScript 框架 https://staging-cn.vuejs.org/guide/introduction.html
+模版语法
+Vu..." />
+      <meta name="twitter:card" content="summary_large_image" />
+      <link rel="canonical" href="https://blog.qxxiao.eu.org/post/Vue 基础/" />
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css" />
+
+      
+        <link rel="stylesheet"
+          href="https://blog.qxxiao.eu.org/media/css/prism-vs-dark.css" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.css"
+          rel="stylesheet" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.css"
+          rel="stylesheet" />
+        
+          
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" />
+            
+  </head>
+
+  <body>
+    <div class="antialiased flex flex-col min-h-screen" id="app">
+      <!-- 标题菜单 -->
+<div class="nav py-3 md:py-8 fixed w-full z-10 bg-gray-50 dark:bg-gray-700 transition-all duration-300"
+  :class="{ 'scroll': scrolled }">
+  <div class="flex justify-end px-4">
+    <div class="w-8 h-8 flex justify-center items-center rounded-full md:hidden" @click="showMenu = !showMenu">
+      <i class="ri-close-line" v-show="showMenu"></i>
+      <i class="ri-menu-3-line" v-show="!showMenu"></i>
+    </div>
+  </div>
+  <nav cloak class="max-w-4xl w-full mx-auto text-right flex flex-col md:flex-row justify-between items-center md:flex"
+    :class="`${ showMenu ? 'flex' : 'hidden' }`">
+    
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            首页
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/archives" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            归档
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/tags" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            标签
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="https://gh.qxxiao.cn/nav" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            导航
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+        <div
+          class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold dark:hover:bg-gray-600 hover:bg-gray-200 nav-time1">
+          时光
+            <div class="transition font-semibold nav-time2">
+              
+                <a href="https://blog.qxxiao.eu.org/diary/" class="">
+                  说说
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/gallery/" class="">
+                  相册
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/post/book/" class="">
+                  书单
+                </a>
+                
+            </div>
+        </div>
+        
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/post/about" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            关于
+          </a>
+          
+            
+              <!-- <a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+      RSS
+    </a> -->
+              <!-- 黑色模式，和亮色模式开关-->
+<div class="py-2 md:py-1 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+  <label for="night-light-checkbox" class="night-light-label">
+    <input type="checkbox" id="night-light-checkbox" @change="toggleDarkMode" />
+    <span v-cloak class="night-light-ball" id="night-light-ball"></span>
+    <svg viewBox="0 0 512 512" class="sun-svg">
+      <path id="sun-svg"
+        d="M256 160c-52.9 0-96 43.1-96 96s43.1 96 96 96 96-43.1 96-96-43.1-96-96-96zm246.4 80.5l-94.7-47.3 33.5-100.4c4.5-13.6-8.4-26.5-21.9-21.9l-100.4 33.5-47.4-94.8c-6.4-12.8-24.6-12.8-31 0l-47.3 94.7L92.7 70.8c-13.6-4.5-26.5 8.4-21.9 21.9l33.5 100.4-94.7 47.4c-12.8 6.4-12.8 24.6 0 31l94.7 47.3-33.5 100.5c-4.5 13.6 8.4 26.5 21.9 21.9l100.4-33.5 47.3 94.7c6.4 12.8 24.6 12.8 31 0l47.3-94.7 100.4 33.5c13.6 4.5 26.5-8.4 21.9-21.9l-33.5-100.4 94.7-47.3c13-6.5 13-24.7.2-31.1zm-155.9 106c-49.9 49.9-131.1 49.9-181 0-49.9-49.9-49.9-131.1 0-181 49.9-49.9 131.1-49.9 181 0 49.9 49.9 49.9 131.1 0 181z">
+      </path>
+    </svg>
+    <svg viewBox="0 0 512 512" class="moon-svg">
+      <path id="moon-svg"
+        d="M283.211 512c78.962 0 151.079-35.925 198.857-94.792 7.068-8.708-.639-21.43-11.562-19.35-124.203 23.654-238.262-71.576-238.262-196.954 0-72.222 38.662-138.635 101.498-174.394 9.686-5.512 7.25-20.197-3.756-22.23A258.156 258.156 0 0 0 283.211 0c-141.309 0-256 114.511-256 256 0 141.309 114.511 256 256 256z">
+      </path>
+    </svg>
+  </label>
+</div>
+                <form id="gridea-search-form" class="inline-flex mx-4 px-4" action="https://blog.qxxiao.eu.org/search/">
+                  <input type="search" autocomplete='off' spellcheck='false' name="q" />
+                </form>
+  </nav>
+
+</div>
+        <a href="https://blog.qxxiao.eu.org"
+          class="fixed top-0 left-0 mt-4 bg-black text-white dark:text-gray-700 dark:bg-yellow-50 dark:hover:bg-black dark:hover:text-white inline-flex p-2 pl-8 hover:text-gray-700 hover:bg-yellow-50 font-bold z-10">
+          Unique&#39;s Blog
+        </a>
+        <div class="max-w-4xl w-full mx-auto">
+          <div class="shadow-box bg-white dark:bg-gray-600 rounded-lg pt-32 px-4 md:px-8 pb-8 mb-8">
+            <h1 class="text-5xl font-semibold leading-normal pb-8 mb-8 border-b-8 border-gray-700">
+              Vue 基础
+            </h1>
+            
+              <img src="https://pic.qxxiao.cn/vuejs.png" alt="Vue 基础" class="block w-full mb-8" />
+              
+                <div class="mb-8 flex flex-wrap">
+                  <div class="text-gray-400 text-sm mr-4">
+                    <i class="ri-calendar-2-line" style="vertical-align: middle;"></i>
+                    2022-06-09 ·
+                      <i class="ri-file-word-line" style="vertical-align: middle;"></i>
+                      4547字 ·
+                        <i class="ri-timer-line" style="vertical-align: middle;"></i>
+                        19 min read
+                  </div>
+                  🏷️&nbsp;
+                      
+                        <a href="https://blog.qxxiao.eu.org/tag/vue/"
+                          class="text-indigo-500 text-sm border-b-2 border-solid border-indigo-500 hover:border-gray-600 transition-all duration-100 inline-flex mr-2">
+                          <i class="ri-hashtag" style="vertical-align: middle;"></i>
+                          Vue
+                        </a>
+                        
+                </div>
+                <div class="markdown mb-8" v-pre><p>基于官方文档总结</p>
+<!-- more -->
+<p>[TOC]</p>
+<h2 id="阅读">阅读</h2>
+<div class="markdown notion" style="padding: 10px;background-color: #f8f8f8; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span><img style="height: 28px" src="https://staging-cn.vuejs.org/logo.svg" /></span></div>
+<a href=https://staging-cn.vuejs.org/guide/introduction.html target="_blank" style="text-decoration:none"><p style="color: rgb(55, 53, 47); text-overflow: ellipsis;margin: 0px 5px 0px 38px !important"><span style="
+font-size: 14px;line-height: 20px;min-height: 24px;margin-bottom: 2px;">简介 | Vue.js</span><br><span style="font-size: 12px; line-height: 16px; color: rgba(55, 53, 47, 0.65);">Vue.js - 渐进式的 JavaScript 框架</span> <br><span style="font-size: 12px;line-height: 16px;">https://staging-cn.vuejs.org/guide/introduction.html</span></p></a></div>
+<h2 id="模版语法">模版语法</h2>
+<p><code>Vue</code>允许声明式地将 DOM 绑定至底层组件实例的数据。</p>
+<h3 id="u插值u"><u>插值</u></h3>
+<ol>
+<li>文本插值</li>
+</ol>
+<p>使用<code>&lt;span&gt;Message: {{ msg }}&lt;/span&gt;</code>语法绑定组件实例中的对应的 property 的值。<br>
+使用<code>v-once</code>指令进行一次性插值</p>
+<ol>
+<li>
+<p>原始 HTML</p>
+<p>文本插值会解释为普通文本，如果需要输出 HTML，使用<code>v-html</code> <strong>指令</strong>:</p>
+</li>
+</ol>
+<pre><code class="language-html">&lt;p&gt;Using mustaches: {{ rawHtml }}&lt;/p&gt;
+&lt;p&gt;Using v-html directive: &lt;span v-html=&quot;rawHtml&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;!--将整个v-html作用的标签 替换作为html内容--&gt;
+</code></pre>
+<ol>
+<li>
+<p><mark><span style='background-color: #fefe00' >属性 Attribute</span></mark></p>
+<p>用于动态修改标签属性的值，使用<code>v-bind</code> <strong>指令</strong>：</p>
+</li>
+</ol>
+<pre><code class="language-html">&lt;img v-bind:src=&quot;img&quot; alt=&quot;img&quot; /&gt;
+&lt;img :src=&quot;img&quot; alt=&quot;img&quot; /&gt;
+</code></pre>
+<p>说明：如果绑定的值是<code>null</code>或<code>undefined</code>，那么该 attribute 将不会被包含在渲染的元素上。（bool 属性有所区别）</p>
+<ol>
+<li>
+<p>使用JS表达式</p>
+<p>对于所有的数据绑定，Vue 都提供了完全的 JavaScript 表达式支持（单个表达式）</p>
+</li>
+</ol>
+<pre><code class="language-html">{{ number + 1 }}
+{{ ok ? 'YES' : 'NO' }}
+{{ message.split('').reverse().join('') }}
+&lt;div v-bind:id=&quot;'list-' + id&quot;&gt;&lt;/div&gt;
+</code></pre>
+<p>事件中也可以使用JS表达式</p>
+<h3 id="指令">指令</h3>
+<p>常见指令如下，有的指令可以接收参数（冒号后）</p>
+<ul>
+<li>
+<p>v-html</p>
+</li>
+<li>
+<p>v-bind（可以缩写<code>:</code>）</p>
+</li>
+<li>
+<p>v-model 在表单<code>&lt;input&gt;</code>、<code>&lt;textarea&gt;</code>及<code>&lt;select&gt;</code>等元素上创建双向数据绑定。</p>
+</li>
+<li>
+<p>v-if</p>
+</li>
+<li>
+<p>v-for</p>
+</li>
+<li>
+<p>v-on（可以缩写<code>@</code>）</p>
+</li>
+</ul>
+<p>指令参数也是支持 JS 表达式，语法：</p>
+<pre><code class="language-html">&lt;a v-bind:[attributeName]=&quot;url&quot;&gt; ... &lt;/a&gt;
+</code></pre>
+<h2 id="data-和-methods">data 和 methods</h2>
+<p>组件的<code>data</code>选项是函数，创建组件实例时返回一个对象，并以<code>$data</code>存储在组件实例中。</p>
+<p>同时该对象的顶级属性 property 会直接通过组件示例暴露处理。</p>
+<p>组件的<code>methods</code>选项为包含组件所需要的方法的对象，<font color='#d44c47'><u>Vue 自动为其绑定了</u></font><font color='#d44c47'><u><code>this</code></u></font><font color='#d44c47'><u>，始终指向组件实例。定义方法时避免使用箭头函数</u></font>。</p>
+<pre><code class="language-javascript">const app = Vue.createApp({
+  data() {
+    return { count: 4 }
+  },
+  methods: {
+    increment() {
+      // `this` 指向该组件实例
+      this.count++
+    }
+  }
+})
+
+const vm = app.mount('#app')
+console.log(vm.count) // =&gt; 4
+vm.increment()
+console.log(vm.count) // =&gt; 5
+</code></pre>
+<p>data 返回对象的原因：</p>
+<p>组件是可复用的，通过函数局部作用域创建并返回的对象，每个组件实例是不同的，否则组件之间的数据可能干扰。</p>
+<h2 id="计算属性和侦听器">计算属性和侦听器</h2>
+<h3 id="计算属性-computed">计算属性 computed</h3>
+<div class="markdown notion" style="padding: 10px; color: #37352f; background-color: #e7f3f8; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span style="font-size: 18px;">💡</span></div>
+<p style="line-height: 28px; margin: 0px 5px 0px 38px !important">对于包含响应式数据的复杂逻辑，应该使用计算属性</p></div>
+<p>在配置对像中的<code>computed</code>对象中定义<strong>计算属性</strong>（其实是一个函数并返回结果）。使用时可以像普通属性一样将数据(计算属性的结果)绑定到模版中的计算属性。</p>
+<p>好处：一次声明Vue可以知道该计算属性依赖的真实属性，<strong>当依赖属性发送改变时</strong>，依赖该计算属性的绑定都会更新。<font color='#d44c47'>与使用方法相比，计算属性可以缓存结果</font>。</p>
+<pre><code class="language-html">&lt;div id=&quot;computed-basics&quot;&gt;
+  &lt;span&gt;{{ computedMsg }}&lt;/span&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="language-javascript">Vue.createApp({
+	data(){...}
+	computed: {
+    // 计算属性
+    computedMsg() {
+      return this.msg.split('').reverse().join('');
+    },
+  },
+}).mount('#computed-basics')
+</code></pre>
+<h3 id="侦听器-watch">侦听器 watch</h3>
+<p><code>watch</code>选项提供类一个更加通用方式来<strong>响应数据的变化</strong>。用于执行异步操作，或者开销比较大的操作。</p>
+<pre><code class="language-javascript">...
+watch: {
+  // 每当 message 发生变化时，该函数将会执行
+  message(newValue, oldValue) {
+		if(newValue.length()&gt;oldValue.length()){
+	     this.getNewMessage()
+    }
+  }
+},
+...
+</code></pre>
+<p><strong>深度侦听</strong></p>
+<pre><code class="language-javascript">...
+watch: {
+  &quot;user.name&quot;: {     // 使用字符串，仅仅单独侦听该对象的某个属性
+		immediate: true, // 初始化时也会调用函数
+		deep: true,      // 深度侦听，用于侦听对象中的属性变化
+		handler: function(newValue){
+			console.log(newValue);
+		}
+	}
+},
+...
+</code></pre>
+<h2 id="样式绑定">样式绑定</h2>
+<p>操作元素的 class 列表和内联样式其实也是一种数据绑定，绑定元素的 attribute。</p>
+<p>使用 v-bind 绑定<code>class ｜ style</code>，表达式结果可以是<font color='#d44c47'><strong>字符串、对象以及数组</strong></font>。</p>
+<p>例如使用 data property 中的对象进行绑定：</p>
+<pre><code class="language-html">&lt;div :class=&quot;classObject&quot;&gt;&lt;/div&gt; &lt;!-- v-bind:class 简写 --&gt;
+</code></pre>
+<pre><code class="language-javascript">data() {
+  return {
+    classObject: {  // 作为绑定的对象
+      active: true,
+      'text-danger': false
+    }
+  }
+}
+</code></pre>
+<p>或者可以绑定一个<strong>返回对象</strong>的<a href="https://v3.cn.vuejs.org/guide/computed.html"><strong>计算属性</strong></a>；数组和对象也可以结合使用。</p>
+<p>内联样式绑定与之类似。CSS property 名用驼峰式或短横线分隔 (用引号括起来) 来命名。</p>
+<h2 id="渲染">渲染</h2>
+<h3 id="条件渲染">条件渲染</h3>
+<ul>
+<li>
+<p><code>v-if/v-else/v-else-if</code>有条件的渲染元素/分组(使用<code>&lt;template&gt;</code>标签包裹)</p>
+</li>
+<li>
+<p><code>v-show</code></p>
+</li>
+</ul>
+<p>使用<code>v-if/v-else</code>，v-if 中表达式返回 truthy 值的时候被渲染，否则渲染 v-else 元素</p>
+<pre><code class="language-html">&lt;h1 v-if=&quot;awesome&quot;&gt;Vue is awesome!&lt;/h1&gt; 
+&lt;h1 v-else&gt;Oh no 😢&lt;/h1&gt;
+</code></pre>
+<p><code>v-show</code>的元素始终会被渲染并保留在 DOM 中。<code>v-show</code>只是简单地切换元素的<code>display</code>CSS property。它不支持<code>&lt;template&gt;</code>元素，也不支持<code>v-else</code></p>
+<div class="markdown notion" style="padding: 10px; color: #37352f; background-color: #e7f3f8; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span style="font-size: 18px;">💡</span></div>
+<p style="line-height: 28px; margin: 0px 5px 0px 38px !important"><code>v-if</code>更多适用与一次渲染或者条件改变不频繁的场景，<code>v-show</code>可用于条件频繁改变场景</p></div>
+<h3 id="列表渲染">列表渲染</h3>
+<p>使用<code>v-for</code>进行列表渲染数组</p>
+<pre><code class="language-html">&lt;ul id=&quot;array-with-index&quot;&gt;
+	&lt;!--(item, index) of items--&gt;
+  &lt;li v-for=&quot;(item, index) in items&quot; :key=&quot;item.id&quot;&gt;   
+    {{ index }} - {{ item.message }}
+  &lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+<p><font color='#337ea9'><u>也可以渲染一个对象，第一个参数是对象键值，第二个参数是键名</u></font>（可选的第三个参数 index）。注意遍历对象时使用的<code>Object.keys()</code>结果遍历。</p>
+<p><font color='#d44c47'><strong>注意</strong></font>：Vue 默认使用就地更新的策略，如果<strong>数据项顺序</strong>发生改变，并不会移动 DOM 元素来匹配数据项的位置顺序，只是就地更新每个元素。因此应该尽可能在使用<code>v-for</code>时提供<code>:key</code>作为标识来追踪该节点的身份(应该应用哪个数据项)。</p>
+<p>Vue 将侦听的数组的<strong>变更方法</strong>进行了包裹，使用会自动触发视图的更新。</p>
+<p>显示过滤/排序后的结果？</p>
+<p>可以使用<strong>计算属性</strong>，不实际变更或重置原始数据，只是返回过滤/排序后的数组。或者在嵌套的 v-for 循环中使用 methods 。</p>
+<ul>
+<li>
+<p>v-for 中可以使用整数，<code>&lt;span v-for=&quot;n in 10&quot; :key=&quot;n&quot;&gt;{{ n }} &lt;/span&gt;</code>重复模版 10次</p>
+</li>
+<li>
+<p>利用<code>&lt;template&gt;和v-for</code>循环渲染一段包含多个元素的内容</p>
+</li>
+</ul>
+<h3 id="v-for-与-v-if">v-for 与 v-if</h3>
+<p><strong>不</strong>推荐在同一元素上使用<code>v-if</code>和<code>v-for</code>。当它们处于同一节点，<code>v-if</code>的优先级比<code>v-for</code>更高，这意味着<code>v-if</code>将没有权限访问<code>v-for</code>里的变量。</p>
+<p>推荐写法：使用<code>&lt;template&gt;</code></p>
+<pre><code class="language-html">&lt;template v-for=&quot;todo in todos&quot; :key=&quot;todo.name&quot;&gt; 
+  &lt;li v-if=&quot;!todo.isComplete&quot;&gt;
+    {{ todo.name }}
+  &lt;/li&gt;
+&lt;/template&gt;
+</code></pre>
+<h2 id="事件处理">事件处理</h2>
+<p>使用<code>v-on</code>指令 (通常缩写为<code>@</code>符号) 来监听 DOM 事件，并在触发事件时执行一些 JavaScript。用法为<code>v-on:click=&quot;methodName&quot;</code>或使用快捷方式<code>@click=&quot;methodName&quot;</code></p>
+<p>事件处理写法：</p>
+<ul>
+<li>
+<p>直接内联 JS 代码</p>
+</li>
+<li>
+<p>定义 Methods 中的(事件处理)方法，<strong>直接绑定</strong>一个方法的名称</p>
+</li>
+<li>
+<p>在内联 JavaScript 语句中<strong>调用方法</strong>（12结合）；用特殊变量<code>$event</code>表示原始 DOM event对象</p>
+</li>
+</ul>
+<p>事件修饰符：</p>
+<ul>
+<li>
+<p><code>.stop</code>阻止事件继续冒泡</p>
+</li>
+<li>
+<p><code>.prevent</code>阻止默认行为，例如提交事件会重载页面</p>
+</li>
+<li>
+<p><code>.once</code>只能触发一次处理函数</p>
+</li>
+<li>
+<p><code>.self</code>只当在 event.target 是当前元素自身时触发处理函数</p>
+</li>
+<li>
+<p><code>.capture</code>内部元素触发的事件先在此处理</p>
+</li>
+</ul>
+<h2 id="表单输入绑定">表单输入绑定</h2>
+<p>用<strong>v-model</strong>指令在表单<code>&lt;input&gt;</code>、<code>&lt;textarea&gt;</code>及<code>&lt;select&gt;</code>元素上<font color='#d44c47'><strong>创建双向数据绑定</strong></font>。</p>
+<p>本质就是：绑定数据，并且监听用户的输入数据来更新对应的数据。</p>
+<div class="markdown notion" style="padding: 10px; color: #37352f; background-color: #ffffff; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span><img style="height: 28px" src="https://v3.cn.vuejs.org/logo.png" /></span></div>
+<p style="line-height: 28px; margin: 0px 5px 0px 38px !important"> <code>v-model</code>不会在输入法组织文字过程中得到更新。使用<code>input</code>事件监听器和<code>value</code>绑定来替代<code>v-model</code>可以响应。</p></div>
+<p>【会忽略表单元素 attr 上的初始值，可以在组件的 data 选项中声明其初始值】</p>
+<pre><code class="language-html">&lt;input v-model=&quot;message&quot; placeholder=&quot;edit me&quot; /&gt;
+&lt;p&gt;Message is: {{ message }}&lt;/p&gt;
+</code></pre>
+<p>常见表单用法：</p>
+<p><a href="https://v3.cn.vuejs.org/guide/forms.html#%E6%96%87%E6%9C%AC-text">https://v3.cn.vuejs.org/guide/forms.html#文本-text</a></p>
+<h3 id="v-model-修饰符">v-model 修饰符</h3>
+<ul>
+<li><code>.lazy</code></li>
+</ul>
+<p>v-model 默认每次<code>input</code>事件触发后将输入框的值与数据进行同步；<u>使用 .lazy 修饰转为在</u><u><code>change</code></u><u>事件之后进行同步</u></p>
+<ul>
+<li>
+<p><code>.number</code></p>
+<p>将用户的输入值转为数值类型；当输入类型为<code>text</code>时这通常很有用，如果值无法被<code>parseFloat()</code>解析，则返回原始值</p>
+</li>
+<li>
+<p><code>.trim</code></p>
+<p>自动过滤用户输入的首尾空白字符</p>
+</li>
+</ul>
+<h2 id="组件">组件</h2>
+<p>组件是带名称的可复用的实例。都接收相同的选项，例如<code>data</code>、<code>computed</code>、<code>watch</code>、<code>methods</code>以及生命周期钩子等。</p>
+<p>说明：为了能在模板中使用，这些组件必须先注册以便 Vue 能够识别。这里有两种组件的注册类型：<strong>全局注册</strong>和<strong>局部注册。</strong></p>
+<h3 id="向子组件传递数据">向子组件传递数据</h3>
+<p><strong>使用 Prop</strong></p>
+<p>在组件上注册一些自定义 attribute 即 Prop，使用<code>props</code>选项来定义该组件可接受的 prop 列表。父组件通过该 prop 来向该子组件传值，该 property 的值可以在该组件的模板中访问。</p>
+<p>传值，可以使用<code>v-bind</code>或<code>:</code>来动态传值：</p>
+<pre><code class="language-html">&lt;div id=&quot;blog-posts-demo&quot;&gt;
+  &lt;blog-post v-for=&quot;post in posts&quot; :key=&quot;post.id&quot; :title=&quot;post.title&quot;&gt;
+  &lt;/blog-post&gt;
+&lt;/div&gt;
+</code></pre>
+<p>定义<code>props</code>简单方式是定义 prop 数组，也可以定对象来为 prop 指定验证要求：</p>
+<pre><code class="language-javascript">export default {
+  props: {
+    title: {
+      type: String,
+      default: 'Hello !!!',
+      required: true,
+    }
+  }
+}
+</code></pre>
+<p>注意：<font color='#d44c47'><strong>对象/数组的默认值，必须从一个工厂函数返回</strong></font>。</p>
+<p><strong>单向数据流</strong></p>
+<p><strong>单向下行绑定</strong>，父级 prop 的更新会向下流动到子组件中，但是反过来则不行</p>
+<h3 id="向父组件传递数据">向父组件传递数据</h3>
+<p>不能直接使用 Prop 方式传递，<strong>父组件可以监听子组件自定义的事件来接收传递的数据</strong>。</p>
+<p>子组件中：</p>
+<pre><code class="language-javascript">// 在方法中定义触发的事件
+methods:{
+	sendParent(){
+		// $emit 来触发事件
+		this.$emit(&quot;sendMsg&quot;, this.msg);
+	}
+},
+...
+</code></pre>
+<p>父组件中：</p>
+<pre><code class="language-html">// 在子组件元素上监听事件
+&lt;template&gt;
+	&lt;ChildComponent @sendMsg=&quot;getChildMsg&quot;&gt;&lt;/ChildComponent&gt;
+&lt;/template&gt;
+</code></pre>
+<h3 id="模版引用访问组件">模版引用（访问组件）</h3>
+<p>在 JavaScript 中直接访问子组件，可以使用<code>ref</code>attribute 为子组件或 HTML 元素指定引用 ID：</p>
+<pre><code class="language-html">&lt;base-input ref=&quot;usernameInput&quot;&gt;&lt;/base-input&gt;
+</code></pre>
+<p>以 JS 方式访问元素(DOM)，例如以编程的方式 focus 到这个 input 。</p>
+<p><strong>父组件直接访问子组件</strong>：<code>$refs</code></p>
+<p>父组件中定义的(子组件)元素上使用<code>ref=&quot;usernameInput&quot;</code>添加引用名称后，可以使用<code>$refs.usernameInput</code>来获取引用元素.</p>
+<p><code>$refs</code>只会在组件渲染完成之后生效，避免在模板或计算属性中访问</p>
+<p><strong>子组件访问父组件</strong>：<code>$parent</code></p>
+<p>子组件中使用<code>$parent</code>可以获取父组件对象信息。</p>
+<p>由于组件是复用的，从而父组件可能是不同的，不建议使用该方式获取数据。而建议使用 Prop 来传递数据。</p>
+<p><strong>访问根组件</strong>：<code>$root</code></p>
+<h3 id="插槽">插槽</h3>
+<p>类似与 HTML 中向一个标签传递值：</p>
+<pre><code class="language-html">&lt;alert-box&gt;Something bad happened.&lt;/alert-box&gt;
+</code></pre>
+<p><strong>在组件中可以利用</strong>**<code>&lt;slot&gt;&lt;/slot&gt;</code>**<strong>来作为插入内容的占位符</strong>，在使用该组件元素时(使用双标签语法)可以进行填充。</p>
+<pre><code class="language-html">&lt;Component1&gt;&lt;button&gt;111&lt;/button&gt;&lt;/Component1&gt;
+&lt;Component1&gt;&lt;p&gt;hello world!&lt;/p&gt;&lt;/Component1&gt;
+</code></pre>
+<p>如何定义多个插槽？</p>
+<p>具名插槽，定义 slot 时添加 name 属性，使用组件元素时使用<code>&lt;templat&gt; 和 v-slot指令</code>包裹每个插槽对应的内容：</p>
+<pre><code class="language-html">&lt;template v-slot:header&gt;
+    &lt;h1&gt;Here might be a page title&lt;/h1&gt;
+&lt;/template&gt;
+</code></pre>
+<p><strong>作用域插槽</strong></p>
+<p>为了某些场景(自定义渲染列表的方式)，插槽的中数据内容可以由子组件提供，使用**<code>v-slot:default=&quot;slotProps&quot;</code>** 来接收子组件定义插槽时传递的所有数据<code>对象 slotProps</code></p>
+<pre><code class="language-html">&lt;template v-slot:default=&quot;slotProps&quot;&gt;
+&lt;ul&gt;
+	&lt;li v-for=&quot;item in slotProps.list&quot; :key=&quot;item&quot;&gt;{{item}}&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/template&gt;
+</code></pre>
+<h3 id="跨级通信">跨级通信</h3>
+<p>如果组件层次结构较深，使用<code>provide, inject</code>，父组件可以作为<font color='#d44c47'>其所有子组件</font>的依赖提供者。</p>
+<p>父组件有一个<code>provide</code> <strong>选项</strong>来提供数据，子组件有一个<code>inject</code> <strong>选项</strong>来开始使用这些数据。作用类似于 Prop 数据的传递。</p>
+<pre><code class="language-javascript">// 祖先组件的 provide 选项
+provide: {
+    user: 'John Doe'
+},
+
+// 子组件使用 inject 选项
+inject: ['user'],
+</code></pre>
+<p>注意：如果 provide 选项是一个对象，则不能直接<u>访问</u>组件实例的 property。</p>
+<p>为了使用组件实例的 property，则 provide 选项需要改为<strong>返回对象的函数</strong>。</p>
+<p><font color='#d44c47'><strong>响应性问题</strong></font></p>
+<p>即使这样，访问的 property 也不是响应性绑定，即祖先数据的变化不会反映在子组件 inject 中的 property。默认的 provide/inject 绑定不是响应式的。</p>
+<p>resolve: 可以通过传递一个<code>ref</code>property 或<code>reactive</code>对象给<code>provide</code>来改变这种行为</p>
+<ul>
+<li>响应式对象</li>
+</ul>
+<pre><code class="language-javascript">provide(){
+	return{
+		obj: this.obj,  // 接收的是包含数据的对象(修改也是修改该对象中的数据)
+	}
+},
+</code></pre>
+<ul>
+<li>箭头函数（响应式数据）</li>
+</ul>
+<pre><code class="language-javascript">provide(){
+	return{
+		message: ()=&gt;this.message, // 接收的是函数，调用才返回响应式数据
+	}
+},
+</code></pre>
+<p>子组件多次调用中，可以使用计算属性来缓存该结果。</p>
+<ul>
+<li>组合式 API<code>computed</code></li>
+</ul>
+<h2 id="生命周期">生命周期</h2>
+<details class="markdown">
+<summary><b>生命周期图示</b></summary>
+<figure data-type="image" tabindex="1"><img src="https://pic.qxxiao.cn/vue_lifecircle.svg" alt="" loading="lazy"></figure>
+</details>
+<p>使用：</p>
+<ul>
+<li>
+<p>组件视图更新（绑定数据更新）会执行对应的<code>beforeUpdate，updated</code>函数</p>
+</li>
+<li>
+<p>组件的销毁和创建，会执行<code>beforeUnmount，unmounted</code>函数，例如使用 v-if 进行条件渲染。</p>
+</li>
+</ul>
+<h2 id="组合式api">组合式API</h2>
+<p>作用：将同一个逻辑关注点相关代码收集在一起。</p>
+<p><code>setup</code>选项是一个接收<code>props/context</code>的函数，在组件创建之前执行（可以代替 beforeCreate, created 生命周期钩子）。并且不能使用 this 来访问组件实例。</p>
+<p><code>setup</code> <font color='#d44c47'><u><strong>返回的所有内容都暴露给组件的其余部分 (计算属性、方法、生命周期钩子等等) 以及组件的模板(模版中使用的引用变量会自动浅解包)。</strong></u></font></p>
+<p>setup 选项中定义的变量默认是非响应式的(修改不会影响视图)，使用<code>ref</code>函数接收参数并将其包裹在一个带有<code>value</code>property 的对象中返回，使用该 property 可以访问/修改该响应式变量值。因为JS中<code>Number</code>或<code>String</code>等基本类型是通过值而非引用传递，这样封装也是为了不同数据类型的行为统一。</p>
+<ul>
+<li><code>ref()</code>响应式变量</li>
+</ul>
+<p>对<code>Number, String</code>使用 ref() ，返回响应式对象，通过<code>value</code>属性访问值。<br>
+数组对象也通常使用 ref()</p>
+<ul>
+<li>
+<p>对于对象，使用<code>reactive()</code>和<code>toRefs()</code></p>
+<p>对象使用 reactive() 返回代理对象（响应式）<br>
+为了直接暴露对象的属性名称(来访问值)，使得通过该属性名称访问也是响应式的，使用 toRefs() 与对象解构用法：toRefs() 返回一个对象，每个属性值都是原属性的响应式对象 ObjectRefImpl (方法需要一个响应式对象参数)</p>
+</li>
+</ul>
+<div class="markdown notion" style="padding: 10px; color: #37352f; background-color: #e7f3f8; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span style="font-size: 18px;">💡</span></div>
+<p style="line-height: 28px; margin: 0px 5px 0px 38px !important">ref() 返回的是 RefImpl，如果参数是对象，其value就是该对象的代理对象。reactive()直接返回对象的代理对象Proxy。一般对象使用 reactive 更加方便。</p></div>
+<pre><code class="language-javascript">// setup()
+...
+const user = reactive({
+      name: 'xiaoming',
+      age: 20,
+    });
+const { name, age } = toRefs(user);
+function changName() {
+  // console.log(name.value);
+  name.value = 'zhou123';
+}
+function changAge() {
+  age.value = 22;
+}
+return{ name, age, changeName, changeAge}
+</code></pre>
+<h3 id="watch">watch</h3>
+<p>组合式 API，从 vue 导入<code>watch</code>函数执行相同的操作。</p>
+<ul>
+<li>
+<p>一个想要侦听的<strong>响应式引用</strong>或 getter 函数</p>
+</li>
+<li>
+<p>一个回调</p>
+</li>
+<li>
+<p>可选的配置选项</p>
+</li>
+</ul>
+<p>注意 watch 函数只能监听<code>getter 函数/ ref / reactive 对象</code>，响应式对象中的属性改变会调用回调函数(但不能获取属性旧值)。</p>
+<p>另一个是 watchEffect() ，自动分析依赖，发生改变后触发，不能获取旧值。</p>
+<pre><code class="language-javascript">//setup()
+const user = reactive({
+	name: 'aaa',
+	age: 18,
+});
+changeUserName(){
+	user.name = 'bbb';
+}
+watch(user, (newVal, oldVal)=&gt;{
+	...
+});
+watchEffect(()=&gt;{
+	console.log(user.name);
+});
+</code></pre>
+<h3 id="computed">computed</h3>
+<p>组合式 API，从 vue 导入<code>computed</code>函数执行相同的操作。</p>
+<p>返回一个带有 value 属性的对象。<strong>模版中可以直接使用该名称</strong>。</p>
+<pre><code class="language-javascript">// setup()
+const reverseMsg = computed(()=&gt;{
+	return msg.value.split('').reverse().join('')
+})
+</code></pre>
+<h3 id="setup-获取值">setup 获取值</h3>
+<p>setup() 中不能使用 this，setup(props, context) 有</p>
+<p><code>setup</code>函数中的<code>props</code>也是响应式的，当传入新的 prop 时，它将被更新。为组件接收的参数。因为<code>props</code>是响应式的，<strong>不能使用 ES6 解构</strong>，它会消除 prop 的响应性，使用<a href="https://v3.cn.vuejs.org/guide/reactivity-fundamentals.html#%E5%93%8D%E5%BA%94%E5%BC%8F%E7%8A%B6%E6%80%81%E8%A7%A3%E6%9E%84"><strong><code>toRefs</code></strong></a> 函数完成。</p>
+<p><code>context</code>是一个普通 JavaScript 对象，暴露了其它可能在<code>setup</code>中有用的值：</p>
+<ul>
+<li>context.attrs</li>
+</ul>
+<p>等同于 $attrs，获取组件标签上定义的属性</p>
+<ul>
+<li>
+<p>context.slots</p>
+<p>非响应式对象，等同于 $slots</p>
+</li>
+<li>
+<p>context.emit</p>
+<p>方法，等同于 $emit，用来触发事件</p>
+</li>
+<li>
+<p>context.expose</p>
+<p>函数，暴露公共 property 。如果组件的 setup() 返回渲染函数(替代template)，它用来暴露组件的公共 property。组件元素上定义<code>ref=&quot;refName&quot;</code>，外部组件使用 $refs 来访问(模板 ref)。</p>
+</li>
+</ul>
+<h3 id="生命周期钩子">生命周期钩子</h3>
+<p><a href="https://v3.cn.vuejs.org/guide/composition-api-lifecycle-hooks.html">https://v3.cn.vuejs.org/guide/composition-api-lifecycle-hooks.html</a></p>
+<h3 id="provide-inject"><strong>Provide / Inject</strong></h3>
+<p>在<code>setup()</code>中使用<code>provide</code>，导入该方法即可。</p>
+<p>在<code>setup()</code>中使用<code>inject</code>时，也需要从<code>vue</code>显式导入。</p>
+<p>可以在 provide 值时使用<a href="https://v3.cn.vuejs.org/guide/reactivity-fundamentals.html#%E5%88%9B%E5%BB%BA%E7%8B%AC%E7%AB%8B%E7%9A%84%E5%93%8D%E5%BA%94%E5%BC%8F%E5%80%BC%E4%BD%9C%E4%B8%BA-refs"><strong>ref</strong></a> 或<a href="https://v3.cn.vuejs.org/guide/reactivity-fundamentals.html#%E5%A3%B0%E6%98%8E%E5%93%8D%E5%BA%94%E5%BC%8F%E7%8A%B6%E6%80%81"><strong>reactive</strong></a><strong>增加值之间的响应性</strong>。</p>
+<ul>
+<li>
+<p>ref 属性</p>
+</li>
+<li>
+<p>reactive 对象</p>
+</li>
+<li>
+<p>组合式 API<code>computed</code></p>
+</li>
+</ul>
+<pre><code class="language-javascript">// ref
+let counter = ref(0)
+// 
+let user = reactive({
+	name: 'abc',
+	age: 20,
+})
+let len = Vue.computed(() =&gt; this.todos.length)
+provide('counter', counter)
+provide('user', user)
+provide('len', len)
+</code></pre>
+<h3 id="sfc-单文件组件">SFC 单文件组件</h3>
+<p><code>&lt;script setup&gt;</code>语法糖，相当于 set() 函数的定义，特殊点：</p>
+<ul>
+<li>
+<p>导入的子模块不需要注册，可以直接在模版中使用</p>
+</li>
+<li>
+<p>顶层的绑定（变量/函数，导入的函数等）会直接暴露给模版使用（即定义的变量不需要通过 return 暴露）</p>
+</li>
+<li>
+<p>定义响应式变量，也需要从<code>vue</code>中导入</p>
+</li>
+<li>
+<p>prop 可以使用<code>defineProps()</code>宏来定义</p>
+</li>
+</ul>
+</div>
+
+                <!-- 新加的模块的，应该使用模版-->
+                <!-- 版权声明 -->
+                
+                  <div class="jumbotron">
+                    <div class="container">
+                      <p>
+                        <i class="ri-article-line"></i>
+                        <b>本文链接:</b>
+                        <a href="https://blog.qxxiao.eu.org/post/Vue 基础/" target="_blank">
+                          Vue 基础
+                        </a>
+                      </p>
+                      <p>
+                        <i class="ri-creative-commons-line"></i>
+                        <b>版权声明:</b>
+                        本博客所有文章除特别声明外，均采用
+                        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC
+                          BY-NC-SA
+                          4.0</a>
+                        许可协议，转载请注明出处。
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>发布日期:</b>
+                        2022-06-09
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>最后更新:</b>
+                        <!-- 使用 themeConfig.dateFormat 格式对日期格式化，例如YY-MM-DD -->
+                        
+                              2022-06-09
+                                
+                      </p>
+                    </div>
+                  </div>
+                  
+                    <!-- 新加的模块的，应该使用模版-->
+                    <!--阅读次数-->
+                    <div class="text-center text-gray-400">
+                      <i class="ri-eye-line"></i>
+                      本文已被阅读
+                      <span id="twikoo_visitors">0</span>
+                      次，该数据仅供参考
+                    </div>
+
+                    <!-- Share to Twitter, Weibo, Telegram -->
+                    <div class="flex items-center">
+                      <div class="mr-4 flex items-center">
+                        <i class="ri-share-forward-line text-gray-500"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-blue-500 hover:bg-blue-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTwitter">
+                        <i class="ri-twitter-line"></i>
+                      </div>
+                      <div class="px-4 cursor-pointer text-red-500 hover:bg-red-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToWeibo">
+                        <i class="ri-weibo-line"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-indigo-500 hover:bg-indigo-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTelegram">
+                        <i class="ri-telegram-line"></i>
+                      </div>
+                    </div>
+          </div>
+
+          <!-- 新加的模块的，应该使用模版-->
+          <!-- 评论说明-->
+          <div class="jumbotron-comment">
+            <div class="container">
+              <p>
+                <i class="ri-message-3-line"></i>
+                欢迎任何与文章内容相关并保持尊重的评论😊 !
+              </p>
+            </div>
+          </div>
+
+          
+                        
+                            
+                              <div id="tcomment"></div>
+                               <footer class="py-12 text-center px-4 md:px-0" v-pre>
+  共 43 篇文章 | Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <i class="ri-rss-line"></i><a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" target="_blank">RSS</a></br>
+©2020-2024 <a href="https://blog.qxxiao.eu.org/index.html" target="_blank">Nuo</a>. All rights reserved.
+</footer>
+
+<!--没有添加/用到app 中的主题footer配置消息，如果使用，将上面的 href 替换为原地址-->
+<!---->
+
+        </div>
+
+        <!-- TOC Container -->
+        <div
+          class="fixed right-0 bottom-0 mb-40 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white dark:bg-gray-500 dark:text-gray-200 hover:shadow-lg transition-all"
+          @click="showToc = true">
+          <i class="ri-file-list-line"></i>
+        </div>
+
+        <div v-cloak
+          class="fixed right-0 top-0 bottom-0 overflow-y-auto w-16-24 bg-white dark:bg-gray-800 p-4 border-l border-gray-100 dark:border-gray-600 z-10 transition-fast"
+          :class="{ '-mr-64': !showToc }">
+          <div class="flex mb-4 justify-end">
+            <div
+              class="w-8 h-8 inline-flex justify-center items-center rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-fast"
+              @click="showToc = false">
+              <i class="ri-close-line text-lg"></i>
+            </div>
+          </div>
+          <div class="post-toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E9%98%85%E8%AF%BB">阅读</a></li>
+<li><a href="#%E6%A8%A1%E7%89%88%E8%AF%AD%E6%B3%95">模版语法</a>
+<ul>
+<li><a href="#u%E6%8F%92%E5%80%BCu"><u>插值</u></a></li>
+<li><a href="#%E6%8C%87%E4%BB%A4">指令</a></li>
+</ul>
+</li>
+<li><a href="#data-%E5%92%8C-methods">data 和 methods</a></li>
+<li><a href="#%E8%AE%A1%E7%AE%97%E5%B1%9E%E6%80%A7%E5%92%8C%E4%BE%A6%E5%90%AC%E5%99%A8">计算属性和侦听器</a>
+<ul>
+<li><a href="#%E8%AE%A1%E7%AE%97%E5%B1%9E%E6%80%A7-computed">计算属性 computed</a></li>
+<li><a href="#%E4%BE%A6%E5%90%AC%E5%99%A8-watch">侦听器 watch</a></li>
+</ul>
+</li>
+<li><a href="#%E6%A0%B7%E5%BC%8F%E7%BB%91%E5%AE%9A">样式绑定</a></li>
+<li><a href="#%E6%B8%B2%E6%9F%93">渲染</a>
+<ul>
+<li><a href="#%E6%9D%A1%E4%BB%B6%E6%B8%B2%E6%9F%93">条件渲染</a></li>
+<li><a href="#%E5%88%97%E8%A1%A8%E6%B8%B2%E6%9F%93">列表渲染</a></li>
+<li><a href="#v-for-%E4%B8%8E-v-if">v-for 与 v-if</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86">事件处理</a></li>
+<li><a href="#%E8%A1%A8%E5%8D%95%E8%BE%93%E5%85%A5%E7%BB%91%E5%AE%9A">表单输入绑定</a>
+<ul>
+<li><a href="#v-model-%E4%BF%AE%E9%A5%B0%E7%AC%A6">v-model 修饰符</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BB%84%E4%BB%B6">组件</a>
+<ul>
+<li><a href="#%E5%90%91%E5%AD%90%E7%BB%84%E4%BB%B6%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE">向子组件传递数据</a></li>
+<li><a href="#%E5%90%91%E7%88%B6%E7%BB%84%E4%BB%B6%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE">向父组件传递数据</a></li>
+<li><a href="#%E6%A8%A1%E7%89%88%E5%BC%95%E7%94%A8%E8%AE%BF%E9%97%AE%E7%BB%84%E4%BB%B6">模版引用（访问组件）</a></li>
+<li><a href="#%E6%8F%92%E6%A7%BD">插槽</a></li>
+<li><a href="#%E8%B7%A8%E7%BA%A7%E9%80%9A%E4%BF%A1">跨级通信</a></li>
+</ul>
+</li>
+<li><a href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">生命周期</a></li>
+<li><a href="#%E7%BB%84%E5%90%88%E5%BC%8Fapi">组合式API</a>
+<ul>
+<li><a href="#watch">watch</a></li>
+<li><a href="#computed">computed</a></li>
+<li><a href="#setup-%E8%8E%B7%E5%8F%96%E5%80%BC">setup 获取值</a></li>
+<li><a href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E9%92%A9%E5%AD%90">生命周期钩子</a></li>
+<li><a href="#provide-inject"><strong>Provide / Inject</strong></a></li>
+<li><a href="#sfc-%E5%8D%95%E6%96%87%E4%BB%B6%E7%BB%84%E4%BB%B6">SFC 单文件组件</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+
+        <!-- Back to top -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-20 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToUp" v-show="scrolled">
+          <i class="ri-arrow-up-line"></i>
+        </div>
+        <!-- Back to bottom -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-4 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToBottom" v-show="!atBottom">
+          <i class="ri-arrow-down-line"></i>
+        </div>
+    </div>
+
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- Background of PhotoSwipe. 
+        It's a separate element as animating opacity is faster than rgba(). -->
+  <div class="pswp__bg">
+  </div>
+  <!-- Slides wrapper with overflow:hidden. -->
+  <div class="pswp__scroll-wrap">
+    <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+    <div class="pswp__container">
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+    </div>
+    <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        <!--  Controls are self-explanatory. Order can be changed. -->
+        <div class="pswp__counter">
+        </div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+        <!-- element will get class pswp__preloader--active when preloader is running -->
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip">
+        </div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://blog.qxxiao.eu.org/media/scripts/main.js"></script>
+
+      <!-- Code Highlight -->
+      
+        <script src="https://blog.qxxiao.eu.org/media/prism.js"></script>
+        <script>
+          Prism.highlightAll();
+        </script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/show-language/prism-show-language.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+        
+
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+          <script>
+            //拿到预览框架，也就是上面的html代码
+            var pswpElement = document.querySelectorAll('.pswp')[0]
+            //定义图片数组变量
+            var imgitems
+            /**
+             * 用于显示预览界面
+             * @param index 图片数组下标
+             */
+            function viewImg(index) {
+              var pswpoptions = {
+                index: parseInt(index, 10), // 开始幻灯片索引。0是第一张幻灯片。必须是整数，而不是字符串。
+                bgOpacity: 0.7, // 背景透明度，0-1
+                maxSpreadZoom: 3, // 缩放级别，不要太大
+              }
+              //初始化并打开PhotoSwipe，pswpElement对应上面预览框架，PhotoSwipeUI_Default为皮肤，imgitems为图片数组，pswpoptions为选项
+              var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, imgitems, pswpoptions)
+              gallery.init()
+            }
+            /**
+             * 用于添加图片点击事件
+             * @param img 图片元素
+             * @param index 所属下标（在imgitems中的位置）
+             */
+            function addImgClick(img, index) {
+              img.onclick = function () {
+                viewImg(index)
+              }
+            }
+            /**
+             * 轮询所有图片，获取src、width、height等数据，加入imgitems，并给图片元素添加事件
+             * 最好在onload中执行该方法，本站因放在最底部，所以直接初始化
+             * 异步加载图片可在图片元素创建完成后调用此方法
+             */
+            function initImg() {
+              //重置图片数组
+              imgitems = []
+              //查找class:markdown 下的所有img元素并遍历
+              var imgs = document.querySelectorAll('.markdown img')
+              for (var i = 0; i < imgs.length; i++) {
+                var img = imgs[i]
+                //本站相册初始为loading图片，真实图片放在data-src
+                var ds = img.getAttribute('data-src')
+                //创建image对象，用于获取图片宽高
+                var imgtemp = new Image()
+                //判断是否存在data-src
+                if (ds != null && ds.length > 0) {
+                  imgtemp.src = ds
+                } else {
+                  imgtemp.src = img.src
+                }
+                //判断是否存在缓存
+                if (imgtemp.complete) {
+                  var imgobj = {
+                    src: imgtemp.src,
+                    w: imgtemp.width,
+                    h: imgtemp.height,
+                  }
+                  imgitems[i] = imgobj
+                  addImgClick(img, i)
+                } else {
+                  imgtemp.index = i
+                  imgtemp.img = img
+                  imgtemp.onload = function () {
+                    var imgobj = {
+                      src: this.src,
+                      w: this.width,
+                      h: this.height,
+                    }
+                    //不要使用push，因为onload前后顺序会不同
+                    imgitems[this.index] = imgobj
+                    //添加点击事件
+                    addImgClick(this.img, this.index)
+                  }
+                }
+              }
+            }
+            //初始化
+            initImg();
+          </script>
+          
+                
+                          
+                            <script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.36/dist/twikoo.all.min.js"></script>
+                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+                              integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+                              crossorigin="anonymous" />
+                            <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+                              integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+                              crossorigin="anonymous"></script>
+                            <script defer
+                              src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+                              integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"
+                              crossorigin="anonymous"></script>
+                            <script>
+                              twikoo.init({
+                                envId: 'https://twikoo.qxxiao.eu.org/',
+                                el: '#tcomment',
+                                katex: {
+                                  delimiters: [
+                                    { left: '$$', right: '$$', display: true },
+                                    { left: '$', right: '$', display: false },
+                                    { left: '\\(', right: '\\)', display: false },
+                                    { left: '\\[', right: '\\]', display: true },
+                                  ],
+                                  throwOnError: false,
+                                },
+                                // region: 'ap-guangzhou', // 环境地域，默认为 ap-shanghai，如果您的环境地域不是上海，需传此参数
+                                // path: 'window.location.pathname', // 用于区分不同文章的自定义 js 路径，如果您的文章路径不是 location.pathname，需传此参数
+                              });
+                            </script>
+                            
+
+                              <!-- line number for code block -->
+                              <script>
+                                var pres = document.getElementsByTagName('pre')
+                                for (var i = 0; i < pres.length; i++) {
+                                  var pre = pres[i]
+                                  if (pre.childNodes[0].nodeName == 'CODE') {
+                                    pre.setAttribute('class', 'line-numbers')
+                                  }
+                                }
+                              </script>
+                              
+
+  </body>
+
+</html>

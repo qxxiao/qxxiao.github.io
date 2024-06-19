@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <!--每个页面都需要 head link等  -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>
+  Go 内存模型 - Unique&#39;s Blog
+</title>
+<link rel="shortcut icon" href="https://blog.qxxiao.eu.org/favicon.ico">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/tailwind.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/ldbutton.css">
+
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/styles/main.css">
+<script src="https://blog.qxxiao.eu.org/media/scripts/initTheme.js"></script>
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/light-dark.css">
+
+<link rel="alternate" type="application/atom+xml" title="Go 内存模型 - Unique&#39;s Blog - Atom Feed"
+  href="https://blog.qxxiao.eu.org/atom.xml">
+
+
+      <meta name="description" content="https://go.dev/ref/mem  The Go Memory Model 整理学习。
+
+Go 内存模型规定了，在一个 goroutine 中读取一个变量时，可以保证观察到不同 goroutine 中对同一变量的写入所产生的值的..." />
+      <meta property="og:title" content="Go 内存模型 - Unique&#39;s Blog" />
+      <meta property="og:description" content="https://go.dev/ref/mem  The Go Memory Model 整理学习。
+
+Go 内存模型规定了，在一个 goroutine 中读取一个变量时，可以保证观察到不同 goroutine 中对同一变量的写入所产生的值的..." />
+      <meta property="og:type" content="articles" />
+      <meta property="og:url" content="https://blog.qxxiao.eu.org/post/go内存模型/" />
+      <meta property="og:image"
+        content="https://pic.qxxiao.cn/golang.png" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:width" content="1200" />
+      <meta name="twitter:title" content="Go 内存模型 - Unique&#39;s Blog" />
+      <meta name="twitter:description" content="https://go.dev/ref/mem  The Go Memory Model 整理学习。
+
+Go 内存模型规定了，在一个 goroutine 中读取一个变量时，可以保证观察到不同 goroutine 中对同一变量的写入所产生的值的..." />
+      <meta name="twitter:card" content="summary_large_image" />
+      <link rel="canonical" href="https://blog.qxxiao.eu.org/post/go内存模型/" />
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css" />
+
+      
+        <link rel="stylesheet"
+          href="https://blog.qxxiao.eu.org/media/css/prism-vs-dark.css" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.css"
+          rel="stylesheet" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.css"
+          rel="stylesheet" />
+        
+          
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" />
+            
+  </head>
+
+  <body>
+    <div class="antialiased flex flex-col min-h-screen" id="app">
+      <!-- 标题菜单 -->
+<div class="nav py-3 md:py-8 fixed w-full z-10 bg-gray-50 dark:bg-gray-700 transition-all duration-300"
+  :class="{ 'scroll': scrolled }">
+  <div class="flex justify-end px-4">
+    <div class="w-8 h-8 flex justify-center items-center rounded-full md:hidden" @click="showMenu = !showMenu">
+      <i class="ri-close-line" v-show="showMenu"></i>
+      <i class="ri-menu-3-line" v-show="!showMenu"></i>
+    </div>
+  </div>
+  <nav cloak class="max-w-4xl w-full mx-auto text-right flex flex-col md:flex-row justify-between items-center md:flex"
+    :class="`${ showMenu ? 'flex' : 'hidden' }`">
+    
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            首页
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/archives" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            归档
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/tags" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            标签
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="https://gh.qxxiao.cn/nav" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            导航
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+        <div
+          class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold dark:hover:bg-gray-600 hover:bg-gray-200 nav-time1">
+          时光
+            <div class="transition font-semibold nav-time2">
+              
+                <a href="https://blog.qxxiao.eu.org/diary/" class="">
+                  说说
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/gallery/" class="">
+                  相册
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/post/book/" class="">
+                  书单
+                </a>
+                
+            </div>
+        </div>
+        
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/post/about" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            关于
+          </a>
+          
+            
+              <!-- <a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+      RSS
+    </a> -->
+              <!-- 黑色模式，和亮色模式开关-->
+<div class="py-2 md:py-1 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+  <label for="night-light-checkbox" class="night-light-label">
+    <input type="checkbox" id="night-light-checkbox" @change="toggleDarkMode" />
+    <span v-cloak class="night-light-ball" id="night-light-ball"></span>
+    <svg viewBox="0 0 512 512" class="sun-svg">
+      <path id="sun-svg"
+        d="M256 160c-52.9 0-96 43.1-96 96s43.1 96 96 96 96-43.1 96-96-43.1-96-96-96zm246.4 80.5l-94.7-47.3 33.5-100.4c4.5-13.6-8.4-26.5-21.9-21.9l-100.4 33.5-47.4-94.8c-6.4-12.8-24.6-12.8-31 0l-47.3 94.7L92.7 70.8c-13.6-4.5-26.5 8.4-21.9 21.9l33.5 100.4-94.7 47.4c-12.8 6.4-12.8 24.6 0 31l94.7 47.3-33.5 100.5c-4.5 13.6 8.4 26.5 21.9 21.9l100.4-33.5 47.3 94.7c6.4 12.8 24.6 12.8 31 0l47.3-94.7 100.4 33.5c13.6 4.5 26.5-8.4 21.9-21.9l-33.5-100.4 94.7-47.3c13-6.5 13-24.7.2-31.1zm-155.9 106c-49.9 49.9-131.1 49.9-181 0-49.9-49.9-49.9-131.1 0-181 49.9-49.9 131.1-49.9 181 0 49.9 49.9 49.9 131.1 0 181z">
+      </path>
+    </svg>
+    <svg viewBox="0 0 512 512" class="moon-svg">
+      <path id="moon-svg"
+        d="M283.211 512c78.962 0 151.079-35.925 198.857-94.792 7.068-8.708-.639-21.43-11.562-19.35-124.203 23.654-238.262-71.576-238.262-196.954 0-72.222 38.662-138.635 101.498-174.394 9.686-5.512 7.25-20.197-3.756-22.23A258.156 258.156 0 0 0 283.211 0c-141.309 0-256 114.511-256 256 0 141.309 114.511 256 256 256z">
+      </path>
+    </svg>
+  </label>
+</div>
+                <form id="gridea-search-form" class="inline-flex mx-4 px-4" action="https://blog.qxxiao.eu.org/search/">
+                  <input type="search" autocomplete='off' spellcheck='false' name="q" />
+                </form>
+  </nav>
+
+</div>
+        <a href="https://blog.qxxiao.eu.org"
+          class="fixed top-0 left-0 mt-4 bg-black text-white dark:text-gray-700 dark:bg-yellow-50 dark:hover:bg-black dark:hover:text-white inline-flex p-2 pl-8 hover:text-gray-700 hover:bg-yellow-50 font-bold z-10">
+          Unique&#39;s Blog
+        </a>
+        <div class="max-w-4xl w-full mx-auto">
+          <div class="shadow-box bg-white dark:bg-gray-600 rounded-lg pt-32 px-4 md:px-8 pb-8 mb-8">
+            <h1 class="text-5xl font-semibold leading-normal pb-8 mb-8 border-b-8 border-gray-700">
+              Go 内存模型
+            </h1>
+            
+              <img src="https://pic.qxxiao.cn/golang.png" alt="Go 内存模型" class="block w-full mb-8" />
+              
+                <div class="mb-8 flex flex-wrap">
+                  <div class="text-gray-400 text-sm mr-4">
+                    <i class="ri-calendar-2-line" style="vertical-align: middle;"></i>
+                    2023-04-04 ·
+                      <i class="ri-file-word-line" style="vertical-align: middle;"></i>
+                      2834字 ·
+                        <i class="ri-timer-line" style="vertical-align: middle;"></i>
+                        11 min read
+                  </div>
+                  🏷️&nbsp;
+                      
+                        <a href="https://blog.qxxiao.eu.org/tag/go/"
+                          class="text-indigo-500 text-sm border-b-2 border-solid border-indigo-500 hover:border-gray-600 transition-all duration-100 inline-flex mr-2">
+                          <i class="ri-hashtag" style="vertical-align: middle;"></i>
+                          Go
+                        </a>
+                        
+                </div>
+                <div class="markdown mb-8" v-pre><p><a href="https://go.dev/ref/mem">https://go.dev/ref/mem  The Go Memory Model</a> 整理学习。</p>
+<blockquote>
+<p>Go 内存模型规定了，在一个 goroutine 中读取一个变量时，可以保证观察到不同 goroutine 中对同一变量的写入所产生的值的条件。</p>
+</blockquote>
+<p>数据竞争：<strong>对一个内存位置的写与对同一位置的另一个读或写同时发生</strong>，除非所有涉及的访问都是同步/原子包提供的原子数据访问。</p>
+<h2 id="内存模型">内存模型</h2>
+<p>内存操作由四个细节描述：</p>
+<ul>
+<li>它的类型，指示它是普通数据读取、普通数据写入还是同步操作，例如原子数据访问、互斥操作或通道操作。</li>
+<li>它在程序中的位置。</li>
+<li>正在访问的内存位置或变量。</li>
+<li>操作读取或写入的值。</li>
+</ul>
+<p><strong>要求 1</strong>：<strong>每个 goroutine 中的内存操作</strong>必须对应于该 goroutine 的正确顺序执行，考虑从内存中读取和写入的值。该执行必须与 <em>sequenced before</em> 关系一致，该关系定义为 <a href="https://go.dev/ref/spec">Go 语言规范</a>对于 Go 控制流构造的部分顺序要求以及表达式的求值顺序。</p>
+<p>【Go 程序执行被建模为一组 goroutine 执行，以及一个映射 W，指定每个类似读取的操作从哪个类似写入的操作中读取。】<br>
+<strong>要求 2</strong>：对于给定的程序执行，当限制为同步操作时，映射 W 必须可以通过一些隐含的同步操作的总序来解释，该总序与这些操作读取和写入的值以及顺序一致。</p>
+<p><em>synchronized before</em> 关系是从 W 派生的同步内存操作的偏序关系。如果同步读取类内存操作 r 观察到同步写入类内存操作 w（即，如果 W(r) = w），则 w 在 r 之前同步。</p>
+<p><strong><em>happens before</em> 关系被定义为 sequenced before 关系和 synchronized before 的并集的传递闭包。</strong></p>
+<p><strong>要求 3</strong>：对于内存位置 x 上的普通（非同步）数据读取 r，W(r) 必须是对 r 可见的写入 w，其中“可见”意味着以下两个条件都成立：</p>
+<ul>
+<li>w 在 r 之前发生。</li>
+<li>w 不在任何其他写入 w'（到 x）之前发生，而这些写入 w' 在 r 之前发生。<br>
+【简单来说，对于一个内存位置 x，如果一个普通数据读取 r 读取了该位置的值，那么它必须读取到最近的写入 w 的值，该写入 w 满足 w 在 r 之前发生，并且没有其他写入 w' 在 w 和 r 之间发生。这个要求确保了内存读取操作读取到的是最近的写入操作的值，而不是过时的值。】</li>
+</ul>
+<h2 id="对含数据竞争的限制">对含数据竞争的限制</h2>
+<p>任何实现都可以在检测到数据竞争时报告该竞争并停止程序的执行。使用 ThreadSanitizer（通过 <code>go build -race</code> 访问）的实现正是这样做的。</p>
+<h2 id="同步">同步</h2>
+<h3 id="初始化">初始化</h3>
+<ul>
+<li>程序的初始化是在一个单独的 goroutine 中运行；</li>
+<li>如果 p 包导入 q 包，那么 q 包的 <code>init函数</code> 是 <em>happen before</em> p 包任何函数；</li>
+<li>所有的 <code>init 函数</code> 的完成是 <em>synchronized before</em> 主包中的 main.main 函数执行。<br>
+【Go 程序中，程序的初始化过程是由一个单独的 goroutine 负责，该 goroutine 会按照包的导入顺序依次执行每个包的 init 函数，直到所有包的 init 函数都被执行完毕包括主包的 init 函数。最后启动新的主 goroutine 运行 main 函数。】</li>
+</ul>
+<h3 id="goroutine-创建">Goroutine 创建</h3>
+<p>创建新 goroutine 的 go 语句 <em>synchronized before</em> 这个 goroutine 的执行开始。</p>
+<h3 id="goroutine-销毁">Goroutine 销毁</h3>
+<p>不能保证 goroutine 的退出 <em>synchronized before</em> 于程序中的任意事件。</p>
+<h3 id="channel-通信">Channel 通信</h3>
+<p>通道通信是 goroutine 之间同步的主要方法。一个特定通道上的每一个发送都与该通道的相应接收相匹配，通常是在一个不同的 goroutine 中。</p>
+<ul>
+<li>一个 channel 的一次 send 是 <em>synchronized before</em> 于该 channel 上其对应 receive 的完成。</li>
+</ul>
+<pre><code class="language-go">var c = make(chan int, 10)
+var a string
+
+func f() {
+	a = &quot;hello, world&quot;
+	c &lt;- 0 // close(c) 
+}
+
+func main() {
+	go f()
+	&lt;-c
+	print(a)
+}
+</code></pre>
+<p>例子保证会打印 <code>&quot;hello world&quot;</code>。对 <code>a</code> 的写是 <em>sequence before</em> 于 <code>c</code> 的发送，<code>c</code> 的发送是 <em>synchronize before</em> 于对应(int) <code>c</code> 的接收，而 <code>c</code> 的接收 <em>sequence before</em> 于打印。</p>
+<ul>
+<li>channel 的关闭是  <em>synchronized before</em> 其对应的 receive，并且由于通道关闭，接收返回的是通道元素类型的零值。</li>
+<li>无缓冲 channel 的 receive 是 <em>synchronized before</em> 于该通道其对应 send 的完成。<br>
+使用无缓冲 channel 改写：</li>
+</ul>
+<pre><code class="language-go">var c = make(chan int)
+var a string
+
+func f() {
+	a = &quot;hello, world&quot;
+	&lt;-c
+}
+
+func main() {
+	go f()
+	c &lt;- 0
+	print(a)
+}
+</code></pre>
+<ul>
+<li>容量为 C 的 channel 的第 k 次 receive 是 <em>synchronized before</em> 于该通道的第 k+C 次 send 的完成。<br>
+【容量为 C 的 channel 使用信号量来实现】<br>
+使用缓冲的 channel 来限制并发执行任务的数量：</li>
+</ul>
+<pre><code class="language-go">var limit = make(chan int, 3)
+
+func main() {
+	for _, w := range work {
+		go func(w func()) {
+			limit &lt;- 1
+			w()
+			&lt;-limit
+		}(w)
+	}
+	select{} // 一直阻塞
+}
+</code></pre>
+<h3 id="locks">Locks</h3>
+<p><code>sync package</code> 实现了两种锁 lock 数据类型：<code>sync.Mutex</code> 以及 <code>sync.RWMutex</code>。</p>
+<ul>
+<li>对于任何 <code>sync.Mutex</code> 或 <code>sync.RWMutex</code> 变量 <code>l</code>，并且 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>n</mi><mo>&lt;</mo><mi>m</mi></mrow><annotation encoding="application/x-tex">n&lt;m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathdefault">n</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">m</span></span></span></span> ，前 n 次调用 <code>l.Unlock()</code> 完成是  <em>synchronized before</em> 于第 m 次 <code>l.Lock()</code> 返回。</li>
+<li>对于任何对 <code>sync.RWMutex</code> 变量 <code>l</code> 的 <code>l.RLock()</code> 调用，都存在一个 n，使得第 n 次调用 <code>l.Unlock()</code> 是 <em>synchronized before</em> 于 <code>l.RLock()</code> 返回，并且对应的 <code>l.RUnlock()</code> 调用完成 <em>synchronized before</em> 于第 n+1 次对 <code>l.Lock()</code> 的调用返回。<br>
+【就内存模型而言，<code>l.TryLock</code>（或 <code>l.TryRLock</code>）可以被认为是能够返回 <code>false</code> 的，即使是在 mutex <code>l</code> 是解锁状态。】</li>
+</ul>
+<h3 id="once">Once</h3>
+<p><code>sync package</code> 通过 <code>Once</code> 类型为<strong>存在多 goroutine 情况下的初始化</strong>提供了一种安全机制。<br>
+多个线程为函数 f 可执行 <code>once.Do(f)</code>，只有一个 goroutine 执行 f 函数，其它 goroutine 会阻塞直到该 f 函数返回。<br>
+【使用 <code>done</code> 标志和互斥锁实现 】</p>
+<ul>
+<li><code>once.Do(f)</code> 中该单次 f 调用完成是 <em>synchronized before</em> 于任何 <code>once.Do(f)</code> 调用的返回。<br>
+例如：</li>
+</ul>
+<pre><code class="language-go">var a string
+var once sync.Once
+
+func setup() {
+	a = &quot;hello, world&quot;
+}
+
+func doprint() {
+	once.Do(setup)
+	print(a)
+}
+
+func twoprint() {
+	go doprint()
+	go doprint()
+}
+// &quot;hello, world&quot; will be printed twice.
+</code></pre>
+<h3 id="atomic-values">Atomic Values</h3>
+<p>sync/atomic 包中的 API 是“原子操作”，可用于同步不同 goroutine 的执行。如果原子操作 A 的效果被原子操作 B 观察到，则 A 在 B 之前同步。程序中执行的所有原子操作都表现为按某种顺序连续执行的顺序一致。这个定义与 C++的顺序一致原子(变量)和 Java 的 volatile 变量具有相同的语义。</p>
+<h3 id="finalizers">Finalizers</h3>
+<p>在 Go 语言中，Finalizer 是一种机制，用于在对象被垃圾回收器回收之前执行一些清理操作。Finalizer 是通过 <code>runtime.SetFinalizer</code> 函数设置的，该函数接受两个参数：要设置 Finalizer 的<strong>对象</strong>和一个<strong>函数</strong>，该函数将在对象被垃圾回收器回收之前执行。</p>
+<p>当一个对象被创建时，Go 语言的垃圾回收器会为其分配内存，并将其标记为“可达”。如果该对象不再被引用，垃圾回收器会将其标记为“不可达”，并在某个时间点回收该对象的内存。在回收对象之前，垃圾回收器会检查该对象是否有 Finalizer。如果有，垃圾回收器会将该对象添加到一个 Finalizer 队列中，并在下一次垃圾回收时执行 Finalizer 函数。</p>
+<p>另外，由于 Finalizer 函数的执行是不确定的(甚至可能不执行)，因此不建议在程序中过多地使用 Finalizer。如果需要释放资源或执行必须的清理操作，应该使用 defer 语句或显式地调用清理函数来实现。</p>
+<ul>
+<li>调用 <code>SetFinalizer(x, f)</code> 是 <em>synchronized before</em> 函数 f(x) 的调用。</li>
+</ul>
+<h3 id="其它">其它</h3>
+<p><a href="https://go.dev/pkg/sync/#Cond">condition variables</a>, <a href="https://go.dev/pkg/sync/#Map">lock-free maps</a>, <a href="https://go.dev/pkg/sync/#Pool">allocation pools</a>, and <a href="https://go.dev/pkg/sync/#WaitGroup">wait groups</a>.</p>
+<h3 id="错误同步">错误同步</h3>
+<p>程序中存在竞争条件时，可能会出现非顺序一致的执行结果。特别地，一个读操作 r 可能会观察到与 r 并发执行的任何写操作 w 所写入的值。即使这种情况发生了，也不能保证在 w 之前发生的写操作会被在 r 之后的读操作所观察到。</p>
+<pre><code class="language-go">var a, b int
+
+func f() {
+	a = 1
+	b = 2
+}
+
+func g() {
+	print(b)
+	print(a)
+}
+
+func main() {
+	go f()
+	g()
+}
+</code></pre>
+<p><span style="color:#d44c47; font-weight:bold">g() 可能打印 2 和 0</span> （f 函数两个写语句不满足  <em>sequenced before</em> 关系</p>
+<p>另一个例子，不正确的忙等待:</p>
+<pre><code class="language-go">var a string
+var done bool
+
+func setup() {
+	a = &quot;hello, world&quot;
+	done = true
+}
+
+func main() {
+	go setup()
+	for !done {
+	}
+	print(a)
+}
+</code></pre>
+<p><span style="color:#d44c47; font-weight:bold">可能打印空字符串</span>，main 中观察到写入 done，并不保证已经观察到写入 a。<br>
+<span style="color:#d44c47; font-weight:bold">更糟糕的是：由于两个线程之间没有同步事件，所以也无法保证写入 done 的内容会被 main 观察到，不能保证 main 中的循环能够结束。</span></p>
+<p>需要注意上述问题的解决方法：<strong>使用显示的同步语句</strong>。</p>
+<h2 id="编译优化限制">编译优化限制</h2>
+<p>Go 语言内存模型对编译器优化的限制，一些编译器优化在单线程程序中是有效的，但不是对于所有 Go 程序都是有效的。特别是，编译器不能引入源程序中不存在的写入操作，不允许使得单个读取操作观察到多个不同的值，不允许使得单个写操作写入多个值。【主要目的，避免编译器在优化程序时引入数据竞争以及不确定的行为。】</p>
+<ul>
+<li>
+<p>在没有竞争条件的程序中，不应该将写操作从它们所在的条件语句中移出。(避免其它 goroutine 观察可能观察到原来不可能出现的值)</p>
+</li>
+<li>
+<p>在没有竞争条件的程序中，编译器不应该假设循环一定会终止。</p>
+</li>
+<li>
+<p>在没有竞争条件的程序中，编译器不应该假设被调用的函数总是会返回或不包含同步操作。</p>
+</li>
+<li>
+<p>编译器不允许单个读操作观察到多个值，这意味着编译器不应该从共享内存中重新加载本地变量。</p>
+</li>
+</ul>
+<pre><code class="language-go">i := *p
+if i&lt;0 || i&gt;=len(funcs){...}
+funcs[i]()
+
+// 禁止重新加载 *p
+funcs[*p]()
+</code></pre>
+<ul>
+<li>编译器不允许单个写操作写入多个值(禁止在写入之前把将要写入的局部变量作为临时存储)</li>
+</ul>
+<pre><code class="language-go">*p = i + *p/2 // if i=2,*p=2, 只能观察到 *p 为 2/3
+
+// 不能改写为 2/1/3
+*p /=2 
+*p += i
+</code></pre>
+<p>说明：所有这些优化在 C/C++编译器中都是允许的，但是与 C/C++编译器共享后端的 Go 编译器必须注意禁用那些对 Go 无效的优化。</p>
+<p>请注意，禁止引入数据竞争的规则不适用于编译器可以证明这些竞争不会影响目标平台上的正确执行的情况。</p>
+<h2 id="总结">总结</h2>
+<ol>
+<li>对于没有数据竞争的程序，可以放心地依赖于顺序一致的执行；</li>
+<li>而对于存在数据竞争的程序，应该避免过于聪明的优化，编写易于理解和推理的代码，并使用同步原语来确保程序的正确性。</li>
+</ol>
+</div>
+
+                <!-- 新加的模块的，应该使用模版-->
+                <!-- 版权声明 -->
+                
+                  <div class="jumbotron">
+                    <div class="container">
+                      <p>
+                        <i class="ri-article-line"></i>
+                        <b>本文链接:</b>
+                        <a href="https://blog.qxxiao.eu.org/post/go内存模型/" target="_blank">
+                          Go 内存模型
+                        </a>
+                      </p>
+                      <p>
+                        <i class="ri-creative-commons-line"></i>
+                        <b>版权声明:</b>
+                        本博客所有文章除特别声明外，均采用
+                        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC
+                          BY-NC-SA
+                          4.0</a>
+                        许可协议，转载请注明出处。
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>发布日期:</b>
+                        2023-04-04
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>最后更新:</b>
+                        <!-- 使用 themeConfig.dateFormat 格式对日期格式化，例如YY-MM-DD -->
+                        
+                              2023-04-04
+                                
+                      </p>
+                    </div>
+                  </div>
+                  
+                    <!-- 新加的模块的，应该使用模版-->
+                    <!--阅读次数-->
+                    <div class="text-center text-gray-400">
+                      <i class="ri-eye-line"></i>
+                      本文已被阅读
+                      <span id="twikoo_visitors">0</span>
+                      次，该数据仅供参考
+                    </div>
+
+                    <!-- Share to Twitter, Weibo, Telegram -->
+                    <div class="flex items-center">
+                      <div class="mr-4 flex items-center">
+                        <i class="ri-share-forward-line text-gray-500"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-blue-500 hover:bg-blue-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTwitter">
+                        <i class="ri-twitter-line"></i>
+                      </div>
+                      <div class="px-4 cursor-pointer text-red-500 hover:bg-red-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToWeibo">
+                        <i class="ri-weibo-line"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-indigo-500 hover:bg-indigo-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTelegram">
+                        <i class="ri-telegram-line"></i>
+                      </div>
+                    </div>
+          </div>
+
+          <!-- 新加的模块的，应该使用模版-->
+          <!-- 评论说明-->
+          <div class="jumbotron-comment">
+            <div class="container">
+              <p>
+                <i class="ri-message-3-line"></i>
+                欢迎任何与文章内容相关并保持尊重的评论😊 !
+              </p>
+            </div>
+          </div>
+
+          
+                        
+                            
+                              <div id="tcomment"></div>
+                               <footer class="py-12 text-center px-4 md:px-0" v-pre>
+  共 43 篇文章 | Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <i class="ri-rss-line"></i><a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" target="_blank">RSS</a></br>
+©2020-2024 <a href="https://blog.qxxiao.eu.org/index.html" target="_blank">Nuo</a>. All rights reserved.
+</footer>
+
+<!--没有添加/用到app 中的主题footer配置消息，如果使用，将上面的 href 替换为原地址-->
+<!---->
+
+        </div>
+
+        <!-- TOC Container -->
+        <div
+          class="fixed right-0 bottom-0 mb-40 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white dark:bg-gray-500 dark:text-gray-200 hover:shadow-lg transition-all"
+          @click="showToc = true">
+          <i class="ri-file-list-line"></i>
+        </div>
+
+        <div v-cloak
+          class="fixed right-0 top-0 bottom-0 overflow-y-auto w-16-24 bg-white dark:bg-gray-800 p-4 border-l border-gray-100 dark:border-gray-600 z-10 transition-fast"
+          :class="{ '-mr-64': !showToc }">
+          <div class="flex mb-4 justify-end">
+            <div
+              class="w-8 h-8 inline-flex justify-center items-center rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-fast"
+              @click="showToc = false">
+              <i class="ri-close-line text-lg"></i>
+            </div>
+          </div>
+          <div class="post-toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B">内存模型</a></li>
+<li><a href="#%E5%AF%B9%E5%90%AB%E6%95%B0%E6%8D%AE%E7%AB%9E%E4%BA%89%E7%9A%84%E9%99%90%E5%88%B6">对含数据竞争的限制</a></li>
+<li><a href="#%E5%90%8C%E6%AD%A5">同步</a>
+<ul>
+<li><a href="#%E5%88%9D%E5%A7%8B%E5%8C%96">初始化</a></li>
+<li><a href="#goroutine-%E5%88%9B%E5%BB%BA">Goroutine 创建</a></li>
+<li><a href="#goroutine-%E9%94%80%E6%AF%81">Goroutine 销毁</a></li>
+<li><a href="#channel-%E9%80%9A%E4%BF%A1">Channel 通信</a></li>
+<li><a href="#locks">Locks</a></li>
+<li><a href="#once">Once</a></li>
+<li><a href="#atomic-values">Atomic Values</a></li>
+<li><a href="#finalizers">Finalizers</a></li>
+<li><a href="#%E5%85%B6%E5%AE%83">其它</a></li>
+<li><a href="#%E9%94%99%E8%AF%AF%E5%90%8C%E6%AD%A5">错误同步</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BC%96%E8%AF%91%E4%BC%98%E5%8C%96%E9%99%90%E5%88%B6">编译优化限制</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+
+        <!-- Back to top -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-20 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToUp" v-show="scrolled">
+          <i class="ri-arrow-up-line"></i>
+        </div>
+        <!-- Back to bottom -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-4 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToBottom" v-show="!atBottom">
+          <i class="ri-arrow-down-line"></i>
+        </div>
+    </div>
+
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- Background of PhotoSwipe. 
+        It's a separate element as animating opacity is faster than rgba(). -->
+  <div class="pswp__bg">
+  </div>
+  <!-- Slides wrapper with overflow:hidden. -->
+  <div class="pswp__scroll-wrap">
+    <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+    <div class="pswp__container">
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+    </div>
+    <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        <!--  Controls are self-explanatory. Order can be changed. -->
+        <div class="pswp__counter">
+        </div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+        <!-- element will get class pswp__preloader--active when preloader is running -->
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip">
+        </div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://blog.qxxiao.eu.org/media/scripts/main.js"></script>
+
+      <!-- Code Highlight -->
+      
+        <script src="https://blog.qxxiao.eu.org/media/prism.js"></script>
+        <script>
+          Prism.highlightAll();
+        </script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/show-language/prism-show-language.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+        
+
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+          <script>
+            //拿到预览框架，也就是上面的html代码
+            var pswpElement = document.querySelectorAll('.pswp')[0]
+            //定义图片数组变量
+            var imgitems
+            /**
+             * 用于显示预览界面
+             * @param index 图片数组下标
+             */
+            function viewImg(index) {
+              var pswpoptions = {
+                index: parseInt(index, 10), // 开始幻灯片索引。0是第一张幻灯片。必须是整数，而不是字符串。
+                bgOpacity: 0.7, // 背景透明度，0-1
+                maxSpreadZoom: 3, // 缩放级别，不要太大
+              }
+              //初始化并打开PhotoSwipe，pswpElement对应上面预览框架，PhotoSwipeUI_Default为皮肤，imgitems为图片数组，pswpoptions为选项
+              var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, imgitems, pswpoptions)
+              gallery.init()
+            }
+            /**
+             * 用于添加图片点击事件
+             * @param img 图片元素
+             * @param index 所属下标（在imgitems中的位置）
+             */
+            function addImgClick(img, index) {
+              img.onclick = function () {
+                viewImg(index)
+              }
+            }
+            /**
+             * 轮询所有图片，获取src、width、height等数据，加入imgitems，并给图片元素添加事件
+             * 最好在onload中执行该方法，本站因放在最底部，所以直接初始化
+             * 异步加载图片可在图片元素创建完成后调用此方法
+             */
+            function initImg() {
+              //重置图片数组
+              imgitems = []
+              //查找class:markdown 下的所有img元素并遍历
+              var imgs = document.querySelectorAll('.markdown img')
+              for (var i = 0; i < imgs.length; i++) {
+                var img = imgs[i]
+                //本站相册初始为loading图片，真实图片放在data-src
+                var ds = img.getAttribute('data-src')
+                //创建image对象，用于获取图片宽高
+                var imgtemp = new Image()
+                //判断是否存在data-src
+                if (ds != null && ds.length > 0) {
+                  imgtemp.src = ds
+                } else {
+                  imgtemp.src = img.src
+                }
+                //判断是否存在缓存
+                if (imgtemp.complete) {
+                  var imgobj = {
+                    src: imgtemp.src,
+                    w: imgtemp.width,
+                    h: imgtemp.height,
+                  }
+                  imgitems[i] = imgobj
+                  addImgClick(img, i)
+                } else {
+                  imgtemp.index = i
+                  imgtemp.img = img
+                  imgtemp.onload = function () {
+                    var imgobj = {
+                      src: this.src,
+                      w: this.width,
+                      h: this.height,
+                    }
+                    //不要使用push，因为onload前后顺序会不同
+                    imgitems[this.index] = imgobj
+                    //添加点击事件
+                    addImgClick(this.img, this.index)
+                  }
+                }
+              }
+            }
+            //初始化
+            initImg();
+          </script>
+          
+                
+                          
+                            <script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.36/dist/twikoo.all.min.js"></script>
+                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+                              integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+                              crossorigin="anonymous" />
+                            <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+                              integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+                              crossorigin="anonymous"></script>
+                            <script defer
+                              src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+                              integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"
+                              crossorigin="anonymous"></script>
+                            <script>
+                              twikoo.init({
+                                envId: 'https://twikoo.qxxiao.eu.org/',
+                                el: '#tcomment',
+                                katex: {
+                                  delimiters: [
+                                    { left: '$$', right: '$$', display: true },
+                                    { left: '$', right: '$', display: false },
+                                    { left: '\\(', right: '\\)', display: false },
+                                    { left: '\\[', right: '\\]', display: true },
+                                  ],
+                                  throwOnError: false,
+                                },
+                                // region: 'ap-guangzhou', // 环境地域，默认为 ap-shanghai，如果您的环境地域不是上海，需传此参数
+                                // path: 'window.location.pathname', // 用于区分不同文章的自定义 js 路径，如果您的文章路径不是 location.pathname，需传此参数
+                              });
+                            </script>
+                            
+
+                              <!-- line number for code block -->
+                              <script>
+                                var pres = document.getElementsByTagName('pre')
+                                for (var i = 0; i < pres.length; i++) {
+                                  var pre = pres[i]
+                                  if (pre.childNodes[0].nodeName == 'CODE') {
+                                    pre.setAttribute('class', 'line-numbers')
+                                  }
+                                }
+                              </script>
+                              
+
+  </body>
+
+</html>
