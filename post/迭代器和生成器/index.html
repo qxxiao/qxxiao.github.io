@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <!--每个页面都需要 head link等  -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>
+  迭代器和生成器 - Unique&#39;s Blog
+</title>
+<link rel="shortcut icon" href="https://blog.qxxiao.eu.org/favicon.ico">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/tailwind.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/ldbutton.css">
+
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/styles/main.css">
+<script src="https://blog.qxxiao.eu.org/media/scripts/initTheme.js"></script>
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/light-dark.css">
+
+<link rel="alternate" type="application/atom+xml" title="迭代器和生成器 - Unique&#39;s Blog - Atom Feed"
+  href="https://blog.qxxiao.eu.org/atom.xml">
+
+
+      <meta name="description" content="
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Iteration_protocols
+
+可迭代协议
+可迭代对象：对象必须实现  @@iterator 方..." />
+      <meta property="og:title" content="迭代器和生成器 - Unique&#39;s Blog" />
+      <meta property="og:description" content="
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Iteration_protocols
+
+可迭代协议
+可迭代对象：对象必须实现  @@iterator 方..." />
+      <meta property="og:type" content="articles" />
+      <meta property="og:url" content="https://blog.qxxiao.eu.org/post/迭代器和生成器/" />
+      <meta property="og:image"
+        content="https://pic.qxxiao.cn/js-logo.png" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:width" content="1200" />
+      <meta name="twitter:title" content="迭代器和生成器 - Unique&#39;s Blog" />
+      <meta name="twitter:description" content="
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Iteration_protocols
+
+可迭代协议
+可迭代对象：对象必须实现  @@iterator 方..." />
+      <meta name="twitter:card" content="summary_large_image" />
+      <link rel="canonical" href="https://blog.qxxiao.eu.org/post/迭代器和生成器/" />
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css" />
+
+      
+        <link rel="stylesheet"
+          href="https://blog.qxxiao.eu.org/media/css/prism-vs-dark.css" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.css"
+          rel="stylesheet" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.css"
+          rel="stylesheet" />
+        
+          
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" />
+            
+  </head>
+
+  <body>
+    <div class="antialiased flex flex-col min-h-screen" id="app">
+      <!-- 标题菜单 -->
+<div class="nav py-3 md:py-8 fixed w-full z-10 bg-gray-50 dark:bg-gray-700 transition-all duration-300"
+  :class="{ 'scroll': scrolled }">
+  <div class="flex justify-end px-4">
+    <div class="w-8 h-8 flex justify-center items-center rounded-full md:hidden" @click="showMenu = !showMenu">
+      <i class="ri-close-line" v-show="showMenu"></i>
+      <i class="ri-menu-3-line" v-show="!showMenu"></i>
+    </div>
+  </div>
+  <nav cloak class="max-w-4xl w-full mx-auto text-right flex flex-col md:flex-row justify-between items-center md:flex"
+    :class="`${ showMenu ? 'flex' : 'hidden' }`">
+    
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            首页
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/archives" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            归档
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/tags" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            标签
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="https://gh.qxxiao.cn/nav" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            导航
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+        <div
+          class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold dark:hover:bg-gray-600 hover:bg-gray-200 nav-time1">
+          时光
+            <div class="transition font-semibold nav-time2">
+              
+                <a href="https://blog.qxxiao.eu.org/diary/" class="">
+                  说说
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/gallery/" class="">
+                  相册
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/post/book/" class="">
+                  书单
+                </a>
+                
+            </div>
+        </div>
+        
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/post/about" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            关于
+          </a>
+          
+            
+              <!-- <a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+      RSS
+    </a> -->
+              <!-- 黑色模式，和亮色模式开关-->
+<div class="py-2 md:py-1 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+  <label for="night-light-checkbox" class="night-light-label">
+    <input type="checkbox" id="night-light-checkbox" @change="toggleDarkMode" />
+    <span v-cloak class="night-light-ball" id="night-light-ball"></span>
+    <svg viewBox="0 0 512 512" class="sun-svg">
+      <path id="sun-svg"
+        d="M256 160c-52.9 0-96 43.1-96 96s43.1 96 96 96 96-43.1 96-96-43.1-96-96-96zm246.4 80.5l-94.7-47.3 33.5-100.4c4.5-13.6-8.4-26.5-21.9-21.9l-100.4 33.5-47.4-94.8c-6.4-12.8-24.6-12.8-31 0l-47.3 94.7L92.7 70.8c-13.6-4.5-26.5 8.4-21.9 21.9l33.5 100.4-94.7 47.4c-12.8 6.4-12.8 24.6 0 31l94.7 47.3-33.5 100.5c-4.5 13.6 8.4 26.5 21.9 21.9l100.4-33.5 47.3 94.7c6.4 12.8 24.6 12.8 31 0l47.3-94.7 100.4 33.5c13.6 4.5 26.5-8.4 21.9-21.9l-33.5-100.4 94.7-47.3c13-6.5 13-24.7.2-31.1zm-155.9 106c-49.9 49.9-131.1 49.9-181 0-49.9-49.9-49.9-131.1 0-181 49.9-49.9 131.1-49.9 181 0 49.9 49.9 49.9 131.1 0 181z">
+      </path>
+    </svg>
+    <svg viewBox="0 0 512 512" class="moon-svg">
+      <path id="moon-svg"
+        d="M283.211 512c78.962 0 151.079-35.925 198.857-94.792 7.068-8.708-.639-21.43-11.562-19.35-124.203 23.654-238.262-71.576-238.262-196.954 0-72.222 38.662-138.635 101.498-174.394 9.686-5.512 7.25-20.197-3.756-22.23A258.156 258.156 0 0 0 283.211 0c-141.309 0-256 114.511-256 256 0 141.309 114.511 256 256 256z">
+      </path>
+    </svg>
+  </label>
+</div>
+                <form id="gridea-search-form" class="inline-flex mx-4 px-4" action="https://blog.qxxiao.eu.org/search/">
+                  <input type="search" autocomplete='off' spellcheck='false' name="q" />
+                </form>
+  </nav>
+
+</div>
+        <a href="https://blog.qxxiao.eu.org"
+          class="fixed top-0 left-0 mt-4 bg-black text-white dark:text-gray-700 dark:bg-yellow-50 dark:hover:bg-black dark:hover:text-white inline-flex p-2 pl-8 hover:text-gray-700 hover:bg-yellow-50 font-bold z-10">
+          Unique&#39;s Blog
+        </a>
+        <div class="max-w-4xl w-full mx-auto">
+          <div class="shadow-box bg-white dark:bg-gray-600 rounded-lg pt-32 px-4 md:px-8 pb-8 mb-8">
+            <h1 class="text-5xl font-semibold leading-normal pb-8 mb-8 border-b-8 border-gray-700">
+              迭代器和生成器
+            </h1>
+            <!-- 不显示 Post 中的封面图片 -->
+            
+                <div class="mb-8 flex flex-wrap">
+                  <div class="text-gray-400 text-sm mr-4">
+                    <i class="ri-calendar-2-line" style="vertical-align: middle;"></i>
+                    2022-11-23 ·
+                      <i class="ri-file-word-line" style="vertical-align: middle;"></i>
+                      1020字 ·
+                        <i class="ri-timer-line" style="vertical-align: middle;"></i>
+                        4 min read
+                  </div>
+                  🏷️&nbsp;
+                      
+                        <a href="https://blog.qxxiao.eu.org/tag/javascript/"
+                          class="text-indigo-500 text-sm border-b-2 border-solid border-indigo-500 hover:border-gray-600 transition-all duration-100 inline-flex mr-2">
+                          <i class="ri-hashtag" style="vertical-align: middle;"></i>
+                          JavaScript
+                        </a>
+                        
+                </div>
+                <div class="markdown mb-8" v-pre><blockquote>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Iteration_protocols#%E4%BD%BF%E7%94%A8%E8%BF%AD%E4%BB%A3%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%BE%8B%E5%AD%90">https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Iteration_protocols</a></p>
+</blockquote>
+<h2 id="可迭代协议">可迭代协议</h2>
+<p><strong>可迭代对象</strong>：对象必须实现  <code>@@iterator</code> 方法，这意味着对象（或者它<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Inheritance_and_the_prototype_chain">原型链</a>上的某个对象）必须有一个键为  <code>@@iterator</code>的属性，可通过<font color='#d44c47'>常量</font> <code>Symbol.iterator</code> 访问该属性。可迭代对象可以使用 for…of 中遍历，使用展开语法 <code>…object</code> ，解构赋值等</p>
+<ul>
+<li>
+<p><code>[Symbol.iterator]</code> 一个无参函数，返回一个迭代器对象</p>
+</li>
+<li>
+<p>此函数可以是普通函数，也可以是生成器函数</p>
+</li>
+<li>
+<p>一个对象需要被迭代，首先调用它的  <code>@@iterator</code>方法，然后使用此方法返回的<strong>迭代器</strong>获得要迭代的值</p>
+</li>
+</ul>
+<h2 id="迭代器">迭代器</h2>
+<p><strong>迭代器协议</strong>定义了产生一系列值的标准方式。<br>
+定义了特定语义的  <code>next()</code>方法，该对象才能成为迭代器：</p>
+<ul>
+<li>返回一个对象 <code>{done: boolean, value: any}</code> ，<code>done</code> 为 true 时属性 <code>value</code> 可省略;</li>
+</ul>
+<p>注意：</p>
+<ol>
+<li>
+<p>不能判断一个特定的对象是否实现了迭代器协议</p>
+</li>
+<li>
+<p>创建<font color='#c04d8a'>同时</font>满足迭代器协议和可迭代协议是容易的，例如 Map 的 <code>keys()/values()/entries()</code> 方法返回的对象.</p>
+</li>
+</ol>
+<p>因此，迭代器一般都会<u>实现可迭代协议成为可迭代对象</u>：</p>
+<pre><code class="language-javascript">var myIterator = {
+  next: function () {
+    // ...
+  },
+  [Symbol.iterator]: function () {
+    return this
+  }
+}
+</code></pre>
+<h2 id="内置可迭代对象">内置可迭代对象</h2>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String"><code>String</code></a>、<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array"><code>Array</code></a>、<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypedArray"><code>TypedArray</code></a>、<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Map"><code>Map</code></a>和  <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Set"><code>Set</code></a>，它们的原型对象都实现了  <code>@@iterator</code>方法。</p>
+<p>例如，简单的 map 示例：(只是为了说明迭代原理，非底层实现)</p>
+<div class="markdown notion" style="padding: 10px;background-color: #f8f8f8; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span><img style="height: 28px" src="https://github.githubassets.com/favicons/favicon.png" /></span></div>
+<a href=https://gist.github.com/qxxiao/5ae665244881bb12564cf74785c1bcaf#file-js-mymap-md target="_blank" style="text-decoration:none"><p style="color: rgb(55, 53, 47); text-overflow: ellipsis;margin: 0px 5px 0px 38px !important"><span style="
+font-size: 14px;line-height: 20px;min-height: 24px;margin-bottom: 2px;">CodeBlock · GitHub</span><br><span style="font-size: 12px; line-height: 16px; color: rgba(55, 53, 47, 0.65);">CodeBlock. GitHub Gist: instantly share code, notes, and snippets.</span> <br><span style="font-size: 12px;line-height: 16px;">https://gist.github.com/qxxiao/5ae665244881bb12564cf74785c1bcaf#file-js-mymap-md</span></p></a></div>
+<h2 id="生成器">生成器</h2>
+<p><strong>生成器</strong>对象是由一个  <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/function*">generator function</a> 返回的，它是迭代器(next 方法)，也是可迭代对象(<code>@@iterator</code> )。</p>
+<p><code>function*</code> 声明方式，定义一个<strong>生成器函数</strong>，其返回一个生成器对象。</p>
+<p>执行流程：</p>
+<ul>
+<li>
+<p><code>next()</code>方法被首次（后续）调用时，其内的语句会执行到第一个（后续）出现<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/yield"><code>yield</code></a>的位置为止，<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/yield"><code>yield</code></a><br>
+  后紧跟迭代器要返回的值。</p>
+</li>
+<li>
+<p>或者如果用的是  <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/yield*"><code>yield*</code></a>（多了个星号），则表示将执行权移交给另一个生成器函数；</p>
+</li>
+<li>
+<p><code>next()</code>方法返回一个对象，这个对象包含两个属性：value 和 done（迭代器语义）</p>
+</li>
+<li>
+<p>调用  <code>next()</code>方法时，如果传入了参数，那么这个参数会传给<strong>上一条执行的 yield 语句左边的变量</strong></p>
+</li>
+</ul>
+<p>注意：生成器函数中 return 可以提前结束生成器的状态(next 返回的对象 done:true)，可以返回值。返回的生成器对象也可以调用 return 函数提前结束。</p>
+<pre><code class="language-javascript">let aGeneratorObject = (function* () {
+  yield 1
+  yield 2
+  yield 3
+})() // 返回生成器对象
+
+typeof aGeneratorObject.next // 返回&quot;function&quot;, 因为有一个 next 方法，所以这是一个迭代器
+typeof aGeneratorObject[Symbol.iterator] // 返回&quot;function&quot;, 因为有一个 @@iterator 方法，所以这是一个可迭代对象
+aGeneratorObject[Symbol.iterator]() === aGeneratorObject // true，因为 @@iterator 方法返回自身（即迭代器）
+;[...aGeneratorObject] // 返回 [1, 2, 3]
+console.log(Symbol.iterator in aGeneratorObject) // true
+</code></pre>
+<div class="markdown notion" style="padding: 10px;background-color: #f8f8f8; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span><img style="height: 28px" src="https://github.githubassets.com/favicons/favicon.png" /></span></div>
+<a href=https://gist.github.com/qxxiao/5ae665244881bb12564cf74785c1bcaf#file-js-js target="_blank" style="text-decoration:none"><p style="color: rgb(55, 53, 47); text-overflow: ellipsis;margin: 0px 5px 0px 38px !important"><span style="
+font-size: 14px;line-height: 20px;min-height: 24px;margin-bottom: 2px;">CodeBlock · GitHub</span><br><span style="font-size: 12px; line-height: 16px; color: rgba(55, 53, 47, 0.65);">CodeBlock. GitHub Gist: instantly share code, notes, and snippets.</span> <br><span style="font-size: 12px;line-height: 16px;">https://gist.github.com/qxxiao/5ae665244881bb12564cf74785c1bcaf#file-js-js</span></p></a></div>
+<h2 id="异步可迭代对象">异步可迭代对象</h2>
+<p>异步可迭代对象：定义了 <code>Symbol.asyncIterator</code> 属性，可用于 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/for-await...of"><code>for await...of</code></a> 循环。</p>
+<p>(<code>Symbol.asyncIterator</code> 是一个用于访问对象的<code>@@asyncIterator</code> 方法的内建符号)</p>
+<p>主要作用：迭代返回值的操作是异步操作时，优化性能。</p>
+<p>使用<code>for await...of</code> <strong>语句</strong>创建一个循环，可遍历异步可迭代对象，注意它也可以遍历上面的同步可迭代对象(相当于使用 Promise.resolve(val)包装). 同时存在，优先迭代返回的异步迭代器对象。</p>
+<p><strong>自定义异步可迭代对象</strong></p>
+<pre><code class="language-javascript">const myAsyncIterable = new Object()
+myAsyncIterable[Symbol.asyncIterator] = async function* () {
+  yield 'hello'
+  yield 'async'
+  yield 'iteration!'
+}
+;(async () =&gt; {
+  for await (const x of myAsyncIterable) {
+    console.log(x)
+    // expected output:
+    //    &quot;hello&quot;
+    //    &quot;async&quot;
+    //    &quot;iteration!&quot;
+  }
+})()
+</code></pre>
+<p>异步迭代器，可以看作每次迭代返回的是一个 promise 对象。</p>
+<p>注意：async 函数调用，await 后面的表达式执行都是同步操作，只有 await 语句后面的语句即回调才是异步执行(微任务)</p>
+</div>
+
+                <!-- 新加的模块的，应该使用模版-->
+                <!-- 版权声明 -->
+                
+                  <div class="jumbotron">
+                    <div class="container">
+                      <p>
+                        <i class="ri-article-line"></i>
+                        <b>本文链接:</b>
+                        <a href="https://blog.qxxiao.eu.org/post/迭代器和生成器/" target="_blank">
+                          迭代器和生成器
+                        </a>
+                      </p>
+                      <p>
+                        <i class="ri-creative-commons-line"></i>
+                        <b>版权声明:</b>
+                        本博客所有文章除特别声明外，均采用
+                        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC
+                          BY-NC-SA
+                          4.0</a>
+                        许可协议，转载请注明出处。
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>发布日期:</b>
+                        2022-11-23
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>最新构建:</b>
+                        2024-07-02
+                          <!-- 使用 themeConfig.dateFormat 格式对日期格式化，例如YY-MM-DD -->
+                          <!-- {
+  &#34;content&#34;: &#34;&lt;!-- more --&gt;\n&lt;h2 id=\&#34;2024-06-10\&#34;&gt;2024-06-10&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加了相册的时间线样式&lt;/li&gt;\n&lt;li&gt;添加了书单页面&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2024-06-09\&#34;&gt;2024-06-09&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改了部分样式，去除了多个页面中的 css class: animated fadeIn，避免页面刷新时抖动&lt;/li&gt;\n&lt;li&gt;修改了文章 TOC 目录的宽度样式, 只限制最小/最大宽度，使其能够自适应内容宽度&lt;/li&gt;\n&lt;li&gt;统一 post 文章和 diary/gallary 页面的回到顶部/底部按钮样式和位置&lt;/li&gt;\n&lt;li&gt;简化了 明亮/黑暗模式切换代码，删除了 &lt;code&gt;ldbutton.js&lt;/code&gt;，使用 Vue 来控制样式切换。但刷新会导致页面闪屏，因为 Vue 执行完 mounted 后才会正确计算当前模式；解决：使用 js 函数来提前完成模式的初始化，避免闪屏&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2023-12-20\&#34;&gt;2023-12-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加&lt;code&gt;时光/说说&lt;/code&gt;功能，数据来源于 Memos\n&lt;ul&gt;\n&lt;li&gt;由于评论部署在 vercel，加载慢，说说评论需要在&lt;a href=\&#34;https://memos.qxxiao.eu.org\&#34;&gt;原始 Memos 页面&lt;/a&gt;打开评论 (更新：添加了页面评论，可以直接在当前页面访问)&lt;/li&gt;\n&lt;li&gt;说说服务器部署在 Azure，可能需要代理才能正常访问&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;li&gt;将仓库同步到 github，利用 github actions 进行博客同步\n&lt;ul&gt;\n&lt;li&gt;之前使用 Mac 监控脚本同步博客，gridea 每次预览可能会触发导致站点 url 是 localhost，并且有时任务触发不及时&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;li&gt;添加 &lt;a href=\&#34;https://github.com/kytrun/gridea-search\&#34;&gt;gridea-search 插件&lt;/a&gt;，对应添加了搜索框，调整了一下菜单界面&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2023-12-12\&#34;&gt;2023-12-12&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;更新评论系统 twikoo 版本到 1.6.27&lt;/li&gt;\n&lt;li&gt;更新样式，删除友链菜单，直接在&lt;a href=\&#34;/post/about\&#34;&gt;关于页面&lt;/a&gt;添加，保留了部分 css 样式&lt;/li&gt;\n&lt;li&gt;优化，使用 &lt;code&gt;v-cloak&lt;/code&gt; 避免出现 post 页面的文章目录闪烁问题&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-07-06\&#34;&gt;2022-07-06&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改样式，添加暗亮模式切换&lt;/li&gt;\n&lt;li&gt;修改默认样式查询方式，简单样式适配&lt;/li&gt;\n&lt;li&gt;修改代码主题为 &lt;code&gt;vs-dark&lt;/code&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-03-20\&#34;&gt;2022-03-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加文章列表中的标签的显示，设置标签样式(默认没有 border-indigo-500 等样式)&lt;/li&gt;\n&lt;li&gt;优化布局&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-27\&#34;&gt;2022-02-27&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加代码样式，增加行号和复制选项&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-25\&#34;&gt;2022-02-25&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改主题配置，添加友链菜单，优化了页面效果&lt;/li&gt;\n&lt;li&gt;添加导航菜单&lt;/li&gt;\n&lt;li&gt;页面样式移动和修改&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-20\&#34;&gt;2022-02-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;更新页面样式，添加版权和说明（改变字体可能会导致中文目录不能正确跳转）&lt;/li&gt;\n&lt;li&gt;更新归档页面，添加日期信息和每篇文章的相关描述&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-10\&#34;&gt;2022-02-10&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;简单使用 Rocky 主题&lt;/li&gt;\n&lt;li&gt;修改主页信息的描述以及 footer 信息&lt;/li&gt;\n&lt;li&gt;使用 Twikoo 评论&lt;/li&gt;\n&lt;/ul&gt;\n&#34;,
+  &#34;fileName&#34;: &#34;log&#34;,
+  &#34;abstract&#34;: &#34;&#34;,
+  &#34;title&#34;: &#34;更新日志&#34;,
+  &#34;tags&#34;: [],
+  &#34;date&#34;: &#34;2020-01-05 00:37:45&#34;,
+  &#34;dateFormat&#34;: &#34;2020-01-05&#34;,
+  &#34;feature&#34;: &#34;&#34;,
+  &#34;link&#34;: &#34;https://blog.qxxiao.eu.org/post/log/&#34;,
+  &#34;hideInList&#34;: true,
+  &#34;isTop&#34;: false,
+  &#34;stats&#34;: {
+    &#34;text&#34;: &#34;3 min read&#34;,
+    &#34;time&#34;: 139000,
+    &#34;words&#34;: 636,
+    &#34;minutes&#34;: 3
+  },
+  &#34;description&#34;: &#34;\n2024-06-10\n\n添加了相册的时间线样式\n添加了书单页面\n\n2024-06-09\n\n修改了部分样式，去除了多个页面中的 css class: animated fadeIn，避免页面刷新时抖动\n修改了文章 TOC 目录的宽度样式, ...&#34;,
+  &#34;toc&#34;: &#34;&lt;ul class=\&#34;markdownIt-TOC\&#34;&gt;\n&lt;li&gt;\n&lt;ul&gt;\n&lt;li&gt;&lt;a href=\&#34;#2024-06-10\&#34;&gt;2024-06-10&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2024-06-09\&#34;&gt;2024-06-09&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2023-12-20\&#34;&gt;2023-12-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2023-12-12\&#34;&gt;2023-12-12&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-07-06\&#34;&gt;2022-07-06&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-03-20\&#34;&gt;2022-03-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-27\&#34;&gt;2022-02-27&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-25\&#34;&gt;2022-02-25&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-20\&#34;&gt;2022-02-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-10\&#34;&gt;2022-02-10&lt;/a&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;/ul&gt;\n&#34;
+}
+                            
+                                  2022-11-23
+                                     -->
+                      </p>
+                    </div>
+                  </div>
+                  
+                    <!-- 新加的模块的，应该使用模版-->
+                    <!--阅读次数-->
+                    <div class="text-center text-gray-400">
+                      <i class="ri-eye-line"></i>
+                      本文已被阅读
+                      <span id="twikoo_visitors">0</span>
+                      次，该数据仅供参考
+                    </div>
+
+                    <!-- Share to Twitter, Weibo, Telegram -->
+                    <div class="flex items-center">
+                      <div class="mr-4 flex items-center">
+                        <i class="ri-share-forward-line text-gray-500"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-blue-500 hover:bg-blue-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTwitter">
+                        <i class="ri-twitter-line"></i>
+                      </div>
+                      <div class="px-4 cursor-pointer text-red-500 hover:bg-red-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToWeibo">
+                        <i class="ri-weibo-line"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-indigo-500 hover:bg-indigo-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTelegram">
+                        <i class="ri-telegram-line"></i>
+                      </div>
+                    </div>
+          </div>
+
+          <!-- 新加的模块的，应该使用模版-->
+          <!-- 评论说明-->
+          <div class="jumbotron-comment">
+            <div class="container">
+              <p>
+                <i class="ri-message-3-line"></i>
+                欢迎任何与文章内容相关并保持尊重的评论😊 !
+              </p>
+            </div>
+          </div>
+
+          
+                        
+                            
+                              <div id="tcomment"></div>
+                               <footer class="py-12 text-center px-4 md:px-0" v-pre>
+  共 43 篇文章 | Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <i class="ri-rss-line"></i><a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" target="_blank">RSS</a></br>
+©2020-2024 <a href="https://blog.qxxiao.eu.org/index.html" target="_blank">Nuo</a>. All rights reserved.
+</footer>
+
+<!--没有添加/用到app 中的主题footer配置消息，如果使用，将上面的 href 替换为原地址-->
+<!---->
+
+        </div>
+
+        <!-- TOC Container -->
+        <div
+          class="fixed right-0 bottom-0 mb-40 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white dark:bg-gray-500 dark:text-gray-200 hover:shadow-lg transition-all"
+          @click="showToc = true">
+          <i class="ri-file-list-line"></i>
+        </div>
+
+        <div v-cloak
+          class="fixed right-0 top-0 bottom-0 overflow-y-auto w-16-24 bg-white dark:bg-gray-800 p-4 border-l border-gray-100 dark:border-gray-600 z-10 transition-fast"
+          :class="{ '-mr-64': !showToc }">
+          <div class="flex mb-4 justify-end">
+            <div
+              class="w-8 h-8 inline-flex justify-center items-center rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-fast"
+              @click="showToc = false">
+              <i class="ri-close-line text-lg"></i>
+            </div>
+          </div>
+          <div class="post-toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%8F%AF%E8%BF%AD%E4%BB%A3%E5%8D%8F%E8%AE%AE">可迭代协议</a></li>
+<li><a href="#%E8%BF%AD%E4%BB%A3%E5%99%A8">迭代器</a></li>
+<li><a href="#%E5%86%85%E7%BD%AE%E5%8F%AF%E8%BF%AD%E4%BB%A3%E5%AF%B9%E8%B1%A1">内置可迭代对象</a></li>
+<li><a href="#%E7%94%9F%E6%88%90%E5%99%A8">生成器</a></li>
+<li><a href="#%E5%BC%82%E6%AD%A5%E5%8F%AF%E8%BF%AD%E4%BB%A3%E5%AF%B9%E8%B1%A1">异步可迭代对象</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+
+        <!-- Back to top -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-20 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToUp" v-show="scrolled">
+          <i class="ri-arrow-up-line"></i>
+        </div>
+        <!-- Back to bottom -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-4 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToBottom" v-show="!atBottom">
+          <i class="ri-arrow-down-line"></i>
+        </div>
+    </div>
+
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- Background of PhotoSwipe. 
+        It's a separate element as animating opacity is faster than rgba(). -->
+  <div class="pswp__bg">
+  </div>
+  <!-- Slides wrapper with overflow:hidden. -->
+  <div class="pswp__scroll-wrap">
+    <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+    <div class="pswp__container">
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+    </div>
+    <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        <!--  Controls are self-explanatory. Order can be changed. -->
+        <div class="pswp__counter">
+        </div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+        <!-- element will get class pswp__preloader--active when preloader is running -->
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip">
+        </div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://blog.qxxiao.eu.org/media/scripts/main.js"></script>
+
+      <!-- Code Highlight -->
+      
+        <script src="https://blog.qxxiao.eu.org/media/prism.js"></script>
+        <script>
+          Prism.highlightAll();
+        </script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/show-language/prism-show-language.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+        
+
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+          <script>
+            //拿到预览框架，也就是上面的html代码
+            var pswpElement = document.querySelectorAll('.pswp')[0]
+            //定义图片数组变量
+            var imgitems
+            /**
+             * 用于显示预览界面
+             * @param index 图片数组下标
+             */
+            function viewImg(index) {
+              var pswpoptions = {
+                index: parseInt(index, 10), // 开始幻灯片索引。0是第一张幻灯片。必须是整数，而不是字符串。
+                bgOpacity: 0.7, // 背景透明度，0-1
+                maxSpreadZoom: 3, // 缩放级别，不要太大
+              }
+              //初始化并打开PhotoSwipe，pswpElement对应上面预览框架，PhotoSwipeUI_Default为皮肤，imgitems为图片数组，pswpoptions为选项
+              var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, imgitems, pswpoptions)
+              gallery.init()
+            }
+            /**
+             * 用于添加图片点击事件
+             * @param img 图片元素
+             * @param index 所属下标（在imgitems中的位置）
+             */
+            function addImgClick(img, index) {
+              img.onclick = function () {
+                viewImg(index)
+              }
+            }
+            /**
+             * 轮询所有图片，获取src、width、height等数据，加入imgitems，并给图片元素添加事件
+             * 最好在onload中执行该方法，本站因放在最底部，所以直接初始化
+             * 异步加载图片可在图片元素创建完成后调用此方法
+             */
+            function initImg() {
+              //重置图片数组
+              imgitems = []
+              //查找class:markdown 下的所有img元素并遍历
+              var imgs = document.querySelectorAll('.markdown img')
+              for (var i = 0; i < imgs.length; i++) {
+                var img = imgs[i]
+                //本站相册初始为loading图片，真实图片放在data-src
+                var ds = img.getAttribute('data-src')
+                //创建image对象，用于获取图片宽高
+                var imgtemp = new Image()
+                //判断是否存在data-src
+                if (ds != null && ds.length > 0) {
+                  imgtemp.src = ds
+                } else {
+                  imgtemp.src = img.src
+                }
+                //判断是否存在缓存
+                if (imgtemp.complete) {
+                  var imgobj = {
+                    src: imgtemp.src,
+                    w: imgtemp.width,
+                    h: imgtemp.height,
+                  }
+                  imgitems[i] = imgobj
+                  addImgClick(img, i)
+                } else {
+                  imgtemp.index = i
+                  imgtemp.img = img
+                  imgtemp.onload = function () {
+                    var imgobj = {
+                      src: this.src,
+                      w: this.width,
+                      h: this.height,
+                    }
+                    //不要使用push，因为onload前后顺序会不同
+                    imgitems[this.index] = imgobj
+                    //添加点击事件
+                    addImgClick(this.img, this.index)
+                  }
+                }
+              }
+            }
+            //初始化
+            initImg();
+          </script>
+          
+                
+                          
+                            <script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.36/dist/twikoo.all.min.js"></script>
+                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+                              integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+                              crossorigin="anonymous" />
+                            <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+                              integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+                              crossorigin="anonymous"></script>
+                            <script defer
+                              src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+                              integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"
+                              crossorigin="anonymous"></script>
+                            <script>
+                              twikoo.init({
+                                envId: 'https://twikoo.qxxiao.eu.org/',
+                                el: '#tcomment',
+                                katex: {
+                                  delimiters: [
+                                    { left: '$$', right: '$$', display: true },
+                                    { left: '$', right: '$', display: false },
+                                    { left: '\\(', right: '\\)', display: false },
+                                    { left: '\\[', right: '\\]', display: true },
+                                  ],
+                                  throwOnError: false,
+                                },
+                                // region: 'ap-guangzhou', // 环境地域，默认为 ap-shanghai，如果您的环境地域不是上海，需传此参数
+                                // path: 'window.location.pathname', // 用于区分不同文章的自定义 js 路径，如果您的文章路径不是 location.pathname，需传此参数
+                              });
+                            </script>
+                            
+
+                              <!-- line number for code block -->
+                              <script>
+                                var pres = document.getElementsByTagName('pre')
+                                for (var i = 0; i < pres.length; i++) {
+                                  var pre = pres[i]
+                                  if (pre.childNodes[0].nodeName == 'CODE') {
+                                    pre.setAttribute('class', 'line-numbers')
+                                  }
+                                }
+                              </script>
+                              
+
+  </body>
+
+</html>
