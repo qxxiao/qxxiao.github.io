@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <!--每个页面都需要 head link等  -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>
+  关于 - Unique&#39;s Blog
+</title>
+<link rel="shortcut icon" href="https://blog.qxxiao.eu.org/favicon.ico">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/tailwind.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/ldbutton.css">
+
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/styles/main.css">
+<script src="https://blog.qxxiao.eu.org/media/scripts/initTheme.js"></script>
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/light-dark.css">
+
+<link rel="alternate" type="application/atom+xml" title="关于 - Unique&#39;s Blog - Atom Feed"
+  href="https://blog.qxxiao.eu.org/atom.xml">
+
+
+      <meta name="description" content="
+欢迎来到我的小站呀，很高兴遇见你！🤝
+
+
+🏠 关于
+网站使用经过个人修改的 Rocky 主题，由 Gridea 配合 GitHub Pages 搭建。
+👤 个人项目
+工具
+
+IPFS-File-Uploader
+
+hosted by..." />
+      <meta property="og:title" content="关于 - Unique&#39;s Blog" />
+      <meta property="og:description" content="
+欢迎来到我的小站呀，很高兴遇见你！🤝
+
+
+🏠 关于
+网站使用经过个人修改的 Rocky 主题，由 Gridea 配合 GitHub Pages 搭建。
+👤 个人项目
+工具
+
+IPFS-File-Uploader
+
+hosted by..." />
+      <meta property="og:type" content="articles" />
+      <meta property="og:url" content="https://blog.qxxiao.eu.org/post/about/" />
+      <meta property="og:image"
+        content="https://pic.qxxiao.cn/20220616202951.png" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:width" content="1200" />
+      <meta name="twitter:title" content="关于 - Unique&#39;s Blog" />
+      <meta name="twitter:description" content="
+欢迎来到我的小站呀，很高兴遇见你！🤝
+
+
+🏠 关于
+网站使用经过个人修改的 Rocky 主题，由 Gridea 配合 GitHub Pages 搭建。
+👤 个人项目
+工具
+
+IPFS-File-Uploader
+
+hosted by..." />
+      <meta name="twitter:card" content="summary_large_image" />
+      <link rel="canonical" href="https://blog.qxxiao.eu.org/post/about/" />
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css" />
+
+      
+        <link rel="stylesheet"
+          href="https://blog.qxxiao.eu.org/media/css/prism-vs-dark.css" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.css"
+          rel="stylesheet" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.css"
+          rel="stylesheet" />
+        
+          
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" />
+            
+  </head>
+
+  <body>
+    <div class="antialiased flex flex-col min-h-screen" id="app">
+      <!-- 标题菜单 -->
+<div class="nav py-3 md:py-8 fixed w-full z-10 bg-gray-50 dark:bg-gray-700 transition-all duration-300"
+  :class="{ 'scroll': scrolled }">
+  <div class="flex justify-end px-4">
+    <div class="w-8 h-8 flex justify-center items-center rounded-full md:hidden" @click="showMenu = !showMenu">
+      <i class="ri-close-line" v-show="showMenu"></i>
+      <i class="ri-menu-3-line" v-show="!showMenu"></i>
+    </div>
+  </div>
+  <nav cloak class="max-w-4xl w-full mx-auto text-right flex flex-col md:flex-row justify-between items-center md:flex"
+    :class="`${ showMenu ? 'flex' : 'hidden' }`">
+    
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            首页
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/archives" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            归档
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/tags" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            标签
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="https://gh.qxxiao.cn/nav" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            导航
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+        <div
+          class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold dark:hover:bg-gray-600 hover:bg-gray-200 nav-time1">
+          时光
+            <div class="transition font-semibold nav-time2">
+              
+                <a href="https://blog.qxxiao.eu.org/diary/" class="">
+                  说说
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/gallery/" class="">
+                  相册
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/post/book/" class="">
+                  书单
+                </a>
+                
+            </div>
+        </div>
+        
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/post/about" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            关于
+          </a>
+          
+            
+              <!-- <a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+      RSS
+    </a> -->
+              <!-- 黑色模式，和亮色模式开关-->
+<div class="py-2 md:py-1 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+  <label for="night-light-checkbox" class="night-light-label">
+    <input type="checkbox" id="night-light-checkbox" @change="toggleDarkMode" />
+    <span v-cloak class="night-light-ball" id="night-light-ball"></span>
+    <svg viewBox="0 0 512 512" class="sun-svg">
+      <path id="sun-svg"
+        d="M256 160c-52.9 0-96 43.1-96 96s43.1 96 96 96 96-43.1 96-96-43.1-96-96-96zm246.4 80.5l-94.7-47.3 33.5-100.4c4.5-13.6-8.4-26.5-21.9-21.9l-100.4 33.5-47.4-94.8c-6.4-12.8-24.6-12.8-31 0l-47.3 94.7L92.7 70.8c-13.6-4.5-26.5 8.4-21.9 21.9l33.5 100.4-94.7 47.4c-12.8 6.4-12.8 24.6 0 31l94.7 47.3-33.5 100.5c-4.5 13.6 8.4 26.5 21.9 21.9l100.4-33.5 47.3 94.7c6.4 12.8 24.6 12.8 31 0l47.3-94.7 100.4 33.5c13.6 4.5 26.5-8.4 21.9-21.9l-33.5-100.4 94.7-47.3c13-6.5 13-24.7.2-31.1zm-155.9 106c-49.9 49.9-131.1 49.9-181 0-49.9-49.9-49.9-131.1 0-181 49.9-49.9 131.1-49.9 181 0 49.9 49.9 49.9 131.1 0 181z">
+      </path>
+    </svg>
+    <svg viewBox="0 0 512 512" class="moon-svg">
+      <path id="moon-svg"
+        d="M283.211 512c78.962 0 151.079-35.925 198.857-94.792 7.068-8.708-.639-21.43-11.562-19.35-124.203 23.654-238.262-71.576-238.262-196.954 0-72.222 38.662-138.635 101.498-174.394 9.686-5.512 7.25-20.197-3.756-22.23A258.156 258.156 0 0 0 283.211 0c-141.309 0-256 114.511-256 256 0 141.309 114.511 256 256 256z">
+      </path>
+    </svg>
+  </label>
+</div>
+                <form id="gridea-search-form" class="inline-flex mx-4 px-4" action="https://blog.qxxiao.eu.org/search/">
+                  <input type="search" autocomplete='off' spellcheck='false' name="q" />
+                </form>
+  </nav>
+
+</div>
+        <a href="https://blog.qxxiao.eu.org"
+          class="fixed top-0 left-0 mt-4 bg-black text-white dark:text-gray-700 dark:bg-yellow-50 dark:hover:bg-black dark:hover:text-white inline-flex p-2 pl-8 hover:text-gray-700 hover:bg-yellow-50 font-bold z-10">
+          Unique&#39;s Blog
+        </a>
+        <div class="max-w-4xl w-full mx-auto">
+          <div class="shadow-box bg-white dark:bg-gray-600 rounded-lg pt-32 px-4 md:px-8 pb-8 mb-8">
+            <h1 class="text-5xl font-semibold leading-normal pb-8 mb-8 border-b-8 border-gray-700">
+              关于
+            </h1>
+            <!-- 不显示 Post 中的封面图片 -->
+            
+              <img src="https://pic.qxxiao.cn/20220616202951.png" alt="关于" class="block w-full mb-8" />
+              
+                <div class="mb-8 flex flex-wrap">
+                  <div class="text-gray-400 text-sm mr-4">
+                    <i class="ri-calendar-2-line" style="vertical-align: middle;"></i>
+                    2019-01-25 ·
+                      <i class="ri-file-word-line" style="vertical-align: middle;"></i>
+                      178字 ·
+                        <i class="ri-timer-line" style="vertical-align: middle;"></i>
+                        1 min read
+                  </div>
+                  
+                      
+                </div>
+                <div class="markdown mb-8" v-pre><blockquote>
+<p>欢迎来到我的小站呀，很高兴遇见你！🤝</p>
+</blockquote>
+<!-- more -->
+<h2 id="关于">🏠 关于</h2>
+<p>网站使用经过个人修改的 Rocky 主题，由 Gridea 配合 GitHub Pages 搭建。</p>
+<h2 id="个人项目">👤 个人项目</h2>
+<h3 id="工具">工具</h3>
+<ul>
+<li><a href="https://qxxiao.cn/IPFS-File-Uploader/">IPFS-File-Uploader</a>
+<ul>
+<li><a href="https://dweb.link/ipfs/bafybeifkrovwq3avaee6iali4dwvcfoukbasexref4hkkqc72gxa6bl2be">hosted by IPFS</a></li>
+</ul>
+</li>
+<li><a href="https://github.com/qxxiao/notion2md">notion2md</a></li>
+</ul>
+<h2 id="联系方式">📧 联系方式</h2>
+<p><a href="mailto:qxxiaohust@qq.com" target="_blank" class="mr-2 w-8 h-8 text-base hover:text-gray-700 hover:bg-yellow-50 transition-fast"><i class="ri-mail-line"></i> Personal Email</a><br>
+<a href="https://github.com/qxxiao" target="_blank" class="mr-2 w-8 h-8 text-base hover:text-gray-700 hover:bg-yellow-50 transition-fast"><i class="ri-github-line"></i> Github</a><br>
+<a href="https://t.me/qxxiao" target="_blank" class="mr-2 w-8 h-8 text-base hover:text-gray-700 hover:bg-yellow-50 transition-fast"><i class="ri-telegram-line"></i> Telegram</a></p>
+<h2 id="友链">👥 友链</h2>
+<div class="friendbox">
+<div class="friend-box friendblock">
+    <img src="https://pic.qxxiao.cn/20220413154709.png" class="friend-avatar" />
+    <div class="flink-info">
+    <a href="https://www.cnblogs.com/lazyfiish/" target="_blank">
+        LazyFish
+    </a>
+    <br />
+    LazyFish's cnblog
+    </div>
+</div>
+<div class="friend-box friendblock">
+    <img src="https://pic.qxxiao.cn/202312130033090.png" class="friend-avatar" />
+    <div class="flink-info">
+    <a href="https://fanlv.fun" target="_blank">
+        Ryo
+    </a>
+    <br />
+    Ryo's blog, 技术总结
+    </div>
+</div>
+<div class="friend-box friendblock">
+    <img src="https://shockerli.net/apple-touch-icon.png" class="friend-avatar" />
+    <div class="flink-info">
+    <a href="https://shockerli.net/post/" target="_blank">
+        Jioby | 格物
+    </a>
+    <br />
+    知善知恶是良知，为善去恶是格物。
+    </div>
+</div>
+<div class="friend-box friendblock">
+    <img src="https://www.bigspring.cn/icons/apple-touch-icon.png" class="friend-avatar" />
+    <div class="flink-info">
+    <a href="https://www.bigspring.cn" target="_blank">
+        一树一溪(MySQL)
+    </a>
+    <br />
+    一树一溪一片天，一径一牛一草间。
+    </div>
+</div>
+<div class="friend-box friendblock">
+    <img src="https://img.halfrost.com/2022/10/apple-touch-icon-512x512.png" class="friend-avatar" />
+    <div class="flink-info">
+    <a href="https://halfrost.com/tag/" target="_blank">
+        Halfrost's Field | 冰霜之地
+    </a>
+    <br />
+    高级工程师 golang, protocal, AI
+    </div>
+</div>
+<div class="friend-box friendblock">
+    <img src="https://ichn.xyz/avatar.jpg" alt="icon" class="friend-avatar" />
+    <div class="flink-info">
+    <a href="https://ichn.xyz/blog" target="_blank">
+        Everything about Zhifeng Hu
+    </a>
+    <br />
+    Database Engineer@PingCAP
+    </div>
+</div>
+<div class="friend-box friendblock">
+    <img src="https://vlieo.com/images/avatar.png" alt="icon" class="friend-avatar" />
+    <div class="flink-info">
+    <a href="https://vlieo.com" target="_blank">
+        记忆一隅
+    </a>
+    <br />
+    凡事总需研究，才会明白
+    </div>
+</div>
+<div class="friend-box friendblock">
+    <img src="https://cravatar.cn/avatar/ba83fa02fc4b2ba621514941307e21be" alt="icon" class="friend-avatar" />
+    <div class="flink-info">
+    <a href="https://immmmm.com" target="_blank">
+        林木木
+    </a>
+    <br />
+    哔哔广场 Memos
+    </div>
+</div>
+<div class="friend-box friendblock">
+    <img src="https://yyl125.top/images/avatar.png?v=1717993398077" alt="icon" class="friend-avatar" />
+    <div class="flink-info">
+    <a href="https://yyl125.top" target="_blank">
+        Benjamin
+    </a>
+    <br />
+    Stay hungry. Stay foolish.
+    </div>
+</div>
+</div>
+<h2 id="站点相关">站点相关</h2>
+<ul>
+<li><a href="/post/copyright">版权信息与资源使用说明</a></li>
+<li><a href="/post/log">更新日志</a></li>
+</ul>
+</div>
+
+                <!-- 新加的模块的，应该使用模版-->
+                <!-- 版权声明 -->
+                
+                  <div class="jumbotron">
+                    <div class="container">
+                      <p>
+                        <i class="ri-article-line"></i>
+                        <b>本文链接:</b>
+                        <a href="https://blog.qxxiao.eu.org/post/about/" target="_blank">
+                          关于
+                        </a>
+                      </p>
+                      <p>
+                        <i class="ri-creative-commons-line"></i>
+                        <b>版权声明:</b>
+                        本博客所有文章除特别声明外，均采用
+                        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC
+                          BY-NC-SA
+                          4.0</a>
+                        许可协议，转载请注明出处。
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>发布日期:</b>
+                        2019-01-25
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>最新构建:</b>
+                        2024-07-11
+                          <!-- 使用 themeConfig.dateFormat 格式对日期格式化，例如YY-MM-DD -->
+                          <!-- {
+  &#34;content&#34;: &#34;&lt;!-- more --&gt;\n&lt;h2 id=\&#34;2024-06-10\&#34;&gt;2024-06-10&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加了相册的时间线样式&lt;/li&gt;\n&lt;li&gt;添加了书单页面&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2024-06-09\&#34;&gt;2024-06-09&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改了部分样式，去除了多个页面中的 css class: animated fadeIn，避免页面刷新时抖动&lt;/li&gt;\n&lt;li&gt;修改了文章 TOC 目录的宽度样式, 只限制最小/最大宽度，使其能够自适应内容宽度&lt;/li&gt;\n&lt;li&gt;统一 post 文章和 diary/gallary 页面的回到顶部/底部按钮样式和位置&lt;/li&gt;\n&lt;li&gt;简化了 明亮/黑暗模式切换代码，删除了 &lt;code&gt;ldbutton.js&lt;/code&gt;，使用 Vue 来控制样式切换。但刷新会导致页面闪屏，因为 Vue 执行完 mounted 后才会正确计算当前模式；解决：使用 js 函数来提前完成模式的初始化，避免闪屏&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2023-12-20\&#34;&gt;2023-12-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加&lt;code&gt;时光/说说&lt;/code&gt;功能，数据来源于 Memos\n&lt;ul&gt;\n&lt;li&gt;由于评论部署在 vercel，加载慢，说说评论需要在&lt;a href=\&#34;https://memos.qxxiao.eu.org\&#34;&gt;原始 Memos 页面&lt;/a&gt;打开评论 (更新：添加了页面评论，可以直接在当前页面访问)&lt;/li&gt;\n&lt;li&gt;说说服务器部署在 Azure，可能需要代理才能正常访问&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;li&gt;将仓库同步到 github，利用 github actions 进行博客同步\n&lt;ul&gt;\n&lt;li&gt;之前使用 Mac 监控脚本同步博客，gridea 每次预览可能会触发导致站点 url 是 localhost，并且有时任务触发不及时&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;li&gt;添加 &lt;a href=\&#34;https://github.com/kytrun/gridea-search\&#34;&gt;gridea-search 插件&lt;/a&gt;，对应添加了搜索框，调整了一下菜单界面&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2023-12-12\&#34;&gt;2023-12-12&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;更新评论系统 twikoo 版本到 1.6.27&lt;/li&gt;\n&lt;li&gt;更新样式，删除友链菜单，直接在&lt;a href=\&#34;/post/about\&#34;&gt;关于页面&lt;/a&gt;添加，保留了部分 css 样式&lt;/li&gt;\n&lt;li&gt;优化，使用 &lt;code&gt;v-cloak&lt;/code&gt; 避免出现 post 页面的文章目录闪烁问题&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-07-06\&#34;&gt;2022-07-06&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改样式，添加暗亮模式切换&lt;/li&gt;\n&lt;li&gt;修改默认样式查询方式，简单样式适配&lt;/li&gt;\n&lt;li&gt;修改代码主题为 &lt;code&gt;vs-dark&lt;/code&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-03-20\&#34;&gt;2022-03-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加文章列表中的标签的显示，设置标签样式(默认没有 border-indigo-500 等样式)&lt;/li&gt;\n&lt;li&gt;优化布局&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-27\&#34;&gt;2022-02-27&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加代码样式，增加行号和复制选项&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-25\&#34;&gt;2022-02-25&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改主题配置，添加友链菜单，优化了页面效果&lt;/li&gt;\n&lt;li&gt;添加导航菜单&lt;/li&gt;\n&lt;li&gt;页面样式移动和修改&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-20\&#34;&gt;2022-02-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;更新页面样式，添加版权和说明（改变字体可能会导致中文目录不能正确跳转）&lt;/li&gt;\n&lt;li&gt;更新归档页面，添加日期信息和每篇文章的相关描述&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-10\&#34;&gt;2022-02-10&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;简单使用 Rocky 主题&lt;/li&gt;\n&lt;li&gt;修改主页信息的描述以及 footer 信息&lt;/li&gt;\n&lt;li&gt;使用 Twikoo 评论&lt;/li&gt;\n&lt;/ul&gt;\n&#34;,
+  &#34;fileName&#34;: &#34;log&#34;,
+  &#34;abstract&#34;: &#34;&#34;,
+  &#34;title&#34;: &#34;更新日志&#34;,
+  &#34;tags&#34;: [],
+  &#34;date&#34;: &#34;2020-01-05 00:37:45&#34;,
+  &#34;dateFormat&#34;: &#34;2020-01-05&#34;,
+  &#34;feature&#34;: &#34;&#34;,
+  &#34;link&#34;: &#34;https://blog.qxxiao.eu.org/post/log/&#34;,
+  &#34;hideInList&#34;: true,
+  &#34;isTop&#34;: false,
+  &#34;stats&#34;: {
+    &#34;text&#34;: &#34;3 min read&#34;,
+    &#34;time&#34;: 139000,
+    &#34;words&#34;: 636,
+    &#34;minutes&#34;: 3
+  },
+  &#34;description&#34;: &#34;\n2024-06-10\n\n添加了相册的时间线样式\n添加了书单页面\n\n2024-06-09\n\n修改了部分样式，去除了多个页面中的 css class: animated fadeIn，避免页面刷新时抖动\n修改了文章 TOC 目录的宽度样式, ...&#34;,
+  &#34;toc&#34;: &#34;&lt;ul class=\&#34;markdownIt-TOC\&#34;&gt;\n&lt;li&gt;\n&lt;ul&gt;\n&lt;li&gt;&lt;a href=\&#34;#2024-06-10\&#34;&gt;2024-06-10&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2024-06-09\&#34;&gt;2024-06-09&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2023-12-20\&#34;&gt;2023-12-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2023-12-12\&#34;&gt;2023-12-12&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-07-06\&#34;&gt;2022-07-06&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-03-20\&#34;&gt;2022-03-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-27\&#34;&gt;2022-02-27&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-25\&#34;&gt;2022-02-25&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-20\&#34;&gt;2022-02-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-10\&#34;&gt;2022-02-10&lt;/a&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;/ul&gt;\n&#34;
+}
+                            
+                                  2019-01-25
+                                     -->
+                      </p>
+                    </div>
+                  </div>
+                  
+                    <!-- 新加的模块的，应该使用模版-->
+                    <!--阅读次数-->
+                    <div class="text-center text-gray-400">
+                      <i class="ri-eye-line"></i>
+                      本文已被阅读
+                      <span id="twikoo_visitors">0</span>
+                      次，该数据仅供参考
+                    </div>
+
+                    <!-- Share to Twitter, Weibo, Telegram -->
+                    <div class="flex items-center">
+                      <div class="mr-4 flex items-center">
+                        <i class="ri-share-forward-line text-gray-500"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-blue-500 hover:bg-blue-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTwitter">
+                        <i class="ri-twitter-line"></i>
+                      </div>
+                      <div class="px-4 cursor-pointer text-red-500 hover:bg-red-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToWeibo">
+                        <i class="ri-weibo-line"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-indigo-500 hover:bg-indigo-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTelegram">
+                        <i class="ri-telegram-line"></i>
+                      </div>
+                    </div>
+          </div>
+
+          <!-- 新加的模块的，应该使用模版-->
+          <!-- 评论说明-->
+          <div class="jumbotron-comment">
+            <div class="container">
+              <p>
+                <i class="ri-message-3-line"></i>
+                欢迎任何与文章内容相关并保持尊重的评论😊 !
+              </p>
+            </div>
+          </div>
+
+          
+                        
+                            
+                              <div id="tcomment"></div>
+                               <footer class="py-12 text-center px-4 md:px-0" v-pre>
+  共 43 篇文章 | Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <i class="ri-rss-line"></i><a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" target="_blank">RSS</a></br>
+©2020-2024 <a href="https://blog.qxxiao.eu.org/index.html" target="_blank">Nuo</a>. All rights reserved.
+</footer>
+
+<!--没有添加/用到app 中的主题footer配置消息，如果使用，将上面的 href 替换为原地址-->
+<!---->
+
+        </div>
+
+        <!-- TOC Container -->
+        <div
+          class="fixed right-0 bottom-0 mb-40 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white dark:bg-gray-500 dark:text-gray-200 hover:shadow-lg transition-all"
+          @click="showToc = true">
+          <i class="ri-file-list-line"></i>
+        </div>
+
+        <div v-cloak
+          class="fixed right-0 top-0 bottom-0 overflow-y-auto w-16-24 bg-white dark:bg-gray-800 p-4 border-l border-gray-100 dark:border-gray-600 z-10 transition-fast"
+          :class="{ '-mr-64': !showToc }">
+          <div class="flex mb-4 justify-end">
+            <div
+              class="w-8 h-8 inline-flex justify-center items-center rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-fast"
+              @click="showToc = false">
+              <i class="ri-close-line text-lg"></i>
+            </div>
+          </div>
+          <div class="post-toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%85%B3%E4%BA%8E">🏠 关于</a></li>
+<li><a href="#%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE">👤 个人项目</a>
+<ul>
+<li><a href="#%E5%B7%A5%E5%85%B7">工具</a></li>
+</ul>
+</li>
+<li><a href="#%E8%81%94%E7%B3%BB%E6%96%B9%E5%BC%8F">📧 联系方式</a></li>
+<li><a href="#%E5%8F%8B%E9%93%BE">👥 友链</a></li>
+<li><a href="#%E7%AB%99%E7%82%B9%E7%9B%B8%E5%85%B3">站点相关</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+
+        <!-- Back to top -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-20 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToUp" v-show="scrolled">
+          <i class="ri-arrow-up-line"></i>
+        </div>
+        <!-- Back to bottom -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-4 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToBottom" v-show="!atBottom">
+          <i class="ri-arrow-down-line"></i>
+        </div>
+    </div>
+
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- Background of PhotoSwipe. 
+        It's a separate element as animating opacity is faster than rgba(). -->
+  <div class="pswp__bg">
+  </div>
+  <!-- Slides wrapper with overflow:hidden. -->
+  <div class="pswp__scroll-wrap">
+    <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+    <div class="pswp__container">
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+    </div>
+    <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        <!--  Controls are self-explanatory. Order can be changed. -->
+        <div class="pswp__counter">
+        </div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+        <!-- element will get class pswp__preloader--active when preloader is running -->
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip">
+        </div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://blog.qxxiao.eu.org/media/scripts/main.js"></script>
+
+      <!-- Code Highlight -->
+      
+        <script src="https://blog.qxxiao.eu.org/media/prism.js"></script>
+        <script>
+          Prism.highlightAll();
+        </script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/show-language/prism-show-language.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+        
+
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+          <script>
+            //拿到预览框架，也就是上面的html代码
+            var pswpElement = document.querySelectorAll('.pswp')[0]
+            //定义图片数组变量
+            var imgitems
+            /**
+             * 用于显示预览界面
+             * @param index 图片数组下标
+             */
+            function viewImg(index) {
+              var pswpoptions = {
+                index: parseInt(index, 10), // 开始幻灯片索引。0是第一张幻灯片。必须是整数，而不是字符串。
+                bgOpacity: 0.7, // 背景透明度，0-1
+                maxSpreadZoom: 3, // 缩放级别，不要太大
+              }
+              //初始化并打开PhotoSwipe，pswpElement对应上面预览框架，PhotoSwipeUI_Default为皮肤，imgitems为图片数组，pswpoptions为选项
+              var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, imgitems, pswpoptions)
+              gallery.init()
+            }
+            /**
+             * 用于添加图片点击事件
+             * @param img 图片元素
+             * @param index 所属下标（在imgitems中的位置）
+             */
+            function addImgClick(img, index) {
+              img.onclick = function () {
+                viewImg(index)
+              }
+            }
+            /**
+             * 轮询所有图片，获取src、width、height等数据，加入imgitems，并给图片元素添加事件
+             * 最好在onload中执行该方法，本站因放在最底部，所以直接初始化
+             * 异步加载图片可在图片元素创建完成后调用此方法
+             */
+            function initImg() {
+              //重置图片数组
+              imgitems = []
+              //查找class:markdown 下的所有img元素并遍历
+              var imgs = document.querySelectorAll('.markdown img')
+              for (var i = 0; i < imgs.length; i++) {
+                var img = imgs[i]
+                //本站相册初始为loading图片，真实图片放在data-src
+                var ds = img.getAttribute('data-src')
+                //创建image对象，用于获取图片宽高
+                var imgtemp = new Image()
+                //判断是否存在data-src
+                if (ds != null && ds.length > 0) {
+                  imgtemp.src = ds
+                } else {
+                  imgtemp.src = img.src
+                }
+                //判断是否存在缓存
+                if (imgtemp.complete) {
+                  var imgobj = {
+                    src: imgtemp.src,
+                    w: imgtemp.width,
+                    h: imgtemp.height,
+                  }
+                  imgitems[i] = imgobj
+                  addImgClick(img, i)
+                } else {
+                  imgtemp.index = i
+                  imgtemp.img = img
+                  imgtemp.onload = function () {
+                    var imgobj = {
+                      src: this.src,
+                      w: this.width,
+                      h: this.height,
+                    }
+                    //不要使用push，因为onload前后顺序会不同
+                    imgitems[this.index] = imgobj
+                    //添加点击事件
+                    addImgClick(this.img, this.index)
+                  }
+                }
+              }
+            }
+            //初始化
+            initImg();
+          </script>
+          
+                
+                          
+                            <script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.36/dist/twikoo.all.min.js"></script>
+                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+                              integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+                              crossorigin="anonymous" />
+                            <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+                              integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+                              crossorigin="anonymous"></script>
+                            <script defer
+                              src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+                              integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"
+                              crossorigin="anonymous"></script>
+                            <script>
+                              twikoo.init({
+                                envId: 'https://twikoo.qxxiao.eu.org/',
+                                el: '#tcomment',
+                                katex: {
+                                  delimiters: [
+                                    { left: '$$', right: '$$', display: true },
+                                    { left: '$', right: '$', display: false },
+                                    { left: '\\(', right: '\\)', display: false },
+                                    { left: '\\[', right: '\\]', display: true },
+                                  ],
+                                  throwOnError: false,
+                                },
+                                // region: 'ap-guangzhou', // 环境地域，默认为 ap-shanghai，如果您的环境地域不是上海，需传此参数
+                                // path: 'window.location.pathname', // 用于区分不同文章的自定义 js 路径，如果您的文章路径不是 location.pathname，需传此参数
+                              });
+                            </script>
+                            
+
+                              <!-- line number for code block -->
+                              <script>
+                                var pres = document.getElementsByTagName('pre')
+                                for (var i = 0; i < pres.length; i++) {
+                                  var pre = pres[i]
+                                  if (pre.childNodes[0].nodeName == 'CODE') {
+                                    pre.setAttribute('class', 'line-numbers')
+                                  }
+                                }
+                              </script>
+                              
+
+  </body>
+
+</html>
