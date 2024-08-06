@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <!--每个页面都需要 head link等  -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>
+  Rust基础（一） - Unique&#39;s Blog
+</title>
+<link rel="shortcut icon" href="https://blog.qxxiao.eu.org/favicon.ico">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/tailwind.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/ldbutton.css">
+
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/styles/main.css">
+<script src="https://blog.qxxiao.eu.org/media/scripts/initTheme.js"></script>
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/light-dark.css">
+
+<link rel="alternate" type="application/atom+xml" title="Rust基础（一） - Unique&#39;s Blog - Atom Feed"
+  href="https://blog.qxxiao.eu.org/atom.xml">
+
+
+      <meta name="description" content="hello rust.
+
+[TOC]
+Rust 快速入门，参考 《Rust程序设计语言》简要归纳 Rust 的基础，尽量简约而不失重点，方便查阅。
+变量与类型
+变量
+基础类型
+标量类型
+复合类型
+字符串和切片
+经常使用的字符串类型有：&amp;am..." />
+      <meta property="og:title" content="Rust基础（一） - Unique&#39;s Blog" />
+      <meta property="og:description" content="hello rust.
+
+[TOC]
+Rust 快速入门，参考 《Rust程序设计语言》简要归纳 Rust 的基础，尽量简约而不失重点，方便查阅。
+变量与类型
+变量
+基础类型
+标量类型
+复合类型
+字符串和切片
+经常使用的字符串类型有：&amp;am..." />
+      <meta property="og:type" content="articles" />
+      <meta property="og:url" content="https://blog.qxxiao.eu.org/post/Rust基础（一）/" />
+      <meta property="og:image"
+        content="https://pic.qxxiao.cn/20220530212851.png" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:width" content="1200" />
+      <meta name="twitter:title" content="Rust基础（一） - Unique&#39;s Blog" />
+      <meta name="twitter:description" content="hello rust.
+
+[TOC]
+Rust 快速入门，参考 《Rust程序设计语言》简要归纳 Rust 的基础，尽量简约而不失重点，方便查阅。
+变量与类型
+变量
+基础类型
+标量类型
+复合类型
+字符串和切片
+经常使用的字符串类型有：&amp;am..." />
+      <meta name="twitter:card" content="summary_large_image" />
+      <link rel="canonical" href="https://blog.qxxiao.eu.org/post/Rust基础（一）/" />
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css" />
+
+      
+        <link rel="stylesheet"
+          href="https://blog.qxxiao.eu.org/media/css/prism-vs-dark.css" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.css"
+          rel="stylesheet" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.css"
+          rel="stylesheet" />
+        
+          
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" />
+            
+  </head>
+
+  <body>
+    <div class="antialiased flex flex-col min-h-screen" id="app">
+      <!-- 标题菜单 -->
+<div class="nav py-3 md:py-8 fixed w-full z-10 bg-gray-50 dark:bg-gray-700 transition-all duration-300"
+  :class="{ 'scroll': scrolled }">
+  <div class="flex justify-end px-4">
+    <div class="w-8 h-8 flex justify-center items-center rounded-full md:hidden" @click="showMenu = !showMenu">
+      <i class="ri-close-line" v-show="showMenu"></i>
+      <i class="ri-menu-3-line" v-show="!showMenu"></i>
+    </div>
+  </div>
+  <nav cloak class="max-w-4xl w-full mx-auto text-right flex flex-col md:flex-row justify-between items-center md:flex"
+    :class="`${ showMenu ? 'flex' : 'hidden' }`">
+    
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            首页
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/archives" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            归档
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/tags" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            标签
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="https://gh.qxxiao.cn/nav" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            导航
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+        <div
+          class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold dark:hover:bg-gray-600 hover:bg-gray-200 nav-time1">
+          时光
+            <div class="transition font-semibold nav-time2">
+              
+                <a href="https://blog.qxxiao.eu.org/diary/" class="">
+                  说说
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/gallery/" class="">
+                  相册
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/post/book/" class="">
+                  书单
+                </a>
+                
+            </div>
+        </div>
+        
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/post/about" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            关于
+          </a>
+          
+            
+              <!-- <a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+      RSS
+    </a> -->
+              <!-- 黑色模式，和亮色模式开关-->
+<div class="py-2 md:py-1 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+  <label for="night-light-checkbox" class="night-light-label">
+    <input type="checkbox" id="night-light-checkbox" @change="toggleDarkMode" />
+    <span v-cloak class="night-light-ball" id="night-light-ball"></span>
+    <svg viewBox="0 0 512 512" class="sun-svg">
+      <path id="sun-svg"
+        d="M256 160c-52.9 0-96 43.1-96 96s43.1 96 96 96 96-43.1 96-96-43.1-96-96-96zm246.4 80.5l-94.7-47.3 33.5-100.4c4.5-13.6-8.4-26.5-21.9-21.9l-100.4 33.5-47.4-94.8c-6.4-12.8-24.6-12.8-31 0l-47.3 94.7L92.7 70.8c-13.6-4.5-26.5 8.4-21.9 21.9l33.5 100.4-94.7 47.4c-12.8 6.4-12.8 24.6 0 31l94.7 47.3-33.5 100.5c-4.5 13.6 8.4 26.5 21.9 21.9l100.4-33.5 47.3 94.7c6.4 12.8 24.6 12.8 31 0l47.3-94.7 100.4 33.5c13.6 4.5 26.5-8.4 21.9-21.9l-33.5-100.4 94.7-47.3c13-6.5 13-24.7.2-31.1zm-155.9 106c-49.9 49.9-131.1 49.9-181 0-49.9-49.9-49.9-131.1 0-181 49.9-49.9 131.1-49.9 181 0 49.9 49.9 49.9 131.1 0 181z">
+      </path>
+    </svg>
+    <svg viewBox="0 0 512 512" class="moon-svg">
+      <path id="moon-svg"
+        d="M283.211 512c78.962 0 151.079-35.925 198.857-94.792 7.068-8.708-.639-21.43-11.562-19.35-124.203 23.654-238.262-71.576-238.262-196.954 0-72.222 38.662-138.635 101.498-174.394 9.686-5.512 7.25-20.197-3.756-22.23A258.156 258.156 0 0 0 283.211 0c-141.309 0-256 114.511-256 256 0 141.309 114.511 256 256 256z">
+      </path>
+    </svg>
+  </label>
+</div>
+                <form id="gridea-search-form" class="inline-flex mx-4 px-4" action="https://blog.qxxiao.eu.org/search/">
+                  <input type="search" autocomplete='off' spellcheck='false' name="q" />
+                </form>
+  </nav>
+
+</div>
+        <a href="https://blog.qxxiao.eu.org"
+          class="fixed top-0 left-0 mt-4 bg-black text-white dark:text-gray-700 dark:bg-yellow-50 dark:hover:bg-black dark:hover:text-white inline-flex p-2 pl-8 hover:text-gray-700 hover:bg-yellow-50 font-bold z-10">
+          Unique&#39;s Blog
+        </a>
+        <div class="max-w-4xl w-full mx-auto">
+          <div class="shadow-box bg-white dark:bg-gray-600 rounded-lg pt-32 px-4 md:px-8 pb-8 mb-8">
+            <h1 class="text-5xl font-semibold leading-normal pb-8 mb-8 border-b-8 border-gray-700">
+              Rust基础（一）
+            </h1>
+            <!-- 不显示 Post 中的封面图片 -->
+            
+                <div class="mb-8 flex flex-wrap">
+                  <div class="text-gray-400 text-sm mr-4">
+                    <i class="ri-calendar-2-line" style="vertical-align: middle;"></i>
+                    2022-05-28 ·
+                      <i class="ri-file-word-line" style="vertical-align: middle;"></i>
+                      3614字 ·
+                        <i class="ri-timer-line" style="vertical-align: middle;"></i>
+                        16 min read
+                  </div>
+                  🏷️&nbsp;
+                      
+                        <a href="https://blog.qxxiao.eu.org/tag/rust/"
+                          class="text-indigo-500 text-sm border-b-2 border-solid border-indigo-500 hover:border-gray-600 transition-all duration-100 inline-flex mr-2">
+                          <i class="ri-hashtag" style="vertical-align: middle;"></i>
+                          Rust
+                        </a>
+                        
+                </div>
+                <div class="markdown mb-8" v-pre><p>hello rust.</p>
+<!-- more -->
+<p>[TOC]</p>
+<p>Rust 快速入门，参考 《Rust程序设计语言》简要归纳 Rust 的基础，尽量简约而不失重点，方便查阅。</p>
+<h2 id="变量与类型">变量与类型</h2>
+<h3 id="变量">变量</h3>
+<h3 id="基础类型">基础类型</h3>
+<p>标量类型</p>
+<h3 id="复合类型">复合类型</h3>
+<h3 id="字符串和切片">字符串和切片</h3>
+<p>经常使用的字符串类型有：<code>&amp;str，String，&amp;String</code>。</p>
+<p><code>str</code>系统类型，具有动态大小，所以不能直接用来声明变量。可以看作是一个字节数组区域，并且符合utf-8字符边界。</p>
+<p><code>String</code>动态大小字符串，可以用来声明(栈)变量指向堆上分配的数据（使用<strong>起始地值+长度+容量</strong>实现）。<code>&amp;String</code>是其引用类型，借用而不获取所有权。</p>
+<p><code>&amp;str</code>字符串切片，可以用来声明变量，也是一种引用类型，指向一块字符串字节数组。（<strong>起始地值+长度</strong>实现，没有所有权）。字符串字面量创建的变量默认声明为<code>&amp;str</code>，即引用分配在静态存储区的常量字符串。必须符合utf-8字符的边界。</p>
+<p>示例：</p>
+<pre><code class="language-rust">fn main() {
+	let s = &quot;Hello, world!&quot;;
+	let ss = String::from(&quot;Hello, world!&quot;);
+	println!(&quot;{}&quot;, first_word(s));
+	println!(&quot;{}&quot;, first_word(&amp;ss)); // &amp;String
+}
+
+fn first_word(s: &amp;str) -&gt; &amp;str {
+	let bytes = s.as_bytes();
+	
+	for (i, &amp;item) in bytes.iter().enumerate() {
+		if item == b' ' {
+			return &amp;s[0..i];
+		}
+	}
+	&amp;s[..]
+}
+</code></pre>
+<ul>
+<li>函数参数如果是字符串类型，尽量使用<code>&amp;str</code>，更加通用(String类型容易转换为切片，&amp;String 可通过解引用强制转换为 &amp;str，或者使用切片)</li>
+</ul>
+<p>字符串切片使用：</p>
+<pre><code class="language-rust">let s = &quot;hello world&quot;;
+let s1 = &amp;s[0..5]; // &amp;s[..5]
+let s2 = &amp;s[6..11];// &amp;s[6..]
+let s3 = &amp;s[0..11];// &amp;s[..]
+</code></pre>
+<p>其他类型的切片原理类似，例如 整形切片<code>&amp;[i32]</code>等</p>
+<p><strong>注：整形切片可以由数组，Vec来构造。</strong></p>
+<h3 id="struct-与-enum">struct 与 enum</h3>
+<p>自定义类型，封装多个字段。</p>
+<ul>
+<li>
+<p>如果定义 struct 是可变的，其所有的字段都是可变的；</p>
+</li>
+<li>
+<p>函数中<strong>字段初始化简写</strong>，如果函数参数与字段名同名，可忽略赋值操作只写字段名；</p>
+</li>
+<li>
+<p>基于原 struct 的更新语法：</p>
+</li>
+</ul>
+<pre><code class="language-rust">struct User{
+name: String,
+active: bool,
+}
+
+let user2 = User{
+active = false, // 不同的字段
+..user1 // 其他字段与user1相同
+};
+</code></pre>
+<p><strong>tuple struct</strong></p>
+<p>类似与元组并且可以结构，其元素没有名称，但是整个类型是具名类型。</p>
+<pre><code class="language-rust">struct Point(i32, i32, i32);
+let origin = Point(0, 0, 0);
+// unit-like struct没有字段的结构体
+struct AlwaysEqual;
+</code></pre>
+<p><strong>定义方法和关联函数</strong></p>
+<pre><code class="language-rust">#[derive(Debug)]
+struct Rectangle {
+	width: i32,
+	height: i32,
+}
+
+impl Rectangle {
+//构造函数
+pub fn new(width: i32, height: i32) -&gt; Self {
+	Rectangle {
+		//同名可以省略
+		width,
+		height,
+	}
+}
+//方法，&amp;self参数
+fn erea(&amp;self) -&gt; i32 {
+	self.width * self.height
+}
+//关联函数
+fn erea2(width: i32, height: i32) -&gt; i32 {
+	width * height
+}
+
+fn drop(mut self) {
+	println!(&quot;drop myself&quot;);
+	}
+}
+</code></pre>
+<ul>
+<li>
+<p>使用<code>imple</code>块来定义方法和关联函数，可以有多个块；</p>
+</li>
+<li>
+<p>如果其中函数第一个参数为<code>&amp;self | &amp;mut self</code>为该类型的方法，self 即为该类型的实例本身；其他方法就是关联方法，使用 structName::funcName() 调用；</p>
+</li>
+</ul>
+<p>枚举类型，含有类型的多个变体，rust 枚举变体可以关联一组不同类型的数据，关联的数据可以通过下面中的match模式匹配来获取:</p>
+<pre><code class="language-rust">enum IpAddrKind {
+	V4(u32,u32,u32,u32),
+	V6(String),
+}
+</code></pre>
+<p>标准库枚举<code>Option&lt;T&gt;</code>用来解决空值问题，其2个变体<code>Some&lt;T&gt;, None</code>可以直接使用。</p>
+<pre><code class="language-rust">let some_num = Some(5);
+let absent_num: Option&lt;i32&gt; = None;
+</code></pre>
+<h2 id="函数与控制流">函数与控制流</h2>
+<p>函数使用 fn 声明，使用尾置形式返回类型：</p>
+<pre><code class="language-rust">fn add(a: i32, b: i32) -&gt; i32{
+	a+b
+}
+</code></pre>
+<p>函数只要在模块作用域范围可见就可以使用，不需要先声明后使用。</p>
+<h3 id="ifelse">if/else</h3>
+<p>条件表达式必须是 bool 类型，不使用小括号。</p>
+<h3 id="forwhileloop">for/while/loop</h3>
+<pre><code class="language-rust">for i in 0..10{
+	println!(&quot;{}&quot;, i);
+}
+
+while number &gt; 0 {
+	println!(&quot;{}&quot;, number);
+	number -= 1;
+}
+
+loop {
+	println!(&quot;{}&quot;, number);
+	number -= 1;
+	if number == 0 {
+		break;
+	}
+}
+</code></pre>
+<h3 id="match模式匹配">match模式匹配</h3>
+<p>match类似传统的switch语法，当是支持更多特性。匹配的模式支持字面量、变量或者通配符；支持<strong>绑定值的模式</strong>，用来提取变量中的值：</p>
+<pre><code class="language-rust">let some_num = Some(5);
+let some_num_value = match some_num {
+Some(i) =&gt; i,
+	None =&gt; 0,
+};
+println!(&quot;some_num_value is {}&quot;, some_num_value);
+</code></pre>
+<ul>
+<li>
+<p>match 匹配必须穷举所有可能模式，可以使用<code>_</code>通配符表示剩余其他值。</p>
+</li>
+<li>
+<p><code>if let</code>可以只匹配一种模式：</p>
+</li>
+</ul>
+<pre><code class="language-rust">// if let pattern = var
+if let Some(5)=some_num{
+	println!(&quot;some_num is 5&quot;);
+}else{
+	println!(&quot;other&quot;);
+}
+</code></pre>
+<h2 id="所有权机制">所有权机制</h2>
+<p>引用类型，例如 &amp;String 是不拥有所有权的类型/借用类型。</p>
+<p>引用类型，可直接调用该类型的方法(语法糖)，类型方法中的第一个参数就是该类型的引用/不可变类型。</p>
+<h2 id="常用集合">常用集合</h2>
+<h3 id="vec">Vec</h3>
+<p>大小可变的动态数组，基本用法：</p>
+<pre><code class="language-rust">let mut v = vec![1, 2, 3, 4, 5];
+// let mut mv: Vec&lt;i32&gt; = Vec::new();
+let first = &amp;v[0]; // ref
+println!(&quot;{}&quot;, first);
+match v.get(2) {
+	Some(x) =&gt; println!(&quot;{}&quot;, x),
+	None =&gt; println!(&quot;None&quot;),
+}
+// 遍历
+for i in &amp;mut v {
+	*i += 10;
+}
+for i in v {
+	println!(&quot;{}&quot;, i);
+}
+</code></pre>
+<ol>
+<li>由于枚举类型的灵活性-可以附加数据，可以使用 Vec+enum 组合，从而可以存储枚举的不同变体以及不同类型的关联数据；</li>
+</ol>
+<h3 id="string">String</h3>
+<p>字符串String类型底层就是<code>Vec&lt;u8&gt;</code>字节数组，字符串使用 UTF-8 编码，并提供字节-文本解析方法。String 类型来自标准库而非核心语言，可增长，可修改和获得所有权的类型。</p>
+<div class="markdown notion" style="padding: 10px; color: #37352f; background-color: #e7f3f8; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span style="font-size: 18px;">💡</span></div>
+<p style="line-height: 28px; margin: 0px 5px 0px 38px !important">在<strong>核心语言层面</strong>，Rust只有一个字符串类型 str (大小可变的字符串)，通常使用 &str 来表示字符串切片。字符串切片：引用类型，对存储在其它地方的utf-8编码字符串的引用。</p></div>
+<p>常用方法：</p>
+<pre><code class="language-rust">// 创建String
+let s = String::from(&quot;hello&quot;);
+let s = String::new();
+let s = &quot;hello&quot;.to_string();
+// 添加字符/字符串
+s.push_str(&quot;, world!&quot;);
+s.push('!');
+// 拼接字符串
+let s3 = s1 + &amp;s2; // fn add(self, s: &amp;str) -&gt; String
+let s3 = format!(&quot;{}-{}&quot;, &quot;hello&quot;, s); // format!
+</code></pre>
+<ul>
+<li>
+<p>拼接字符串的<code>+</code>操作，注意获取了<code>s1</code>的所有权/后续失效，参数是<code>&amp;str</code>;<strong>解引用强制转换(deref coercion)可以将 &amp;String 转换为 &amp;str 类型。</strong></p>
+</li>
+<li>
+<p>使用<code>format!</code>宏拼接字符串，不会获取所有权，方便于多个字符串的拼接。</p>
+</li>
+</ul>
+<p>内部表示：</p>
+<p>String 底部是<code>u8</code>字节数组，使用 UTF-8 编码存储 Unicode 标量值，主要特性：</p>
+<ol>
+<li>
+<p>不支持整形下标索引(保证字符索引安全)；</p>
+</li>
+<li>
+<p>使用 [..] 创建字符串切片时，也必须符合 utf-8 字符边界，否则出现运行时错误；</p>
+</li>
+</ol>
+<h3 id="hashmap">HashMap</h3>
+<p>不在 prelude 中，需要显示导入<code>use std::collections::HashMap;</code>创建和使用：</p>
+<pre><code class="language-rust">// 创建HashMap
+let mut scores: HashMap&lt;String, i32&gt; = HashMap::new();
+scores.insert(String::from(&quot;Blue&quot;), 10);
+scores.insert(String::from(&quot;Yellow&quot;), 50);
+println!(&quot;{:#?}&quot;, scores);
+
+// collect
+let teams = vec![String::from(&quot;Blue&quot;), String::from(&quot;Yellow&quot;)];
+let initial_scores = vec![10, 50];
+let scores: HashMap&lt;_, _&gt; = teams.iter().zip(initial_scores.iter()).collect();
+println!(&quot;{:#?}&quot;, scores);
+
+let vec = vec![(String::from(&quot;Blue&quot;), 10), (String::from(&quot;Yellow&quot;), 50)];
+let scores: HashMap&lt;_, _&gt; = vec.into_iter().collect();
+println!(&quot;{:#?}&quot;, scores);
+</code></pre>
+<p>所有权问题：</p>
+<ul>
+<li>
+<p>对于实现了 Copy trait类型例如i32，会复制到 HashMap中；对于拥有所有权的类型会被移动（上述into_iter()方法会移动原来的vec中元素）</p>
+</li>
+<li>
+<p>如果将引用插入到HashMap中，值不会移动，但是要保证被引用值的有效性；</p>
+</li>
+</ul>
+<p>使用：</p>
+<p>常用的操作有：插入键值对、获取key对于的值、遍历以及修改。</p>
+<pre><code class="language-rust">// get 获取值
+let score = scores.get(&quot;Blue&quot;);
+match score {
+	Some(score) =&gt; println!(&quot;{}&quot;, score),
+	None =&gt; println!(&quot;No score&quot;),
+}
+// 不检查
+let score = scores[&quot;Blue&quot;]; //  借用使用 &amp;scores[&quot;Blue&quot;]
+
+// 遍历
+for (k,v) in &amp;scores{
+	println!(&quot;{}:{}&quot;, k, v);
+}
+</code></pre>
+<p>更新操作：</p>
+<ul>
+<li>
+<p>使用<code>insert()</code>如果存在旧值会替换</p>
+</li>
+<li>
+<p>使用 entry()返回 Option<T> 类型，使用变体的 or_insert() 方法在不存在时插入；如果存在会返回该值的可变引用，通过解引用来更新。</p>
+</li>
+</ul>
+<pre><code class="language-rust">// 添加值，insert方法替换旧值
+let words = &quot;hello world wonderful world&quot;;
+let mut map = HashMap::new();
+for word in words.split_whitespace() {
+	let count = map.entry(word).or_insert(0);
+	*count += 1;
+}
+</code></pre>
+<h2 id="泛型">泛型</h2>
+<p>对于 struct，enum，方法/普通函数都可以定义为泛型：</p>
+<pre><code class="language-rust">struct Point&lt;T&gt; {
+	x: T,
+	y: T,
+}
+impl&lt;T&gt; Point&lt;T&gt; {
+	fn x(&amp;self) -&gt; &amp;T {
+		&amp;self.x
+	}
+}
+
+impl Point&lt;i32&gt; {
+	fn origin() -&gt; Point&lt;i32&gt; {
+		Point { x: 0, y: 0 }
+	}
+}
+</code></pre>
+<ol>
+<li>
+<p>Rust泛型实现与 C++类型，编译时都会进行具体类型替换-单态化;</p>
+</li>
+<li>
+<p>struct 方法可以定义其他的类型参数，与struct是否为泛型无关;</p>
+</li>
+<li>
+<p>对泛型struct的某个具体类型，例如<code>Point&lt;i32&gt;</code>定义方法是对该类型添加的，其他类型参数的Point不具有（与C++偏特化/特化不同）</p>
+</li>
+</ol>
+<p>泛型可以扩展代码的通用性，常见类型都定义为泛型，<code>Option&lt;T&gt;, Result&lt;T, E&gt;</code>等</p>
+<h2 id="trait">Trait</h2>
+<p>类似与接口概念，告诉编译器某种类型具有哪些特定行为/功能，用来抽象地<strong>定义共享/公共行为</strong>。</p>
+<p>一个主要作用就是为泛型类型参数进行约束Trait bounds，指定为实现特定行为的类型。</p>
+<p>定义与为类型实现Trait：</p>
+<pre><code class="language-rust">pub trait Summary {
+	fn summarize(&amp;self) -&gt; String;
+}
+pub struct Tweet {
+	pub username: String,
+	pub content: String,
+}
+// impl
+impl Summary for Tweet {
+	fn summarize(&amp;self) -&gt; String {
+		format!(&quot;{}: {}&quot;, self.username, self.content)
+	}
+}
+</code></pre>
+<p>Trait可以定义默认实现。</p>
+<p>类型实现Trait必须实现 trait 定义的<strong>所有没有默认实现的方法</strong>，对于有默认实现的，可以<strong>选择重写</strong>该方法；<strong>trait 定义中，(默认)方法可以调用没有默认实现的方法，类型会保证实现这些方法</strong>。</p>
+<p>类型实现Trait的条件：</p>
+<ol>
+<li>
+<p>类型或者该 Trait 是在<strong>本地 crate</strong>定义的;</p>
+</li>
+<li>
+<p>即无法为外部类型实现外部的 trait（孤儿规则）</p>
+</li>
+</ol>
+<h3 id="trait作为参数">Trait作为参数</h3>
+<p>使用<code>impl Trait</code>或者<code>Trait bound</code>语法：</p>
+<pre><code class="language-rust">// impl Trait 修饰参数
+pub fn notify(item: impl Summary+Display) {
+	println!(&quot;Breaking news! {}&quot;, item.summarize());
+}
+// 使用泛型 + trait约束
+pub fn notify&lt;T: Summary+Display&gt;(item: T) {
+	println!(&quot;Breaking news! {}&quot;, item.summarize());
+}
+// where
+pub fn notify2&lt;T, U&gt;(a: T, b: U)
+where
+	T: Summary + Display,
+	U: Clone + Debug,
+{
+	println!(&quot;Breaking news! {}&quot;, a.summarize());
+}
+</code></pre>
+<h3 id="trait作为返回类型">Trait作为返回类型</h3>
+<p>使用<code>impl trait</code>语法：</p>
+<pre><code class="language-rust">pub fn news() -&gt; impl Summary {
+	Tweet {
+		username: String::from(&quot;ebooks&quot;),
+		content: String::from(&quot;people&quot;),
+	}
+}
+</code></pre>
+<p>限制：</p>
+<ul>
+<li>需要保证函数返回的类型需要一致，返回确定的同一种类型；</li>
+</ul>
+<div class="markdown notion" style="padding: 10px; color: #37352f; background-color: #e7f3f8; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span style="font-size: 18px;">💡</span></div>
+<p style="line-height: 28px; margin: 0px 5px 0px 38px !important">Trait 主要用来表示类型约束，其他用法：
+在泛型类型的 impl 块上使用 Trait bound，可以为类型参数实现了特定 Trait 的<strong>泛型类型有条件地实现某些方法</strong>；
+为实现特定 Trait 的任意类型<strong>有条件地实现另一个 Trait (覆盖实现)</strong></p></div>
+<details class="markdown">
+<summary><b>示例代码</b></summary>
+<pre><code class="language-rust">// 1. 有条件地实现某些方法
+impl&lt;T: Display+PartialOrd&gt; Pair&lt;T&gt;{
+	fn cmp_display(&amp;self){
+		...
+	}
+}
+// 2. 有条件实现另一个 Trait
+impl&lt;T: fmt::Display+?Sized&gt; ToString for T{
+	...
+}
+</code></pre>
+</details>
+<h2 id="生命周期">生命周期</h2>
+<p>生命周期目的：避免悬垂引用 dangling reference.</p>
+<p>Rust中<strong>每个引用都有自己的生命周期</strong>（保持有效的作用域），当生命周期以不同的方式互相关联，需要手动标注生命周期，<strong>使用泛型声明来规范生命周期的名称。</strong></p>
+<p>例如函数签名中使用泛型生命周期参数：</p>
+<p>可以理解为返回引用的生命周期至少是<code>x,y</code>中较短的生命周期（交集）</p>
+<pre><code class="language-rust">fn long_str&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str {
+	if x.len() &gt; y.len() {
+		x
+	} else {
+		y
+	}
+}
+</code></pre>
+<ul>
+<li>
+<p>生命周期标注<strong>不会实际改变引用的生命周期长度</strong>；</p>
+</li>
+<li>
+<p>只是描述了多个引用的生命周期的关系，不影响其生命周期；因此单个生命周期的标注没有意义；</p>
+</li>
+<li>
+<p><code>'static</code>特殊生命周期标识，整个程序的运行时间（例如字符串字面量）</p>
+</li>
+</ul>
+<div class="markdown notion" style="padding: 10px; color: #37352f; background-color: #e7f3f8; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span style="font-size: 18px;">💡</span></div>
+<p style="line-height: 28px; margin: 0px 5px 0px 38px !important">注意：函数返回引用类型，返回类型的生命周期参数需要与一个参数的生命周期匹配（即跟输入参数相关，否则就是悬垂引用）</p></div>
+<h3 id="省略规则">省略规则</h3>
+<p>Rust<strong>引用分析</strong>中考虑了一些特定模式/生命周期省略规则，符合该模式的代码无需显示标注生命周期。（输入生命周期: 参数为引用的生命周期；输出生命周期：返回值是引用的生命周期）</p>
+<p>规则如下：</p>
+<ol>
+<li>
+<p>每个输入**参数(引用类型)**如果省略生命周期，则具有不同的生命周期参数（例如<code>'a,'b,'c</code>）；</p>
+</li>
+<li>
+<p>如果只有一个输入生命周期参数，该生命周期被赋给所有的输出生命周期参数；</p>
+</li>
+<li>
+<p>如果有多个输入生命周期参数，但是其中有一个是<code>&amp;self，&amp;mut self</code>（适用于方法中），那么 self 的生命周期被赋给所有的输出生命周期参数。</p>
+</li>
+</ol>
+<p>应用上述规则后如果不能确定签名中所有引用的生命周期编译器会报错。或者出现不匹配，例如返回值的生命周期与返回类型生命周期不同（示例见<strong>impl块和方法</strong>）。</p>
+<h3 id="struct">struct</h3>
+<p>struct 定义中字段除了基本类型和自拥有类型，其引用类型需要使用生命周期标注：</p>
+<pre><code class="language-rust">struct Stu&lt;'a&gt; {
+	name: &amp;'a str, // 至少比Stu实例生命周期长
+	age: u8,
+}
+// main
+fn main(){
+	let name = String::from(&quot;xiaoming&quot;);
+	let stu = Stu {
+		name: name.as_str(),
+		age: 18,
+	};
+	println!(&quot;{:#?}&quot;, stu);
+}
+</code></pre>
+<h3 id="impl块和方法">impl块和方法</h3>
+<p>对于字段的生命周期需要在 imp 块中显示标注：</p>
+<pre><code class="language-rust">struct Stu&lt;'a&gt; {
+	name: &amp;'a str,
+	age: u8,
+}
+// 对于struct 字段的生命周期标注显示指明/语法类似泛型
+// 方法中的生命周期参数可以使用字段声明的，也可以自定义
+// &amp;self 方法可以有默认规则
+impl&lt;'a&gt; Stu&lt;'a&gt; {
+	fn get_age(&amp;self) -&gt; u8 {
+		self.age
+	}
+
+	fn get_name(&amp;self) -&gt; &amp;str {
+		self.name
+	}
+
+//fn get_name2(&amp;self, other: &amp;str) -&gt; &amp;str{
+//	other  // error 引用规则3返回类型的声明周期与 self相同
+//}
+}
+</code></pre>
+<h2 id="阅读">阅读</h2>
+<div class="markdown notion" style="padding: 10px;background-color: #f8f8f8; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span><img style="height: 28px" src="https://kaisery.github.io/trpl-zh-cn/favicon.svg" /></span></div>
+<a href=https://kaisery.github.io/trpl-zh-cn/title-page.html target="_blank" style="text-decoration:none"><p style="color: rgb(55, 53, 47); text-overflow: ellipsis;margin: 0px 5px 0px 38px !important"><span style="
+font-size: 14px;line-height: 20px;min-height: 24px;margin-bottom: 2px;">Rust 程序设计语言 - Rust 程序设计语言 简体中文版</span><br><span style="font-size: 12px; line-height: 16px; color: rgba(55, 53, 47, 0.65);">Rust 程序设计语言 简体中文版</span> <br><span style="font-size: 12px;line-height: 16px;">https://kaisery.github.io/trpl-zh-cn/title-page.html</span></p></a></div>
+<div class="markdown notion" style="padding: 10px;background-color: #f8f8f8; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span><img style="height: 28px" src="https://course.rs/favicon.svg" /></span></div>
+<a href=https://course.rs/rustt.html target="_blank" style="text-decoration:none"><p style="color: rgb(55, 53, 47); text-overflow: ellipsis;margin: 0px 5px 0px 38px !important"><span style="
+font-size: 14px;line-height: 20px;min-height: 24px;margin-bottom: 2px;">Rust 翻译计划( 代号 Rustt ) - Rust语言圣经(Rust Course)</span><br><span style="font-size: 12px;line-height: 16px;">https://course.rs/rustt.html</span></p></a></div>
+<div class="markdown notion" style="padding: 10px;background-color: #f8f8f8; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span><img style="height: 28px" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAEVklEQVR4AWJwL/AZUDzqgFEHAKgrxwB3ni2I1s+2bdu2bdu2bdu2bds21rY9THLf3EzWu+9vfThJptNddcb/PQGagTRhG1CIf4tb0VXejArm3xtQfDM2J/nLBNRNaMXFXKpshYewAT2kTXAVN+FyxAaM57GILcgvrEUdlvpTBJwnIYVWUsp6KJKJ6/GOC4V1+GnYCJLWxkdchRfqGggRK7CajxQflT8kIC5HRmkVXDlYCw1RV4MYYbmFJbExLNMRFsLJsBhfhUW4+XsE9OLFmCLNxyBhMYJMkWULYhMxLw6zdaS5IFoIEmfjjTwLfTnnNwnwodcWudMiDozDLAsz4jAtBlN1RA3S1oiTcfpXC8gz0MMwF7OEGXDSfscLFabEYGIcJlgYb2EcyKCNS2PxwDAFs5QxqPHLAlOwXLdOODCKMQkwMj7icE1iFIhGg9SRaJKoAF/p4aNQSRmJuXJigcxQkDyEAzmcty0MBBkt/wmDLQxk9DFxAALUfuil9kHhBAX4tpFG4gUHR4Uyg2MHmqblp5cLutC66kkopC9IGsDhSchrTVfa3DwPuXXTx4S+sZF6g6i/JtMHaxI9BWbDQXqg2b5fbMQeoC8rBtAnO1cTkqehvTX00Hut0tJ3G0dT3ZYdaGpRTbKPPpeRuuso/Lsb/EM7o2CCAnxo1J74yIvZVuwZGw4j7XtYuUxUtGwFAkCLSulj+6qCchUqRizVKx+I+Ch0ttBJR+kAMnSE0dAJ16R2KBlLQO6GclzOYb7tQeGdLSFdYmAZ+9QE1DSTzrulw8lh32LyaJmEeuUCddD41DiJuUxsHw1vB7UGebUAkSajdoCn1B4DowSkjpjH4WonfDtfAQcuV4KXW3NY8eTwdogKfN8IdL0a6H7tpOSzZ7bJ1TOUPAIlo/WeJfSufhIz1k2i1/i10tfJ7RF4pzq2HS+Lp6HtcI9zYwnwg0ez2s6HKKgNOh8ujf1aURNjBzxh84c14fSwDhTb+iDXvkVNX66cJhuPCPppF0AOrsEUJBnpy/Ft5Ncxg3kveS6vYRm5A0StsPOxMkkmnquEnlrHd618f4K3IUtofHlQA+V4AV8w2p68D2sL16AWkHw3jydHe0+Tlateztg4BpC7dyhFGIkcnt5R/bpmNXo3hxzQGu6c5d8KbTYWRJ4jZTBUE2nLYxGdkSXBu4Df5yxBHbHuYEmU2l0UWXlyRDusDmqJEO+xtcnmxmXTD8dgipRwcA0lJx/ZfCoCT6wKcG2anFggsBXmRBZFZmnZp5ROaPCL7wK+JpSOaBhzjPfEsR6CucB2YityPLnNaG3va7T6bOXnfnEfOUxqQXyKrOrD07oxesXNVDqjpsaYX/Uy4tMR81aJ5H0t1PpUB1c/N0zl6nB0o+QbrJDjT9vvH9vlW/6lMnZ9qYv/rfSsJYM8NjPf+TDIgQo7qrQJLy2bIP789eczD5+9u3H22n1LUNSNtorJxaMOGHUAAL89B017ixdoAAAAAElFTkSuQmCC" /></span></div>
+<a href=https://cheats.rs/ target="_blank" style="text-decoration:none"><p style="color: rgb(55, 53, 47); text-overflow: ellipsis;margin: 0px 5px 0px 38px !important"><span style="
+font-size: 14px;line-height: 20px;min-height: 24px;margin-bottom: 2px;">Rust Language Cheat Sheet</span><br><span style="font-size: 12px;line-height: 16px;">https://cheats.rs/</span></p></a></div>
+<p><a href="./static/file_rust_cheat_sheet.pdf">rust_cheat_sheet.pdf</a></p>
+</div>
+
+                <!-- 新加的模块的，应该使用模版-->
+                <!-- 版权声明 -->
+                
+                  <div class="jumbotron">
+                    <div class="container">
+                      <p>
+                        <i class="ri-article-line"></i>
+                        <b>本文链接:</b>
+                        <a href="https://blog.qxxiao.eu.org/post/Rust基础（一）/" target="_blank">
+                          Rust基础（一）
+                        </a>
+                      </p>
+                      <p>
+                        <i class="ri-creative-commons-line"></i>
+                        <b>版权声明:</b>
+                        本博客所有文章除特别声明外，均采用
+                        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC
+                          BY-NC-SA
+                          4.0</a>
+                        许可协议，转载请注明出处。
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>发布日期:</b>
+                        2022-05-28
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>最新构建:</b>
+                        2024-08-06
+                          <!-- 使用 themeConfig.dateFormat 格式对日期格式化，例如YY-MM-DD -->
+                          <!-- {
+  &#34;content&#34;: &#34;&lt;!-- more --&gt;\n&lt;h2 id=\&#34;2024-06-10\&#34;&gt;2024-06-10&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加了相册的时间线样式&lt;/li&gt;\n&lt;li&gt;添加了书单页面&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2024-06-09\&#34;&gt;2024-06-09&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改了部分样式，去除了多个页面中的 css class: animated fadeIn，避免页面刷新时抖动&lt;/li&gt;\n&lt;li&gt;修改了文章 TOC 目录的宽度样式, 只限制最小/最大宽度，使其能够自适应内容宽度&lt;/li&gt;\n&lt;li&gt;统一 post 文章和 diary/gallary 页面的回到顶部/底部按钮样式和位置&lt;/li&gt;\n&lt;li&gt;简化了 明亮/黑暗模式切换代码，删除了 &lt;code&gt;ldbutton.js&lt;/code&gt;，使用 Vue 来控制样式切换。但刷新会导致页面闪屏，因为 Vue 执行完 mounted 后才会正确计算当前模式；解决：使用 js 函数来提前完成模式的初始化，避免闪屏&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2023-12-20\&#34;&gt;2023-12-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加&lt;code&gt;时光/说说&lt;/code&gt;功能，数据来源于 Memos\n&lt;ul&gt;\n&lt;li&gt;由于评论部署在 vercel，加载慢，说说评论需要在&lt;a href=\&#34;https://memos.qxxiao.eu.org\&#34;&gt;原始 Memos 页面&lt;/a&gt;打开评论 (更新：添加了页面评论，可以直接在当前页面访问)&lt;/li&gt;\n&lt;li&gt;说说服务器部署在 Azure，可能需要代理才能正常访问&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;li&gt;将仓库同步到 github，利用 github actions 进行博客同步\n&lt;ul&gt;\n&lt;li&gt;之前使用 Mac 监控脚本同步博客，gridea 每次预览可能会触发导致站点 url 是 localhost，并且有时任务触发不及时&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;li&gt;添加 &lt;a href=\&#34;https://github.com/kytrun/gridea-search\&#34;&gt;gridea-search 插件&lt;/a&gt;，对应添加了搜索框，调整了一下菜单界面&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2023-12-12\&#34;&gt;2023-12-12&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;更新评论系统 twikoo 版本到 1.6.27&lt;/li&gt;\n&lt;li&gt;更新样式，删除友链菜单，直接在&lt;a href=\&#34;/post/about\&#34;&gt;关于页面&lt;/a&gt;添加，保留了部分 css 样式&lt;/li&gt;\n&lt;li&gt;优化，使用 &lt;code&gt;v-cloak&lt;/code&gt; 避免出现 post 页面的文章目录闪烁问题&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-07-06\&#34;&gt;2022-07-06&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改样式，添加暗亮模式切换&lt;/li&gt;\n&lt;li&gt;修改默认样式查询方式，简单样式适配&lt;/li&gt;\n&lt;li&gt;修改代码主题为 &lt;code&gt;vs-dark&lt;/code&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-03-20\&#34;&gt;2022-03-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加文章列表中的标签的显示，设置标签样式(默认没有 border-indigo-500 等样式)&lt;/li&gt;\n&lt;li&gt;优化布局&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-27\&#34;&gt;2022-02-27&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加代码样式，增加行号和复制选项&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-25\&#34;&gt;2022-02-25&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改主题配置，添加友链菜单，优化了页面效果&lt;/li&gt;\n&lt;li&gt;添加导航菜单&lt;/li&gt;\n&lt;li&gt;页面样式移动和修改&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-20\&#34;&gt;2022-02-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;更新页面样式，添加版权和说明（改变字体可能会导致中文目录不能正确跳转）&lt;/li&gt;\n&lt;li&gt;更新归档页面，添加日期信息和每篇文章的相关描述&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-10\&#34;&gt;2022-02-10&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;简单使用 Rocky 主题&lt;/li&gt;\n&lt;li&gt;修改主页信息的描述以及 footer 信息&lt;/li&gt;\n&lt;li&gt;使用 Twikoo 评论&lt;/li&gt;\n&lt;/ul&gt;\n&#34;,
+  &#34;fileName&#34;: &#34;log&#34;,
+  &#34;abstract&#34;: &#34;&#34;,
+  &#34;title&#34;: &#34;更新日志&#34;,
+  &#34;tags&#34;: [],
+  &#34;date&#34;: &#34;2020-01-05 00:37:45&#34;,
+  &#34;dateFormat&#34;: &#34;2020-01-05&#34;,
+  &#34;feature&#34;: &#34;&#34;,
+  &#34;link&#34;: &#34;https://blog.qxxiao.eu.org/post/log/&#34;,
+  &#34;hideInList&#34;: true,
+  &#34;isTop&#34;: false,
+  &#34;stats&#34;: {
+    &#34;text&#34;: &#34;3 min read&#34;,
+    &#34;time&#34;: 139000,
+    &#34;words&#34;: 636,
+    &#34;minutes&#34;: 3
+  },
+  &#34;description&#34;: &#34;\n2024-06-10\n\n添加了相册的时间线样式\n添加了书单页面\n\n2024-06-09\n\n修改了部分样式，去除了多个页面中的 css class: animated fadeIn，避免页面刷新时抖动\n修改了文章 TOC 目录的宽度样式, ...&#34;,
+  &#34;toc&#34;: &#34;&lt;ul class=\&#34;markdownIt-TOC\&#34;&gt;\n&lt;li&gt;\n&lt;ul&gt;\n&lt;li&gt;&lt;a href=\&#34;#2024-06-10\&#34;&gt;2024-06-10&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2024-06-09\&#34;&gt;2024-06-09&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2023-12-20\&#34;&gt;2023-12-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2023-12-12\&#34;&gt;2023-12-12&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-07-06\&#34;&gt;2022-07-06&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-03-20\&#34;&gt;2022-03-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-27\&#34;&gt;2022-02-27&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-25\&#34;&gt;2022-02-25&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-20\&#34;&gt;2022-02-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-10\&#34;&gt;2022-02-10&lt;/a&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;/ul&gt;\n&#34;
+}
+                            
+                                  2022-05-28
+                                     -->
+                      </p>
+                    </div>
+                  </div>
+                  
+                    <!-- 新加的模块的，应该使用模版-->
+                    <!--阅读次数-->
+                    <div class="text-center text-gray-400">
+                      <i class="ri-eye-line"></i>
+                      本文已被阅读
+                      <span id="twikoo_visitors">0</span>
+                      次，该数据仅供参考
+                    </div>
+
+                    <!-- Share to Twitter, Weibo, Telegram -->
+                    <div class="flex items-center">
+                      <div class="mr-4 flex items-center">
+                        <i class="ri-share-forward-line text-gray-500"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-blue-500 hover:bg-blue-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTwitter">
+                        <i class="ri-twitter-line"></i>
+                      </div>
+                      <div class="px-4 cursor-pointer text-red-500 hover:bg-red-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToWeibo">
+                        <i class="ri-weibo-line"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-indigo-500 hover:bg-indigo-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTelegram">
+                        <i class="ri-telegram-line"></i>
+                      </div>
+                    </div>
+          </div>
+
+          <!-- 新加的模块的，应该使用模版-->
+          <!-- 评论说明-->
+          <div class="jumbotron-comment">
+            <div class="container">
+              <p>
+                <i class="ri-message-3-line"></i>
+                欢迎任何与文章内容相关并保持尊重的评论😊 !
+              </p>
+            </div>
+          </div>
+
+          
+                        
+                            
+                              <div id="tcomment"></div>
+                               <footer class="py-12 text-center px-4 md:px-0" v-pre>
+  共 43 篇文章 | Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <i class="ri-rss-line"></i><a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" target="_blank">RSS</a></br>
+©2020-2024 <a href="https://blog.qxxiao.eu.org/index.html" target="_blank">Nuo</a>. All rights reserved.
+</footer>
+
+<!--没有添加/用到app 中的主题footer配置消息，如果使用，将上面的 href 替换为原地址-->
+<!---->
+
+        </div>
+
+        <!-- TOC Container -->
+        <div
+          class="fixed right-0 bottom-0 mb-40 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white dark:bg-gray-500 dark:text-gray-200 hover:shadow-lg transition-all"
+          @click="showToc = true">
+          <i class="ri-file-list-line"></i>
+        </div>
+
+        <div v-cloak
+          class="fixed right-0 top-0 bottom-0 overflow-y-auto w-16-24 bg-white dark:bg-gray-800 p-4 border-l border-gray-100 dark:border-gray-600 z-10 transition-fast"
+          :class="{ '-mr-64': !showToc }">
+          <div class="flex mb-4 justify-end">
+            <div
+              class="w-8 h-8 inline-flex justify-center items-center rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-fast"
+              @click="showToc = false">
+              <i class="ri-close-line text-lg"></i>
+            </div>
+          </div>
+          <div class="post-toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%8F%98%E9%87%8F%E4%B8%8E%E7%B1%BB%E5%9E%8B">变量与类型</a>
+<ul>
+<li><a href="#%E5%8F%98%E9%87%8F">变量</a></li>
+<li><a href="#%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B">基础类型</a></li>
+<li><a href="#%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B">复合类型</a></li>
+<li><a href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%92%8C%E5%88%87%E7%89%87">字符串和切片</a></li>
+<li><a href="#struct-%E4%B8%8E-enum">struct 与 enum</a></li>
+</ul>
+</li>
+<li><a href="#%E5%87%BD%E6%95%B0%E4%B8%8E%E6%8E%A7%E5%88%B6%E6%B5%81">函数与控制流</a>
+<ul>
+<li><a href="#ifelse">if/else</a></li>
+<li><a href="#forwhileloop">for/while/loop</a></li>
+<li><a href="#match%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D">match模式匹配</a></li>
+</ul>
+</li>
+<li><a href="#%E6%89%80%E6%9C%89%E6%9D%83%E6%9C%BA%E5%88%B6">所有权机制</a></li>
+<li><a href="#%E5%B8%B8%E7%94%A8%E9%9B%86%E5%90%88">常用集合</a>
+<ul>
+<li><a href="#vec">Vec</a></li>
+<li><a href="#string">String</a></li>
+<li><a href="#hashmap">HashMap</a></li>
+</ul>
+</li>
+<li><a href="#%E6%B3%9B%E5%9E%8B">泛型</a></li>
+<li><a href="#trait">Trait</a>
+<ul>
+<li><a href="#trait%E4%BD%9C%E4%B8%BA%E5%8F%82%E6%95%B0">Trait作为参数</a></li>
+<li><a href="#trait%E4%BD%9C%E4%B8%BA%E8%BF%94%E5%9B%9E%E7%B1%BB%E5%9E%8B">Trait作为返回类型</a></li>
+</ul>
+</li>
+<li><a href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">生命周期</a>
+<ul>
+<li><a href="#%E7%9C%81%E7%95%A5%E8%A7%84%E5%88%99">省略规则</a></li>
+<li><a href="#struct">struct</a></li>
+<li><a href="#impl%E5%9D%97%E5%92%8C%E6%96%B9%E6%B3%95">impl块和方法</a></li>
+</ul>
+</li>
+<li><a href="#%E9%98%85%E8%AF%BB">阅读</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+
+        <!-- Back to top -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-20 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToUp" v-show="scrolled">
+          <i class="ri-arrow-up-line"></i>
+        </div>
+        <!-- Back to bottom -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-4 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToBottom" v-show="!atBottom">
+          <i class="ri-arrow-down-line"></i>
+        </div>
+    </div>
+
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- Background of PhotoSwipe. 
+        It's a separate element as animating opacity is faster than rgba(). -->
+  <div class="pswp__bg">
+  </div>
+  <!-- Slides wrapper with overflow:hidden. -->
+  <div class="pswp__scroll-wrap">
+    <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+    <div class="pswp__container">
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+    </div>
+    <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        <!--  Controls are self-explanatory. Order can be changed. -->
+        <div class="pswp__counter">
+        </div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+        <!-- element will get class pswp__preloader--active when preloader is running -->
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip">
+        </div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://blog.qxxiao.eu.org/media/scripts/main.js"></script>
+
+      <!-- Code Highlight -->
+      
+        <script src="https://blog.qxxiao.eu.org/media/prism.js"></script>
+        <script>
+          Prism.highlightAll();
+        </script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/show-language/prism-show-language.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+        
+
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+          <script>
+            //拿到预览框架，也就是上面的html代码
+            var pswpElement = document.querySelectorAll('.pswp')[0]
+            //定义图片数组变量
+            var imgitems
+            /**
+             * 用于显示预览界面
+             * @param index 图片数组下标
+             */
+            function viewImg(index) {
+              var pswpoptions = {
+                index: parseInt(index, 10), // 开始幻灯片索引。0是第一张幻灯片。必须是整数，而不是字符串。
+                bgOpacity: 0.7, // 背景透明度，0-1
+                maxSpreadZoom: 3, // 缩放级别，不要太大
+              }
+              //初始化并打开PhotoSwipe，pswpElement对应上面预览框架，PhotoSwipeUI_Default为皮肤，imgitems为图片数组，pswpoptions为选项
+              var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, imgitems, pswpoptions)
+              gallery.init()
+            }
+            /**
+             * 用于添加图片点击事件
+             * @param img 图片元素
+             * @param index 所属下标（在imgitems中的位置）
+             */
+            function addImgClick(img, index) {
+              img.onclick = function () {
+                viewImg(index)
+              }
+            }
+            /**
+             * 轮询所有图片，获取src、width、height等数据，加入imgitems，并给图片元素添加事件
+             * 最好在onload中执行该方法，本站因放在最底部，所以直接初始化
+             * 异步加载图片可在图片元素创建完成后调用此方法
+             */
+            function initImg() {
+              //重置图片数组
+              imgitems = []
+              //查找class:markdown 下的所有img元素并遍历
+              var imgs = document.querySelectorAll('.markdown img')
+              for (var i = 0; i < imgs.length; i++) {
+                var img = imgs[i]
+                //本站相册初始为loading图片，真实图片放在data-src
+                var ds = img.getAttribute('data-src')
+                //创建image对象，用于获取图片宽高
+                var imgtemp = new Image()
+                //判断是否存在data-src
+                if (ds != null && ds.length > 0) {
+                  imgtemp.src = ds
+                } else {
+                  imgtemp.src = img.src
+                }
+                //判断是否存在缓存
+                if (imgtemp.complete) {
+                  var imgobj = {
+                    src: imgtemp.src,
+                    w: imgtemp.width,
+                    h: imgtemp.height,
+                  }
+                  imgitems[i] = imgobj
+                  addImgClick(img, i)
+                } else {
+                  imgtemp.index = i
+                  imgtemp.img = img
+                  imgtemp.onload = function () {
+                    var imgobj = {
+                      src: this.src,
+                      w: this.width,
+                      h: this.height,
+                    }
+                    //不要使用push，因为onload前后顺序会不同
+                    imgitems[this.index] = imgobj
+                    //添加点击事件
+                    addImgClick(this.img, this.index)
+                  }
+                }
+              }
+            }
+            //初始化
+            initImg();
+          </script>
+          
+                
+                          
+                            <script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.36/dist/twikoo.all.min.js"></script>
+                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+                              integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+                              crossorigin="anonymous" />
+                            <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+                              integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+                              crossorigin="anonymous"></script>
+                            <script defer
+                              src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+                              integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"
+                              crossorigin="anonymous"></script>
+                            <script>
+                              twikoo.init({
+                                envId: 'https://twikoo.qxxiao.eu.org/',
+                                el: '#tcomment',
+                                katex: {
+                                  delimiters: [
+                                    { left: '$$', right: '$$', display: true },
+                                    { left: '$', right: '$', display: false },
+                                    { left: '\\(', right: '\\)', display: false },
+                                    { left: '\\[', right: '\\]', display: true },
+                                  ],
+                                  throwOnError: false,
+                                },
+                                // region: 'ap-guangzhou', // 环境地域，默认为 ap-shanghai，如果您的环境地域不是上海，需传此参数
+                                // path: 'window.location.pathname', // 用于区分不同文章的自定义 js 路径，如果您的文章路径不是 location.pathname，需传此参数
+                              });
+                            </script>
+                            
+
+                              <!-- line number for code block -->
+                              <script>
+                                var pres = document.getElementsByTagName('pre')
+                                for (var i = 0; i < pres.length; i++) {
+                                  var pre = pres[i]
+                                  if (pre.childNodes[0].nodeName == 'CODE') {
+                                    pre.setAttribute('class', 'line-numbers')
+                                  }
+                                }
+                              </script>
+                              
+
+  </body>
+
+</html>
