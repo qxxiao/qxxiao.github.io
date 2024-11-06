@@ -1,0 +1,210 @@
+/** 亮色/暗色适配*/
+
+body {
+  background: #e0e0e0;
+  /**post页面可以相对周围body颜色更亮，例如f8f8f8 */
+  color: #333;
+}
+
+.dark body {
+  background: #333;
+  /** 周围背景色*/
+  color: #bbb;
+  /*dark ,标题等使用 tailwind样式:如.dark\:text-gray-200 */
+}
+
+.bg-white {
+  background-color: #f8f8f8;
+}
+
+/* todo 由 tailwind.css 中搬运过来修改 @media(prefers-color-scheme:dark)改成派生类样式选择*/
+/** 普通字体 */
+.dark .btn {
+  background-color: #ffd602;
+  color: #333;
+}
+
+.dark .btn.btn-white {
+  background-color: #444;
+  color: #eaeaea;
+}
+
+.dark .markdown>hr {
+  border-color: #666;
+}
+
+.dark .markdown>p strong:not(a strong),
+.dark .markdown>ul strong:not(a strong) {
+  color: #eaeaea;
+}
+
+.dark .markdown>ol li :not(pre) code,
+.dark .markdown>ol li>code,
+.dark .markdown>p code,
+.dark .markdown>ul li :not(pre) code,
+.dark .markdown>ul li>code,
+.dark p.markdown code {
+  background-color: #404040;
+  color: #b794f4;
+  border: 1px solid #333;
+}
+
+.dark .markdown>blockquote,
+.dark blockquote.markdown {
+  background-color: #b7791f;
+  color: #faf089;
+}
+
+.dark .markdown>blockquote p:first-of-type,
+blockquote.markdown p:first-of-type {
+  border-color: #ecc94b;
+}
+
+.dark .markdown>ol>li::before {
+  background-color: #5a67d8;
+  color: #eaeaea;
+}
+
+.dark .markdown> :not(pre):not(h1):not(h2):not(h3):not(h4)>code,
+.dark .markdown>ol code,
+.dark .markdown>ul code {
+  background-color: #404040;
+  color: #b794f4;
+  border: 1px solid #333;
+}
+
+.dark .markdown>table th {
+  background-color: #333;
+  color: #999;
+}
+
+.dark .markdown>table td {
+  border-color: #333;
+}
+
+.dark .markdown>table td code {
+  background-color: #404040;
+  color: #b794f4;
+  border: 1px solid #333;
+}
+
+/* .dark .markdown figure {
+  background-color: #666;
+} */
+
+.dark .markdown .task-list-item-checkbox:checked+.task-list-item-label {
+  background-color: #666;
+  color: #999;
+}
+
+.dark .markdown .task-list-item-checkbox:before {
+  border-color: #666;
+  background-color: #888;
+}
+
+/** long*/
+.dark .markdown .markdownIt-TOC {
+  background-color: #111;
+}
+
+.dark .markdown>h1,
+.dark .markdown>h2,
+.dark .markdown>h3,
+.dark .markdown>h4,
+.dark h1.markdown,
+.dark h2.markdown,
+.dark h3.markdown,
+.dark h4.markdown {
+  color: #eaeaea;
+}
+
+/** notion bookmark */
+.dark .markdown.notion {
+  /* background-color: #bbb !important; */
+  filter: brightness(0.9);
+  border: none !important;
+}
+
+/* todo 暗色颜色修改*/
+.dark .dark\:bg-gray-500 {
+  background-color: #666;
+}
+
+.dark .dark\:bg-gray-600 {
+  background-color: #444;
+}
+
+.dark .dark\:bg-gray-700 {
+  background-color: #333;
+}
+
+.dark .dark\:bg-gray-800 {
+  background-color: #111;
+}
+
+.dark .dark\:bg-yellow-50 {
+  background-color: #ffd602;
+}
+
+.dark .dark\:bg-indigo-500 {
+  background-color: #667eea;
+}
+
+.dark .dark\:hover\:bg-black:hover {
+  background-color: #000;
+}
+
+.dark .dark\:hover\:bg-gray-600:hover {
+  background-color: #444;
+}
+
+.dark .dark\:border-gray-400 {
+  border-color: #888;
+}
+
+.dark .dark\:border-gray-600 {
+  border-color: #444;
+}
+
+.dark .dark\:border-gray-700 {
+  border-color: #333;
+}
+
+.dark .dark\:hover\:border-gray-200:hover {
+  border-color: #eaeaea;
+}
+
+.dark .dark\:text-gray-200 {
+  color: #eaeaea;
+}
+
+.dark .dark\:text-gray-300 {
+  color: #bbb;
+  /**调整更亮*/
+}
+
+.dark .dark\:text-gray-700 {
+  color: #333;
+}
+
+.dark .dark\:hover\:text-white:hover {
+  color: #fff;
+}
+
+/** 图片处理, 降低明亮度 */
+/* 不是左右扩展2rem的大图,居中上面间距1rem,注意如果图片后有文字主题渲染会插入br换行，并且图片是 block 显示；
+所以会插入一个空行 1.625rem 行高 */
+.markdown p>img,
+.markdown img:not(figure > img, .homepage img, .tags img, #bber img, .card-columns .card>img, .friend-avatar, .notion img) {
+  margin: auto;
+  margin-top: 1rem !important;
+}
+
+/* 向左或向右扩展的2rem的大图 */
+figure[datatype=image] {
+  margin-top: 1rem !important;
+}
+
+.dark img {
+  filter: brightness(0.9);
+}
