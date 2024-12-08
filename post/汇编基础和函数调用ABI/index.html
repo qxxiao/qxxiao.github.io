@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <!--每个页面都需要 head link等  -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>
+  汇编基础和函数调用ABI - Unique&#39;s Blog
+</title>
+<link rel="shortcut icon" href="https://blog.qxxiao.eu.org/favicon.ico">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/tailwind.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/ldbutton.css">
+
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/styles/main.css">
+<script src="https://blog.qxxiao.eu.org/media/scripts/initTheme.js"></script>
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/light-dark.css">
+
+
+<link rel="alternate" type="application/atom+xml" title="汇编基础和函数调用ABI - Unique&#39;s Blog - Atom Feed"
+  href="https://blog.qxxiao.eu.org/atom.xml">
+
+
+      <meta name="description" content="内容：简单总结 x86 汇编基础和函数调用的过程，但只涉及可用指令和汇编指令的一小部分，但非常有用。主要采用 GNU 汇编器(GAS) 的 AT&amp;amp;T 语法进行说明。
+
+补充的资料：
+
+x86 and amd64 instructio..." />
+      <meta property="og:title" content="汇编基础和函数调用ABI - Unique&#39;s Blog" />
+      <meta property="og:description" content="内容：简单总结 x86 汇编基础和函数调用的过程，但只涉及可用指令和汇编指令的一小部分，但非常有用。主要采用 GNU 汇编器(GAS) 的 AT&amp;amp;T 语法进行说明。
+
+补充的资料：
+
+x86 and amd64 instructio..." />
+      <meta property="og:type" content="articles" />
+      <meta property="og:url" content="https://blog.qxxiao.eu.org/post/汇编基础和函数调用ABI/" />
+      <meta property="og:image"
+        content="https://pic.qxxiao.cn/cpp-logo.png" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:width" content="1200" />
+      <meta name="twitter:title" content="汇编基础和函数调用ABI - Unique&#39;s Blog" />
+      <meta name="twitter:description" content="内容：简单总结 x86 汇编基础和函数调用的过程，但只涉及可用指令和汇编指令的一小部分，但非常有用。主要采用 GNU 汇编器(GAS) 的 AT&amp;amp;T 语法进行说明。
+
+补充的资料：
+
+x86 and amd64 instructio..." />
+      <meta name="twitter:card" content="summary_large_image" />
+      <link rel="canonical" href="https://blog.qxxiao.eu.org/post/汇编基础和函数调用ABI/" />
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css" />
+
+      
+        <link rel="stylesheet"
+          href="https://blog.qxxiao.eu.org/media/css/prism-vs-dark.css" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.css"
+          rel="stylesheet" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.css"
+          rel="stylesheet" />
+        <link href=https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/plugins/line-highlight/prism-line-highlight.min.css />
+        
+          
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" />
+            
+  </head>
+
+  <body>
+    <div class="antialiased flex flex-col min-h-screen" id="app">
+      <!-- 标题菜单 -->
+<div class="nav py-3 md:py-8 fixed w-full z-10 bg-gray-50 dark:bg-gray-700 transition-all duration-300"
+  :class="{ 'scroll': scrolled }">
+  <div class="flex justify-end px-4">
+    <div class="w-8 h-8 flex justify-center items-center rounded-full md:hidden" @click="showMenu = !showMenu">
+      <i class="ri-close-line" v-show="showMenu"></i>
+      <i class="ri-menu-3-line" v-show="!showMenu"></i>
+    </div>
+  </div>
+  <nav cloak class="max-w-4xl w-full mx-auto text-right flex flex-col md:flex-row justify-between items-center md:flex"
+    :class="`${ showMenu ? 'flex' : 'hidden' }`">
+    
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            首页
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/archives" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            归档
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/tags" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            标签
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="https://gh.qxxiao.eu.org/nav" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            导航
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+        <div
+          class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold dark:hover:bg-gray-600 hover:bg-gray-200 nav-time1">
+          时光
+            <div class="transition font-semibold nav-time2">
+              
+                <a href="https://blog.qxxiao.eu.org/diary/" class="">
+                  说说
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/gallery/" class="">
+                  相册
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/post/book/" class="">
+                  书单
+                </a>
+                
+            </div>
+        </div>
+        
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/post/about" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            关于
+          </a>
+          
+            
+              <!-- <a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+      RSS
+    </a> -->
+              <!-- 黑色模式，和亮色模式开关-->
+<div class="py-2 md:py-1 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+  <label for="night-light-checkbox" class="night-light-label">
+    <input type="checkbox" id="night-light-checkbox" @change="toggleDarkMode" />
+    <span v-cloak class="night-light-ball" id="night-light-ball"></span>
+    <svg viewBox="0 0 512 512" class="sun-svg">
+      <path id="sun-svg"
+        d="M256 160c-52.9 0-96 43.1-96 96s43.1 96 96 96 96-43.1 96-96-43.1-96-96-96zm246.4 80.5l-94.7-47.3 33.5-100.4c4.5-13.6-8.4-26.5-21.9-21.9l-100.4 33.5-47.4-94.8c-6.4-12.8-24.6-12.8-31 0l-47.3 94.7L92.7 70.8c-13.6-4.5-26.5 8.4-21.9 21.9l33.5 100.4-94.7 47.4c-12.8 6.4-12.8 24.6 0 31l94.7 47.3-33.5 100.5c-4.5 13.6 8.4 26.5 21.9 21.9l100.4-33.5 47.3 94.7c6.4 12.8 24.6 12.8 31 0l47.3-94.7 100.4 33.5c13.6 4.5 26.5-8.4 21.9-21.9l-33.5-100.4 94.7-47.3c13-6.5 13-24.7.2-31.1zm-155.9 106c-49.9 49.9-131.1 49.9-181 0-49.9-49.9-49.9-131.1 0-181 49.9-49.9 131.1-49.9 181 0 49.9 49.9 49.9 131.1 0 181z">
+      </path>
+    </svg>
+    <svg viewBox="0 0 512 512" class="moon-svg">
+      <path id="moon-svg"
+        d="M283.211 512c78.962 0 151.079-35.925 198.857-94.792 7.068-8.708-.639-21.43-11.562-19.35-124.203 23.654-238.262-71.576-238.262-196.954 0-72.222 38.662-138.635 101.498-174.394 9.686-5.512 7.25-20.197-3.756-22.23A258.156 258.156 0 0 0 283.211 0c-141.309 0-256 114.511-256 256 0 141.309 114.511 256 256 256z">
+      </path>
+    </svg>
+  </label>
+</div>
+                <form id="gridea-search-form" class="inline-flex mx-4 px-4" action="https://blog.qxxiao.eu.org/search/">
+                  <input type="search" autocomplete='off' spellcheck='false' name="q" />
+                </form>
+  </nav>
+
+</div>
+        <a href="https://blog.qxxiao.eu.org"
+          class="fixed top-0 left-0 mt-4 bg-black text-white dark:text-gray-700 dark:bg-yellow-50 dark:hover:bg-black dark:hover:text-white inline-flex p-2 pl-8 hover:text-gray-700 hover:bg-yellow-50 font-bold z-10">
+          Unique&#39;s Blog
+        </a>
+        <div class="max-w-4xl w-full mx-auto">
+          <div class="shadow-box bg-white dark:bg-gray-600 rounded-lg pt-32 px-4 md:px-8 pb-8 mb-8">
+            <h1 class="text-5xl font-semibold leading-normal pb-8 mb-8 border-b-8 border-gray-700">
+              汇编基础和函数调用ABI
+            </h1>
+            <!-- 不显示 Post 中的封面图片 -->
+            
+                <div class="mb-8 flex flex-wrap">
+                  <div class="text-gray-400 text-sm mr-4">
+                    <i class="ri-calendar-2-line" style="vertical-align: middle;"></i>
+                    2024-07-23 ·
+                      <i class="ri-file-word-line" style="vertical-align: middle;"></i>
+                      4500字 ·
+                        <i class="ri-timer-line" style="vertical-align: middle;"></i>
+                        18 min read
+                  </div>
+                  🏷️&nbsp;
+                      
+                        <a href="https://blog.qxxiao.eu.org/tag/c/"
+                          class="text-indigo-500 text-sm border-b-2 border-solid border-indigo-500 hover:border-gray-600 transition-all duration-100 inline-flex mr-2">
+                          <i class="ri-hashtag" style="vertical-align: middle;"></i>
+                          C++
+                        </a>
+                        
+                </div>
+                <div class="markdown mb-8" v-pre><p>内容：简单总结 x86 汇编基础和函数调用的过程，但只涉及可用指令和汇编指令的一小部分，但非常有用。主要采用 GNU 汇编器(GAS) 的 AT&amp;T 语法进行说明。</p>
+<!--more-->
+<p>补充的资料：</p>
+<ul>
+<li><a href="https://www.felixcloutier.com/x86/">x86 and amd64 instruction reference</a></li>
+<li><a href="https://ggbaker.ca/295/">CMPT 295 Lecture Notes</a></li>
+<li><a href="https://web.stanford.edu/class/cs107/resources/">CS107 Computer Organization &amp; Systems</a>  CSAPP
+<ul>
+<li><a href="https://web.stanford.edu/~cgregg/cgi-bin/107-reader/">CS107 reader 补充阅读</a></li>
+</ul>
+</li>
+<li><a href="https://www.cs.cmu.edu/~213/">CMU 15-213/15-513 Introduction to Computer Systems</a>  CSAPP</li>
+<li><a href="https://godbolt.org">Compiler Explorer - godbolt.org</a></li>
+</ul>
+<h2 id="1寄存器">1.寄存器</h2>
+<h3 id="x86-寄存器">x86 寄存器</h3>
+<p><strong>x86 处理器</strong>有 8 个通用寄存器，如下图，其中 EAX 过去被称为累加器，因为它被许多算术运算使用；ECX 被称为计数器，因为它被用来保存循环索引，然而现在基本上失去了其专有目的，成为通用寄存器。但是 <code>EBP</code> 通常用于栈基指针，<code>ESP</code> 用于栈顶指针。</p>
+<ul>
+<li>x86 处理器，通用寄存器是 32 位的，寄存器 <code>EAX</code>、<code>EBX</code>、<code>ECX</code>、<code>EDX</code> 还可以分别访问其低地址的 16 位，和其中的高低字节。如下图中所示。</li>
+<li>汇编语言中，寄存器名称是不区分大小写的。</li>
+</ul>
+<img src="https://pic.qxxiao.cn/202407272024106.png" alt="x86 registers" style="width:600px;">
+<ul>
+<li><strong>32 位系统中</strong>，调用者需要保存的寄存器 caller-saved 有 <code>EAX</code>、<code>ECX</code>、<code>EDX</code>，被调用者 callee-saved 需要保存的寄存器有 <code>EBP</code>、<code>EBX</code>、<code>EDI</code>、<code>ESI</code>。</li>
+</ul>
+<h3 id="x86-64-寄存器">x86-64 寄存器</h3>
+<p><strong>x86-64 处理器</strong>扩展了上述通用寄存器到 64 位，并增加了一些新的寄存器，如 <code>R8～R15</code>，所以有 16 个 64 位寄存器。但是，为了向后兼容，32 位寄存器仍然可以使用。</p>
+<figure data-type="image" tabindex="1"><img src="https://pic.qxxiao.cn/202407272101164.png" alt="X86-64 registers" loading="lazy"></figure>
+<ul>
+<li>所有的 64 位寄存器使用 <code>R</code> 前缀访问，如 <code>RAX</code>、<code>RBX</code>、<code>RCX</code>、<code>RDX</code> 如上图。</li>
+<li>如图，<strong>寄存器 %rbp, %rbx, 和 %r12-%r15 是被调用者 callee 需要保存的</strong>（换句话说，它们属于调用者 caller，调用者假定它们的值不会被修改）。当然，是按照实际使用情况进行保存，如果被调用者使用了这些寄存器，那么需要在函数序幕保存这些寄存器的值，然后在函数结束时恢复这些寄存器的值。<br>
+剩余的寄存器，调用者负责保存。</li>
+</ul>
+<p><strong>SIMD: MMX, SSE, AVX, AVX-512</strong></p>
+<p>此外，还提供了 16 个 SSE 寄存器（<code>xmm0~xmm15</code>），每个寄存器宽度 128 位，以及 8 个 x87 指令浮点寄存器（<code>st(0)~st(7)</code>），每个寄存器宽度 80 位（主要用于早期的浮点计算, 以及 MMX 指令会共享该寄存器）。</p>
+<p>Intel AVX(高级向量扩展)提供了 16 个 256 位的 YMM 寄存器（<code>ymm0~ymm15</code>），其低 128 位即对应的 128 位 SSE 寄存器（别名）；AVX-512 扩展提供了 32 个 512 位的 ZMM 寄存器（<code>zmm0~zmm31</code>），其低 256 位对应于 256 位 YMM 寄存器，低 128 位对于 128 位 XMM 寄存器。（因此 <code>xmm16 - %xmm31</code> / <code>ymm16 - ymm31</code> 只在 AVX-512 扩展中有效）</p>
+<p>我们将使用这些寄存器和 SIMD 指令进行浮点运算：</p>
+<img src="https://pic.qxxiao.cn/202407272322889.png" style="max-width:600px;" alt="SIMD">
+<h2 id="2汇编语法">2.汇编语法</h2>
+<blockquote>
+<p><a href="https://sourceware.org/binutils/docs/as/index.html">https://sourceware.org/binutils/docs/as/index.html</a><br>
+<a href="https://tupelo-shen.github.io/2020/03/08/linux%E5%86%85%E6%A0%B81-GNU%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8_X86-64&amp;ARM/">GNU 汇编快速入门</a></p>
+</blockquote>
+<p>这里主要使用 AT&amp;T 语法，它是 GNU 汇编器(GAS) 的默认语法。AT&amp;T 语法的特点是源操作数在前，目的操作数在后，操作数之间用逗号分隔。如下所示：</p>
+<pre><code class="language-asm">pushq %rbp
+movq %rsp, %rbp
+movl %edi, -20(%rbp)
+movl %esi, -24(%rbp)
+movl %edx, -28(%rbp)
+movl -20(%rbp), %eax
+movl %eax, -4(%rbp)
+......
+popq %rbp
+ret
+</code></pre>
+<p>与 Intel 汇编语法的主要区别有：<a href="https://sourceware.org/binutils/docs/as/i386_002dVariations.html">全面的差异</a></p>
+<!-- 表格，6行5列-->
+<table>
+<thead>
+<tr>
+<th>差异</th>
+<th>AT&amp;T 语法</th>
+<th>说明</th>
+<th>Intel 语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>操作数顺序</td>
+<td><code>movq %rsp, %rbp</code></td>
+<td>源操作数在前，<strong>目的操作数在后</strong></td>
+<td><code>mov rbp, rsp</code></td>
+<td>目的操作数在前，源操作数在后</td>
+</tr>
+<tr>
+<td>指令后缀</td>
+<td><code>movq %rsp, %rbp</code></td>
+<td>指令后缀表示操作数大小，如 <code>q</code> 表示四字操作</td>
+<td><code>mov rbp, rsp</code></td>
+<td>不用后缀，通过寄存器操作数推断大小；内存寻址大小歧义时用 <code>BYTE PTR</code> 等显示标注</td>
+</tr>
+<tr>
+<td>寄存器</td>
+<td><code>%rsp</code></td>
+<td>寄存器名称前加 <code>%</code></td>
+<td><code>rsp</code></td>
+<td>寄存器名称不加 <code>%</code></td>
+</tr>
+<tr>
+<td>操作数中的立即数</td>
+<td><code>movq $0x2, %rax</code></td>
+<td>操作数中的立即数前加 <code>$</code></td>
+<td><code>mov rax, 0x2</code></td>
+<td>不加 <code>$</code></td>
+</tr>
+<tr>
+<td>内存引用</td>
+<td><code>movq 8(%rsp), %rax</code></td>
+<td>立即数在 <code>()</code> 外面</td>
+<td><code>mov rax, [rsp+8]</code></td>
+<td>立即数在 <code>[]</code> 里面</td>
+</tr>
+<tr>
+<td>跳转/call 操作数</td>
+<td><code>je *%rax</code>, <code>callq *%rax</code></td>
+<td>操作数前加 <code>*</code></td>
+<td><code>je rax</code>, <code>call rax</code></td>
+<td>不加 <code>*</code></td>
+</tr>
+<tr>
+<td>注释</td>
+<td><code># comment</code></td>
+<td>注释符号为 <code>#</code></td>
+<td><code>; comment</code></td>
+<td>注释符号为 <code>;</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="指令后缀">指令后缀</h3>
+<p>多数指令使用后缀来表示操作数的大小，如：</p>
+<ul>
+<li><code>b</code>：byte 表示字节操作，如 <code>movb</code>、<code>addb</code>。</li>
+<li><code>w</code>：word(2 bytes) 表示字操作，如 <code>movw</code>、<code>addw</code>。</li>
+<li><code>l</code>：long/doubleword(4 bytes) 表示双字操作，如 <code>movl</code>、<code>addl</code>。</li>
+<li><code>q</code>：quadword(8 bytes) 表示四字操作，如 <code>movq</code>、<code>addq</code>。</li>
+</ul>
+<p>如果可以从操作数中推断出操作数的大小，可省略后缀。如 <code>movq %rsp, %rbp</code> 可以写成 <code>mov %rsp, %rbp</code>，操作数 %rsp 暗示 <code>q</code>，%eax 暗示 <code>l</code>，以此类推。</p>
+<p><strong>少数指令例如 <code>movs</code>（符号扩展）、<code>movz</code>（零填充）有两个后缀，第一个表示源操作数位宽，第二个表示目的操作数位宽</strong>，例如 <code>movzbl</code> 移动一个字节长度源操作数到一个双字长度目的操作数，高位用 0 填充。</p>
+<p><span style="background-color:#d44c47;color:white;">Note</span>: 当目标寄存器是子寄存器时，只有子寄存器范围的字节会被写入更新，但有一个例外：<strong>32 位的指令写入时</strong>，会将目标寄存器的高 32 位清零，例如 <code>mov $ebx, %ebx</code> 这种看似冗余的指令会进行将 rbx 的高 32 位清零。这里等效 <code>movzlq %ebx, %rbx</code>。</p>
+<h3 id="内存寻址访问">内存寻址（访问）</h3>
+<p>指令中访问内存的一般形式是： <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>d</mi><mi>i</mi><mi>s</mi><mi>p</mi><mi>l</mi><mi>a</mi><mi>c</mi><mi>e</mi><mi>m</mi><mi>e</mi><mi>n</mi><mi>t</mi><mo>(</mo><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi><mo separator="true">,</mo><mi>i</mi><mi>n</mi><mi>d</mi><mi>e</mi><mi>x</mi><mo separator="true">,</mo><mi>s</mi><mi>c</mi><mi>a</mi><mi>l</mi><mi>e</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">displacement(base, index, scale)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">d</span><span class="mord mathdefault">i</span><span class="mord mathdefault">s</span><span class="mord mathdefault">p</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">a</span><span class="mord mathdefault">c</span><span class="mord mathdefault">e</span><span class="mord mathdefault">m</span><span class="mord mathdefault">e</span><span class="mord mathdefault">n</span><span class="mord mathdefault">t</span><span class="mopen">(</span><span class="mord mathdefault">b</span><span class="mord mathdefault">a</span><span class="mord mathdefault">s</span><span class="mord mathdefault">e</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">i</span><span class="mord mathdefault">n</span><span class="mord mathdefault">d</span><span class="mord mathdefault">e</span><span class="mord mathdefault">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault">c</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">e</span><span class="mclose">)</span></span></span></span></p>
+<ul>
+<li><code>displacement</code>：立即数，表示偏移量。</li>
+<li><code>base</code>：基址寄存器，表示基址。</li>
+<li><code>index</code>：索引寄存器，表示索引。</li>
+<li><code>scale</code>：比例因子，表示索引寄存器的倍数。</li>
+</ul>
+<p>例如，<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>−</mo><mn>16</mn><mo>(</mo><mi mathvariant="normal">%</mi><mi>r</mi><mi>b</mi><mi>p</mi><mo separator="true">,</mo><mi mathvariant="normal">%</mi><mi>r</mi><mi>d</mi><mi>x</mi><mo separator="true">,</mo><mn>8</mn><mo>)</mo><mo>=</mo><mi mathvariant="normal">%</mi><mi>r</mi><mi>b</mi><mi>p</mi><mo>+</mo><mo>(</mo><mi mathvariant="normal">%</mi><mi>r</mi><mi>d</mi><mi>x</mi><mo>∗</mo><mn>8</mn><mo>)</mo><mo>−</mo><mn>16</mn></mrow><annotation encoding="application/x-tex">-16(\%rbp, \%rdx, 8) = \%rbp + (\%rdx * 8) -16</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">−</span><span class="mord">1</span><span class="mord">6</span><span class="mopen">(</span><span class="mord">%</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">b</span><span class="mord mathdefault">p</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">%</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">d</span><span class="mord mathdefault">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">8</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.94444em;vertical-align:-0.19444em;"></span><span class="mord">%</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">b</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">%</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">d</span><span class="mord mathdefault">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">8</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord">6</span></span></span></span>。</p>
+<p>以写立即数 1 为例说明多种寻址模式：</p>
+<pre><code class="language-asm">movl $1, 0x604892 # 直接寻址，地址 0x604892
+movl $1, (%rax)   # 间接寻址，地址为 rax 寄存器的值
+
+movl $1, -24(%rbp)        # 基址+偏移，地址为 rbp 寄存器的值减去 24
+movl $1, 8(%rsp, %rdi, 4) # 基址+索引*比例+偏移，地址为 rsp + rdi * 4 + 8
+movl $1, 0x8(, $rdx, 4)   # 索引*比例+偏移，地址为 rdx * 4 + 8
+movl $1, 0x4(%rax, %rcx)  # 比例假定为1，地址为 rax + rcx + 4
+</code></pre>
+<h3 id="常用指令">常用指令</h3>
+<p>常用的指令和寻址方式可以参考：<a href="https://web.stanford.edu/class/cs107/resources/x86-64-reference.pdf">Common instructions and Addressing modes - cheatsheet</a></p>
+<p>主要有数据移动、算术运算/逻辑运算、控制流等。</p>
+<p><strong>数据移动</strong></p>
+<ul>
+<li><code>mov</code>：数据传送指令，如 <code>movl %eax, %ebx</code>。</li>
+<li><code>movz</code>: 0 填充(小位宽赋值到大位宽)，如 <code>movzbl (%rdi), %eax</code>, 其中后缀 <code>b</code> 表示字节操作，<code>l</code> 表示双字（双指令后缀）。</li>
+<li><code>movs</code>: 符号扩展(小位宽赋值到大位宽)，如 <code>movsbl (%rdi), %eax</code>, 其中后缀 <code>b</code> 表示字节操作，<code>l</code> 表示双字。</li>
+<li><code>cltq</code>: movs 指令对 <code>rax</code> 寄存器特化指令，将其低 32 位符号扩展到 64 位。</li>
+<li><code>push</code>：将数据压入栈，如 <code>pushq %rbp</code>。具体操作：栈顶指针减去 8，然后将数据写入栈顶。</li>
+<li><code>pop</code>：将数据弹出栈，如 <code>popq %rbp</code>。具体操作：读取栈顶数据，然后栈顶指针加 8。</li>
+<li><code>lea</code>: 取操作数的有效地址，不进行地址解引用，如 <code>lea 8(%rsp), %rax</code>。</li>
+</ul>
+<p><strong>算术运算/逻辑运算</strong></p>
+<p>许多算术指令同时适用于有符号和无符号类型。例如 add、sub 等。通过操作后设置的标志位可以检测不同类型的溢出。</p>
+<ul>
+<li><code>add</code>：加法，如 <code>addl %eax, %ebx</code>。</li>
+<li><code>sub</code>：减法，如 <code>subl %eax, %ebx</code>。</li>
+<li><code>inc/dec</code>: 自增/自减，如 <code>incl %eax</code>。</li>
+<li><code>neg</code>：取负数，如 <code>negl %eax</code>。</li>
+<li><code>imul</code>：整型有符号乘法，如 <code>imull %eax, %ebx</code>。结果保存在 <code>[EDX:EAX]</code> 中，高 32 位在 <code>EDX</code> 中，低 32 位在 <code>EAX</code> 中。</li>
+<li><code>idiv</code>：整型有符号除法，如 <code>idivl %eax</code>。使用 <code>idiv</code> 之前，需要将被除数放在 <code>EDX:EAX</code> 中。结果的商保存在 <code>EAX</code> 中，余数保存在 <code>EDX</code> 中。</li>
+<li><code>mulss/divss</code>: 标量单精度浮点数乘法/除法 scalar single-precision，如 <code>mulss %xmm1, %xmm2</code>。</li>
+<li><code>mulsd/divsd</code>: 标量多精度浮点数乘法/除法 scalar double-precision，如 <code>mulsd %xmm1, %xmm2</code>。</li>
+<li><code>and/or/xor</code>：按位与/或/异或，如 <code>andl %eax, %ebx</code>。</li>
+<li><code>not</code>：按位取反，如 <code>notl %eax</code>。</li>
+<li><code>shl/shr</code>：逻辑左移/右移,省略源操作数则默认为 1，如 <code>shll $2, %eax</code>。</li>
+<li><code>sal/sar</code>：算术左移/右移，省略源操作数则默认为 1，如 <code>sarl $2, %eax</code>。</li>
+</ul>
+<p><strong>控制流指令</strong></p>
+<p><code>eflags</code> 标志寄存器用于存储条件码，条件码是由上一条指令设置的，并且大多数算数指令会更新这些标志。条件码用于控制条件跳转指令。常用的标志位有：<code>ZF</code>（零标志位）、<code>SF</code>（符号标志位）、<code>OF</code>（溢出标志位）、<code>CF</code>（进位标志位）。</p>
+<img src="https://pic.qxxiao.cn/202407272259215.png" style="max-width:600px;" alt="FLAGS REGISTERS">
+<ul>
+<li><code>OF</code>：溢出标志位，针对<strong>有符号数</strong>，当结果超出有符号数的表示范围时设置。包括正溢出和负溢出。</li>
+<li><code>CF</code>：进位/借位标志位，针对<strong>无符号数</strong>，当结果超出无符号数的表示范围时设置。包括无符号加法进位和无符号减法借位。</li>
+</ul>
+<p>条件跳转指令和使用的标志位对应如下：<br>
+<img src="https://pic.qxxiao.cn/202407272305686.png" alt="CONDITIONAL JUMP" loading="lazy"></p>
+<ul>
+<li>TEST 指令：与 <code>AND</code> 指令类似，但是不保存结果，只设置标志寄存器，如 <code>testl %eax, %eax</code>。</li>
+<li>CMP 指令：与 <code>SUB</code> 指令类似，但是不保存结果，只设置标志寄存器，如 <code>cmpl %eax, %ebx</code>。与分支指令配合使用。</li>
+<li><code>jmp</code>：无条件跳转，如 <code>jmp label</code>。</li>
+<li>call 指令：调用函数，如 <code>call func</code>, 其操作是：将下一条指令的地址压入栈，然后跳转到函数的入口地址。</li>
+<li>ret 指令：返回，如 <code>ret</code>。其操作是：将弹出的返回地址加载到指令指针寄存器（RIP）中，从而跳转到函数调用后的下一条指令，继续执行。</li>
+<li><strong>leave 指令</strong>：恢复栈帧，如 <code>leave</code>。其操作是：将栈帧指针 <code>rbp</code> 的值赋给栈顶指针 <code>rsp</code>(清空当前栈帧)，然后弹出栈帧指针 <code>rbp</code>(恢复原始 rbp, 还原上一个栈帧)。</li>
+</ul>
+<p>和标志寄存器相关的指令：有两种常见指令可以读取/响应当前标志寄存器的值</p>
+<ul>
+<li><code>setx</code>：<code>x</code> 是条件占位符，根据条件(x)设置一个<strong>字节寄存器</strong>为 0 或 1，如 <code>sete %al</code>。</li>
+<li><code>cmovx</code>：条件移动指令，<code>x</code> 是条件占位符，根据条件(x)将<strong>源寄存器</strong>复制到<strong>目的寄存器</strong>，如 <code>cmovle %eax, %ebx</code>。<br>
+上面命令中的 <code>x</code> 是条件占位符，值及其含义与上图中的条件跳转指令相同。</li>
+</ul>
+<h2 id="3函数调用">3.函数调用</h2>
+<p>为了允许共享代码并简化子程序的使用，程序员通常采用一种通用的调用约定。调用约定是一种关于如何调用和返回例程的协议。例如，给定一组调用约定规则，程序员不需要检查子程序的定义来确定如何将参数传递给该子程序。此外，给定一组调用约定规则，高级语言编译器可以按照这些规则进行编译，从而允许手动编写的汇编语言例程和高级语言例程相互调用。</p>
+<p>MacOSX 和 Linux 的 x86-64 调用协议都遵循 SystemV ABI (<a href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99">见参考资料</a>)。</p>
+<h3 id="函数参数">函数参数</h3>
+<p>ABI 将参数/返回值定义了多种类别，依据寄存器的种类定义为：INTEGER(整型，能够适应于通用寄存器 8B)、SSE(能够适应于单个向量寄存器 8B)、SSEUP（继续利用上次使用的向量寄存器中的高字节部分&gt;8B）、MEMORY（通过栈传递的类型）和其他类型。</p>
+<p>函数调用的前 6 个（整型，包括指针）参数通过寄存器传递，传递顺序为 <code>%rdi,%rsi,%rdx,%rcx,%r8,%r9</code>（<a href="#x86-64-%E5%AF%84%E5%AD%98%E5%99%A8">如图所示</a> arg1~arg6）。超出部分的参数通过函数栈帧传递。</p>
+<p>如果函数有返回值（整型），<code>%rax</code> 用作第一个函数返回值，<code>%rdx</code> 用作第二个函数返回值。浮点数使用 <code>xmm0</code> 作为返回值。</p>
+<p>其他一些规则：</p>
+<ul>
+<li>如果参数大于 64 字节对象，对应于 MEMORY 类型，通过栈传递。</li>
+<li>注意如果<strong>返回值</strong>是 MEMORY 类型，调用者会自己为返回值分配空间，并使用 <code>%rdi</code> 隐式传递该内存指针作为第一个参数。被调用函数对该内存赋值后，直接返回该指针。</li>
+</ul>
+<h3 id="函数栈帧">函数栈帧</h3>
+<p>每个函数在运行时堆栈上都有一个帧。函数栈帧从高地址往低地址方向增长，System V ABI 使用两个寄存器访问函数栈帧：帧指针 <code>%rbp</code> 和栈指针 <code>%rsp</code>。 帧指针 <code>%rbp</code> 指向当前函数栈帧基址(栈底)，栈指针 <code>%rsp</code> 指向当前函数栈帧栈顶。</p>
+<p>函数调用的栈帧结构图如下所示：<br>
+<img src="https://pic.qxxiao.cn/202407280100817.png" style="max-width:600px;" alt="Function Stack Frame"></p>
+<ul>
+<li>帧指针 <code>%rbp</code> 用来存取函数栈帧上的数据，例如传递进来的函数参数，或者函数的本地局部变量。 System V ABI 要求最后一个压入栈的函数参数（argument 0）地址需要 16 字节边界对齐，如果有 <code>__m256</code> 类型的参数使用栈传递，则需要 32 字节边界对齐。</li>
+<li>可以看出，通过栈传递的其他参数，第一个参数的位置在 <code>%rbp+16</code>, 中间隔着 8 字节的返回地址。在 32 位系统中，第一个参数的位置在 <code>%ebp+8</code>。(只是 32 位系统在参数传递和寄存器保存上有所不同)</li>
+</ul>
+<p>栈红区（red zone）优化：红区是栈上 <code>rsp</code> 指向位置之后的 128 字节区域。该区域在函数调用时被认为是保留的，期间不被信号处理程序和中断处理程序修改，从而保护了函数栈的完整性。所以函数可以安全地使用这个区域来存储临时数据。</p>
+<p>可用于优化函数调用：叶函数（即不调用其他函数的函数）可以利用红区作为整个栈帧的一部分，而不必在函数入口/序言和退出/结尾时调整栈指针（直接使用 <code>rsp</code> 寻址，并且不显示地调用 <code>subq $N, %rsp</code> 分配空间，直接使用栈红区作为整个栈帧）。这可以减少栈操作的开销，提高函数调用的性能。</p>
+<h3 id="函数调用协议">函数调用协议</h3>
+<p>函数调用协议分为 caller 端和 callee 端，每端各有两个重要步骤：</p>
+<p>1）<span style="color:#2062f6;font-weight:bold;">caller 调用者</span>：</p>
+<ul>
+<li>【保存 caller-save 寄存器到函数栈上（按需保存）】；</li>
+<li>将函数参数存储到规定的寄存器中，并将超出约定的参数按顺序压入栈中；(32 位系统中，通常仅用栈传递参数，参数按照从右到左的顺序依次压栈)</li>
+<li>调用 <code>call</code> 指令。（先压入返回地址，再跳转执行）</li>
+</ul>
+<p>2）<span style="color:green;font-weight:bold;">callee 被调用者，函数序言</span>：</p>
+<ul>
+<li><code>pushq %rbp</code> 压入 <code>rbp</code> 寄存器，用来保存前一个栈帧基址；</li>
+<li><code>movq %rsp, %rbp</code> 初始化 <code>rbp</code> 寄存器，用来指向当前栈帧基址；（新的 <code>rbp</code> 常用于寻址参数/局部变量）</li>
+<li><strong>为局部变量分配空间</strong>，<code>subq $N, %rsp</code>；</li>
+<li>【保存 callee-save 寄存器到函数栈上（按需保存）】</li>
+</ul>
+<p>3） <span style="color:green;font-weight:bold;">callee 被调用者，函数尾声</span>：<br>
+函数体执行完毕后，需要执行以下步骤：</p>
+<ul>
+<li>将函数返回值置入 <code>rax</code> 中（浮点数置入 <code>xmm0</code>）；</li>
+<li>【如果保存了 callee-save 寄存器，使用 <code>popq</code> 倒序从栈帧中恢复寄存器 】；</li>
+<li>释放当前函数的栈帧空间，<code>movq %rbp %rsp</code> 先回退栈顶指针 <code>%rsp</code>，<code>popq %rbp</code> 再恢复原基址指针 <code>%rbp</code>。（两个操作，合并等效为 <code>leave</code> 指令）；</li>
+<li><code>ret</code> 指令，弹出返回地址，执行流回到 caller 。</li>
+</ul>
+<p>4）<span style="color:#2062f6;font-weight:bold;">caller 调用者</span>：</p>
+<ul>
+<li>如果为<strong>函数参数</strong>额外分配了栈空间，则在此时需要释放这些空间。</li>
+<li>【如果保存了 caller-save 寄存器，<code>popq</code> 倒序从栈帧中恢复，释放这些空间】；</li>
+</ul>
+<p>至此，一个完整的函数调用过程完成。函数执行的结果一般位于寄存器 <code>rax</code> 中，如果是浮点数，位于在 <code>xmm0</code> 中。</p>
+<p>说明：</p>
+<ul>
+<li>浮点数，使用浮点寄存器 <code>xmm0~xmm7</code> 传递参数，返回值使用 <code>xmm0~xmm1</code>。</li>
+<li>如果是对象作为返回值(对应为 MEMORY 类型时)，会隐式传递其指针作为第一个参数。函数内直接修改这个指针指向的内存。</li>
+</ul>
+<h2 id="4gdb">4.GDB</h2>
+<ul>
+<li><a href="https://alumnihusteducn-my.sharepoint.com/:b:/g/personal/u201614735_alumni_hust_edu_cn/EVKnjdcev_9Gv7Rqfylym9EBFCBp_dNiHHOOO_R0bmvxcQ?e=kqEEom">GDB Quick Reference - cheatsheet</a></li>
+<li><a href="https://qxxiao.notion.site/GDB-1fd23cacf252444f83388c50f5b6fc30?pvs=4">GDB 常用基础命令</a></li>
+</ul>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li><a href="https://www.cs.virginia.edu/~evans/cs216/guides/x86.html#registers">x86 Assembly Guide</a></li>
+<li><a href="https://web.stanford.edu/class/archive/cs/cs107/cs107.1248/guide/x86-64.html#registers">Guide to x86-64</a></li>
+<li><a href="https://gitlab.com/x86-psABIs/x86-64-ABI/-/jobs/artifacts/master/raw/x86-64-ABI/abi.pdf?job=build">System V Application Binary Interface</a> <a href="https://alumnihusteducn-my.sharepoint.com/:b:/g/personal/u201614735_alumni_hust_edu_cn/EaG-ayxZZelFtslYaKOlFKcBFihL7b0C8wfxSHUZytQdXw?e=poIEWV">#PDF</a></li>
+<li><a href="https://godbolt.org/">在线编译器 GodBot</a></li>
+</ul>
+<hr>
+<h2 id="mips">MIPS</h2>
+<p>MIPS（Microprocessor without Interlocked Pipeline Stages）是一种精简指令集计算（RISC）架构，广泛应用于嵌入式系统、网络设备以及教育领域。它的设计强调简洁性和高效性，所有指令的长度固定为 32 位（部分版本支持 16 位压缩指令）。<br>
+MIPS 有32个通用寄存器：<br>
+<img src="https://pic.qxxiao.cn/202411272054571.png" alt="mips" loading="lazy"><br>
+函数调用：</p>
+<ul>
+<li>参数传递：通过 <code>$a0-$a3</code>（MIPS32）或 <code>$a0-$a7</code>（MIPS64）传递前 4 或 8 个参数，更多参数通过栈传递。</li>
+<li>返回值：通过 <code>$v0</code> 和 <code>$v1</code> 返回函数结果。</li>
+<li>调用者 Caller 保存寄存器：<code>$t0-$t9</code></li>
+<li>被调用者 Callee 保存寄存器：<code>$s0-$s7</code></li>
+</ul>
+<p><a href="https://cs.nju.edu.cn/swang/CompArchOrg_13F/slides/lecture19.pdf">mips assembly lecture - by nju</a></p>
+<h2 id="riscv">RISCV</h2>
+<p>RISC-V 是一种基于精简指令集（RISC）的开源指令集架构（ISA），其设计具有模块化、灵活性和跨平台支持的特点。基础指令集（如 RV32I、RV64I）只提供最基本的操作，其他功能通过扩展模块实现，例如：</p>
+<ul>
+<li>M 扩展（整数乘除法）：支持整数的乘法和除法操作。</li>
+<li>F 扩展（单精度浮点数）：支持浮点运算。</li>
+<li>D 扩展（双精度浮点数）：扩展浮点运算到双精度。</li>
+<li>C 扩展（压缩指令集）：减少指令长度，提高代码密度。</li>
+<li>V 扩展（向量处理）：支持高效的数据并行计算。</li>
+</ul>
+<p>RV32I 有32个通用寄存器:<br>
+<img src="https://pic.qxxiao.cn/202411272025366.png" alt="RV32I-regs" loading="lazy"></p>
+<ul>
+<li>由调用者 Caller 负责保存和恢复，临时寄存器：<code>t0-t6</code></li>
+<li>由被调用者 Callee 负责保存和恢复，保存寄存器：<code>s0-s11</code></li>
+<li>参数寄存器: <code>a0-a7</code></li>
+</ul>
+<p>阅读</p>
+<ul>
+<li><a href="https://riscv-programming.org/book.html">riscv progrmming book</a></li>
+<li><a href="http://riscvbook.com/chinese/RISC-V-Reader-Chinese-v2p1.pdf">riscv 手册中文版v2</a></li>
+</ul>
+</div>
+
+                <!-- 新加的模块的，应该使用模版-->
+                <!-- 版权声明 -->
+                
+                  <div class="jumbotron">
+                    <div class="container">
+                      <p>
+                        <i class="ri-article-line"></i>
+                        <b>本文链接:</b>
+                        <a href="https://blog.qxxiao.eu.org/post/汇编基础和函数调用ABI/" target="_blank">
+                          汇编基础和函数调用ABI
+                        </a>
+                      </p>
+                      <p>
+                        <i class="ri-creative-commons-line"></i>
+                        <b>版权声明:</b>
+                        本博客所有文章除特别声明外，均采用
+                        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC
+                          BY-NC-SA
+                          4.0</a>
+                        许可协议，转载请注明出处。
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>发布日期:</b>
+                        2024-07-23
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>最新构建:</b>
+                        2024-12-08
+                          <!-- 使用 themeConfig.dateFormat 格式对日期格式化，例如YY-MM-DD -->
+                          <!-- {
+  &#34;content&#34;: &#34;&lt;!-- more --&gt;\n&lt;h2 id=\&#34;2024-10-02\&#34;&gt;2024-10-02&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加了代码高亮行的显示，语法：&lt;code&gt;cpp{1,4,7-10}&lt;/code&gt;, 不要有空格&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2024-06-10\&#34;&gt;2024-06-10&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加了相册的时间线样式&lt;/li&gt;\n&lt;li&gt;添加了书单页面&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2024-06-09\&#34;&gt;2024-06-09&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改了部分样式，去除了多个页面中的 css class: animated fadeIn，避免页面刷新时抖动&lt;/li&gt;\n&lt;li&gt;修改了文章 TOC 目录的宽度样式, 只限制最小/最大宽度，使其能够自适应内容宽度&lt;/li&gt;\n&lt;li&gt;统一 post 文章和 diary/gallary 页面的回到顶部/底部按钮样式和位置&lt;/li&gt;\n&lt;li&gt;简化了 明亮/黑暗模式切换代码，删除了 &lt;code&gt;ldbutton.js&lt;/code&gt;，使用 Vue 来控制样式切换。但刷新会导致页面闪屏，因为 Vue 执行完 mounted 后才会正确计算当前模式；解决：使用 js 函数来提前完成模式的初始化，避免闪屏&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2023-12-20\&#34;&gt;2023-12-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加&lt;code&gt;时光/说说&lt;/code&gt;功能，数据来源于 Memos\n&lt;ul&gt;\n&lt;li&gt;由于评论部署在 vercel，加载慢，说说评论需要在&lt;a href=\&#34;https://memos.qxxiao.eu.org\&#34;&gt;原始 Memos 页面&lt;/a&gt;打开评论 (更新：添加了页面评论，可以直接在当前页面访问)&lt;/li&gt;\n&lt;li&gt;说说服务器部署在 Azure，可能需要代理才能正常访问&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;li&gt;将仓库同步到 github，利用 github actions 进行博客同步\n&lt;ul&gt;\n&lt;li&gt;之前使用 Mac 监控脚本同步博客，gridea 每次预览可能会触发导致站点 url 是 localhost，并且有时任务触发不及时&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;li&gt;添加 &lt;a href=\&#34;https://github.com/kytrun/gridea-search\&#34;&gt;gridea-search 插件&lt;/a&gt;，对应添加了搜索框，调整了一下菜单界面&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2023-12-12\&#34;&gt;2023-12-12&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;更新评论系统 twikoo 版本到 1.6.27&lt;/li&gt;\n&lt;li&gt;更新样式，删除友链菜单，直接在&lt;a href=\&#34;/post/about\&#34;&gt;关于页面&lt;/a&gt;添加，保留了部分 css 样式&lt;/li&gt;\n&lt;li&gt;优化，使用 &lt;code&gt;v-cloak&lt;/code&gt; 避免出现 post 页面的文章目录闪烁问题&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-07-06\&#34;&gt;2022-07-06&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改样式，添加暗亮模式切换&lt;/li&gt;\n&lt;li&gt;修改默认样式查询方式，简单样式适配&lt;/li&gt;\n&lt;li&gt;修改代码主题为 &lt;code&gt;vs-dark&lt;/code&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-03-20\&#34;&gt;2022-03-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加文章列表中的标签的显示，设置标签样式(默认没有 border-indigo-500 等样式)&lt;/li&gt;\n&lt;li&gt;优化布局&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-27\&#34;&gt;2022-02-27&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加代码样式，增加行号和复制选项&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-25\&#34;&gt;2022-02-25&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改主题配置，添加友链菜单，优化了页面效果&lt;/li&gt;\n&lt;li&gt;添加导航菜单&lt;/li&gt;\n&lt;li&gt;页面样式移动和修改&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-20\&#34;&gt;2022-02-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;更新页面样式，添加版权和说明（改变字体可能会导致中文目录不能正确跳转）&lt;/li&gt;\n&lt;li&gt;更新归档页面，添加日期信息和每篇文章的相关描述&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-10\&#34;&gt;2022-02-10&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;简单使用 Rocky 主题&lt;/li&gt;\n&lt;li&gt;修改主页信息的描述以及 footer 信息&lt;/li&gt;\n&lt;li&gt;使用 Twikoo 评论&lt;/li&gt;\n&lt;/ul&gt;\n&#34;,
+  &#34;fileName&#34;: &#34;log&#34;,
+  &#34;abstract&#34;: &#34;&#34;,
+  &#34;title&#34;: &#34;更新日志&#34;,
+  &#34;tags&#34;: [],
+  &#34;date&#34;: &#34;2020-01-05 00:37:45&#34;,
+  &#34;dateFormat&#34;: &#34;2020-01-05&#34;,
+  &#34;feature&#34;: &#34;&#34;,
+  &#34;link&#34;: &#34;https://blog.qxxiao.eu.org/post/log/&#34;,
+  &#34;hideInList&#34;: true,
+  &#34;isTop&#34;: false,
+  &#34;stats&#34;: {
+    &#34;text&#34;: &#34;3 min read&#34;,
+    &#34;time&#34;: 146000,
+    &#34;words&#34;: 662,
+    &#34;minutes&#34;: 3
+  },
+  &#34;description&#34;: &#34;\n2024-10-02\n\n添加了代码高亮行的显示，语法：cpp{1,4,7-10}, 不要有空格\n\n2024-06-10\n\n添加了相册的时间线样式\n添加了书单页面\n\n2024-06-09\n\n修改了部分样式，去除了多个页面中的 css cla...&#34;,
+  &#34;toc&#34;: &#34;&lt;ul class=\&#34;markdownIt-TOC\&#34;&gt;\n&lt;li&gt;\n&lt;ul&gt;\n&lt;li&gt;&lt;a href=\&#34;#2024-10-02\&#34;&gt;2024-10-02&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2024-06-10\&#34;&gt;2024-06-10&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2024-06-09\&#34;&gt;2024-06-09&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2023-12-20\&#34;&gt;2023-12-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2023-12-12\&#34;&gt;2023-12-12&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-07-06\&#34;&gt;2022-07-06&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-03-20\&#34;&gt;2022-03-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-27\&#34;&gt;2022-02-27&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-25\&#34;&gt;2022-02-25&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-20\&#34;&gt;2022-02-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-10\&#34;&gt;2022-02-10&lt;/a&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;/ul&gt;\n&#34;
+}
+                            
+                                  2024-07-23
+                                     -->
+                      </p>
+                    </div>
+                  </div>
+                  
+                    <!-- 新加的模块的，应该使用模版-->
+                    <!--阅读次数-->
+                    <div class="text-center text-gray-400">
+                      <i class="ri-eye-line"></i>
+                      本文已被阅读
+                      <span id="twikoo_visitors">0</span>
+                      次，该数据仅供参考
+                    </div>
+
+                    <!-- Share to Twitter, Weibo, Telegram -->
+                    <div class="flex items-center">
+                      <div class="mr-4 flex items-center">
+                        <i class="ri-share-forward-line text-gray-500"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-blue-500 hover:bg-blue-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTwitter">
+                        <i class="ri-twitter-line"></i>
+                      </div>
+                      <div class="px-4 cursor-pointer text-red-500 hover:bg-red-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToWeibo">
+                        <i class="ri-weibo-line"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-indigo-500 hover:bg-indigo-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTelegram">
+                        <i class="ri-telegram-line"></i>
+                      </div>
+                    </div>
+          </div>
+
+          <!-- 新加的模块的，应该使用模版-->
+          <!-- 评论说明-->
+          <div class="jumbotron-comment">
+            <div class="container">
+              <p>
+                <i class="ri-message-3-line"></i>
+                欢迎任何与文章内容相关并保持尊重的评论😊 !
+              </p>
+            </div>
+          </div>
+
+          
+                        
+                            
+                              <div id="tcomment"></div>
+                               <footer class="py-12 text-center px-4 md:px-0" v-pre>
+  共 42 篇文章 | Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <i class="ri-rss-line"></i><a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" target="_blank">RSS</a></br>
+©2020-2024 <a href="https://blog.qxxiao.eu.org/index.html" target="_blank">Nuo</a>. All rights reserved.
+</footer>
+
+<!--没有添加/用到app 中的主题footer配置消息，如果使用，将上面的 href 替换为原地址-->
+<!---->
+
+        </div>
+
+        <!-- TOC Container -->
+        <div
+          class="fixed right-0 bottom-0 mb-40 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white dark:bg-gray-500 dark:text-gray-200 hover:shadow-lg transition-all"
+          @click="showToc = true">
+          <i class="ri-file-list-line"></i>
+        </div>
+
+        <div v-cloak
+          class="fixed right-0 top-0 bottom-0 overflow-y-auto w-16-24 bg-white dark:bg-gray-800 p-4 border-l border-gray-100 dark:border-gray-600 z-10 transition-fast"
+          :class="{ '-mr-64': !showToc }">
+          <div class="flex mb-4 justify-end">
+            <div
+              class="w-8 h-8 inline-flex justify-center items-center rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-fast"
+              @click="showToc = false">
+              <i class="ri-close-line text-lg"></i>
+            </div>
+          </div>
+          <div class="post-toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#1%E5%AF%84%E5%AD%98%E5%99%A8">1.寄存器</a>
+<ul>
+<li><a href="#x86-%E5%AF%84%E5%AD%98%E5%99%A8">x86 寄存器</a></li>
+<li><a href="#x86-64-%E5%AF%84%E5%AD%98%E5%99%A8">x86-64 寄存器</a></li>
+</ul>
+</li>
+<li><a href="#2%E6%B1%87%E7%BC%96%E8%AF%AD%E6%B3%95">2.汇编语法</a>
+<ul>
+<li><a href="#%E6%8C%87%E4%BB%A4%E5%90%8E%E7%BC%80">指令后缀</a></li>
+<li><a href="#%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80%E8%AE%BF%E9%97%AE">内存寻址（访问）</a></li>
+<li><a href="#%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4">常用指令</a></li>
+</ul>
+</li>
+<li><a href="#3%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8">3.函数调用</a>
+<ul>
+<li><a href="#%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0">函数参数</a></li>
+<li><a href="#%E5%87%BD%E6%95%B0%E6%A0%88%E5%B8%A7">函数栈帧</a></li>
+<li><a href="#%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E5%8D%8F%E8%AE%AE">函数调用协议</a></li>
+</ul>
+</li>
+<li><a href="#4gdb">4.GDB</a></li>
+<li><a href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99">参考资料</a></li>
+<li><a href="#mips">MIPS</a></li>
+<li><a href="#riscv">RISCV</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+
+        <!-- Back to top -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-20 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToUp" v-show="scrolled">
+          <i class="ri-arrow-up-line"></i>
+        </div>
+        <!-- Back to bottom -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-4 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToBottom" v-show="!atBottom">
+          <i class="ri-arrow-down-line"></i>
+        </div>
+    </div>
+
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- Background of PhotoSwipe. 
+        It's a separate element as animating opacity is faster than rgba(). -->
+  <div class="pswp__bg">
+  </div>
+  <!-- Slides wrapper with overflow:hidden. -->
+  <div class="pswp__scroll-wrap">
+    <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+    <div class="pswp__container">
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+    </div>
+    <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        <!--  Controls are self-explanatory. Order can be changed. -->
+        <div class="pswp__counter">
+        </div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+        <!-- element will get class pswp__preloader--active when preloader is running -->
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip">
+        </div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://blog.qxxiao.eu.org/media/scripts/main.js"></script>
+
+      <!-- Code Highlight -->
+      
+        <script src="https://blog.qxxiao.eu.org/media/prism.js"></script>
+        <script>
+          Prism.highlightAll();
+        </script>
+        <script src="https://blog.qxxiao.eu.org/media/scripts/fixcode.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/show-language/prism-show-language.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+        
+
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+          <script>
+            //拿到预览框架，也就是上面的html代码
+            var pswpElement = document.querySelectorAll('.pswp')[0]
+            //定义图片数组变量
+            var imgitems
+            /**
+             * 用于显示预览界面
+             * @param index 图片数组下标
+             */
+            function viewImg(index) {
+              var pswpoptions = {
+                index: parseInt(index, 10), // 开始幻灯片索引。0是第一张幻灯片。必须是整数，而不是字符串。
+                bgOpacity: 0.7, // 背景透明度，0-1
+                maxSpreadZoom: 3, // 缩放级别，不要太大
+              }
+              //初始化并打开PhotoSwipe，pswpElement对应上面预览框架，PhotoSwipeUI_Default为皮肤，imgitems为图片数组，pswpoptions为选项
+              var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, imgitems, pswpoptions)
+              gallery.init()
+            }
+            /**
+             * 用于添加图片点击事件
+             * @param img 图片元素
+             * @param index 所属下标（在imgitems中的位置）
+             */
+            function addImgClick(img, index) {
+              img.onclick = function () {
+                viewImg(index)
+              }
+            }
+            /**
+             * 轮询所有图片，获取src、width、height等数据，加入imgitems，并给图片元素添加事件
+             * 最好在onload中执行该方法，本站因放在最底部，所以直接初始化
+             * 异步加载图片可在图片元素创建完成后调用此方法
+             */
+            function initImg() {
+              //重置图片数组
+              imgitems = []
+              //查找class:markdown 下的所有img元素并遍历
+              var imgs = document.querySelectorAll('.markdown img')
+              for (var i = 0; i < imgs.length; i++) {
+                var img = imgs[i]
+                //本站相册初始为loading图片，真实图片放在data-src
+                var ds = img.getAttribute('data-src')
+                //创建image对象，用于获取图片宽高
+                var imgtemp = new Image()
+                //判断是否存在data-src
+                if (ds != null && ds.length > 0) {
+                  imgtemp.src = ds
+                } else {
+                  imgtemp.src = img.src
+                }
+                //判断是否存在缓存
+                if (imgtemp.complete) {
+                  var imgobj = {
+                    src: imgtemp.src,
+                    w: imgtemp.width,
+                    h: imgtemp.height,
+                  }
+                  imgitems[i] = imgobj
+                  addImgClick(img, i)
+                } else {
+                  imgtemp.index = i
+                  imgtemp.img = img
+                  imgtemp.onload = function () {
+                    var imgobj = {
+                      src: this.src,
+                      w: this.width,
+                      h: this.height,
+                    }
+                    //不要使用push，因为onload前后顺序会不同
+                    imgitems[this.index] = imgobj
+                    //添加点击事件
+                    addImgClick(this.img, this.index)
+                  }
+                }
+              }
+            }
+            //初始化
+            initImg();
+          </script>
+          
+                
+                          
+                            <script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.36/dist/twikoo.all.min.js"></script>
+                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+                              integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+                              crossorigin="anonymous" />
+                            <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+                              integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+                              crossorigin="anonymous"></script>
+                            <script defer
+                              src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+                              integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"
+                              crossorigin="anonymous"></script>
+                            <script>
+                              twikoo.init({
+                                envId: 'https://twikoo.qxxiao.eu.org/',
+                                el: '#tcomment',
+                                katex: {
+                                  delimiters: [
+                                    { left: '$$', right: '$$', display: true },
+                                    { left: '$', right: '$', display: false },
+                                    { left: '\\(', right: '\\)', display: false },
+                                    { left: '\\[', right: '\\]', display: true },
+                                  ],
+                                  throwOnError: false,
+                                },
+                                // region: 'ap-guangzhou', // 环境地域，默认为 ap-shanghai，如果您的环境地域不是上海，需传此参数
+                                // path: 'window.location.pathname', // 用于区分不同文章的自定义 js 路径，如果您的文章路径不是 location.pathname，需传此参数
+                              });
+                            </script>
+                            
+
+                              <!-- line number for code block -->
+                              <script>
+                                var pres = document.getElementsByTagName('pre')
+                                for (var i = 0; i < pres.length; i++) {
+                                  var pre = pres[i]
+                                  if (pre.childNodes[0].nodeName == 'CODE') {
+                                    pre.setAttribute('class', 'line-numbers')
+                                  }
+                                }
+                              </script>
+                              
+
+  </body>
+
+</html>
