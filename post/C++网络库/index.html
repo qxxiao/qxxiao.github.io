@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <!--每个页面都需要 head link等  -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>
+  C++网络库 - Unique&#39;s Blog
+</title>
+<link rel="shortcut icon" href="https://blog.qxxiao.eu.org/favicon.ico">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/tailwind.css">
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/ldbutton.css">
+
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/styles/main.css">
+<script src="https://blog.qxxiao.eu.org/media/scripts/initTheme.js"></script>
+<link rel="stylesheet" href="https://blog.qxxiao.eu.org/media/css/light-dark.css">
+
+
+<link rel="alternate" type="application/atom+xml" title="C++网络库 - Unique&#39;s Blog - Atom Feed"
+  href="https://blog.qxxiao.eu.org/atom.xml">
+
+
+      <meta name="description" content="
+
+
+libcurl：高可移植、功能丰富的通信库
+cpr：更现代、更易用的通信库
+
+安装
+
+
+ZMQ：高效、多功能的通信库
+sockpp
+小结
+
+
+
+
+
+转载和来源于：罗剑锋的 C++ 实战笔记
+
+libcurl：高可移植、功能丰富的通信库..." />
+      <meta property="og:title" content="C++网络库 - Unique&#39;s Blog" />
+      <meta property="og:description" content="
+
+
+libcurl：高可移植、功能丰富的通信库
+cpr：更现代、更易用的通信库
+
+安装
+
+
+ZMQ：高效、多功能的通信库
+sockpp
+小结
+
+
+
+
+
+转载和来源于：罗剑锋的 C++ 实战笔记
+
+libcurl：高可移植、功能丰富的通信库..." />
+      <meta property="og:type" content="articles" />
+      <meta property="og:url" content="https://blog.qxxiao.eu.org/post/C++网络库/" />
+      <meta property="og:image"
+        content="https://pic.qxxiao.cn/cpp-logo.png" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:width" content="1200" />
+      <meta name="twitter:title" content="C++网络库 - Unique&#39;s Blog" />
+      <meta name="twitter:description" content="
+
+
+libcurl：高可移植、功能丰富的通信库
+cpr：更现代、更易用的通信库
+
+安装
+
+
+ZMQ：高效、多功能的通信库
+sockpp
+小结
+
+
+
+
+
+转载和来源于：罗剑锋的 C++ 实战笔记
+
+libcurl：高可移植、功能丰富的通信库..." />
+      <meta name="twitter:card" content="summary_large_image" />
+      <link rel="canonical" href="https://blog.qxxiao.eu.org/post/C++网络库/" />
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css" />
+
+      
+        <link rel="stylesheet"
+          href="https://blog.qxxiao.eu.org/media/css/prism-vs-dark.css" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.css"
+          rel="stylesheet" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.css"
+          rel="stylesheet" />
+        <link href=https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/plugins/line-highlight/prism-line-highlight.min.css />
+        
+          
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" />
+            
+  </head>
+
+  <body>
+    <div class="antialiased flex flex-col min-h-screen" id="app">
+      <!-- 标题菜单 -->
+<div class="nav py-3 md:py-8 fixed w-full z-10 bg-gray-50 dark:bg-gray-700 transition-all duration-300"
+  :class="{ 'scroll': scrolled }">
+  <div class="flex justify-end px-4">
+    <div class="w-8 h-8 flex justify-center items-center rounded-full md:hidden" @click="showMenu = !showMenu">
+      <i class="ri-close-line" v-show="showMenu"></i>
+      <i class="ri-menu-3-line" v-show="!showMenu"></i>
+    </div>
+  </div>
+  <nav cloak class="max-w-4xl w-full mx-auto text-right flex flex-col md:flex-row justify-between items-center md:flex"
+    :class="`${ showMenu ? 'flex' : 'hidden' }`">
+    
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            首页
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/archives" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            归档
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/tags" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            标签
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="https://gh.qxxiao.eu.org/nav" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            导航
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+        <div
+          class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold dark:hover:bg-gray-600 hover:bg-gray-200 nav-time1">
+          时光
+            <div class="transition font-semibold nav-time2">
+              
+                <a href="https://blog.qxxiao.eu.org/diary/" class="">
+                  说说
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/gallery/" class="">
+                  相册
+                </a>
+                
+                <a href="https://blog.qxxiao.eu.org/post/book/" class="">
+                  书单
+                </a>
+                
+            </div>
+        </div>
+        
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/post/about" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            关于
+          </a>
+          
+            
+              <!-- <a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+      RSS
+    </a> -->
+              <!-- 黑色模式，和亮色模式开关-->
+<div class="py-2 md:py-1 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+  <label for="night-light-checkbox" class="night-light-label">
+    <input type="checkbox" id="night-light-checkbox" @change="toggleDarkMode" />
+    <span v-cloak class="night-light-ball" id="night-light-ball"></span>
+    <svg viewBox="0 0 512 512" class="sun-svg">
+      <path id="sun-svg"
+        d="M256 160c-52.9 0-96 43.1-96 96s43.1 96 96 96 96-43.1 96-96-43.1-96-96-96zm246.4 80.5l-94.7-47.3 33.5-100.4c4.5-13.6-8.4-26.5-21.9-21.9l-100.4 33.5-47.4-94.8c-6.4-12.8-24.6-12.8-31 0l-47.3 94.7L92.7 70.8c-13.6-4.5-26.5 8.4-21.9 21.9l33.5 100.4-94.7 47.4c-12.8 6.4-12.8 24.6 0 31l94.7 47.3-33.5 100.5c-4.5 13.6 8.4 26.5 21.9 21.9l100.4-33.5 47.3 94.7c6.4 12.8 24.6 12.8 31 0l47.3-94.7 100.4 33.5c13.6 4.5 26.5-8.4 21.9-21.9l-33.5-100.4 94.7-47.3c13-6.5 13-24.7.2-31.1zm-155.9 106c-49.9 49.9-131.1 49.9-181 0-49.9-49.9-49.9-131.1 0-181 49.9-49.9 131.1-49.9 181 0 49.9 49.9 49.9 131.1 0 181z">
+      </path>
+    </svg>
+    <svg viewBox="0 0 512 512" class="moon-svg">
+      <path id="moon-svg"
+        d="M283.211 512c78.962 0 151.079-35.925 198.857-94.792 7.068-8.708-.639-21.43-11.562-19.35-124.203 23.654-238.262-71.576-238.262-196.954 0-72.222 38.662-138.635 101.498-174.394 9.686-5.512 7.25-20.197-3.756-22.23A258.156 258.156 0 0 0 283.211 0c-141.309 0-256 114.511-256 256 0 141.309 114.511 256 256 256z">
+      </path>
+    </svg>
+  </label>
+</div>
+                <form id="gridea-search-form" class="inline-flex mx-4 px-4" action="https://blog.qxxiao.eu.org/search/">
+                  <input type="search" autocomplete='off' spellcheck='false' name="q" />
+                </form>
+  </nav>
+
+</div>
+        <a href="https://blog.qxxiao.eu.org"
+          class="fixed top-0 left-0 mt-4 bg-black text-white dark:text-gray-700 dark:bg-yellow-50 dark:hover:bg-black dark:hover:text-white inline-flex p-2 pl-8 hover:text-gray-700 hover:bg-yellow-50 font-bold z-10">
+          Unique&#39;s Blog
+        </a>
+        <div class="max-w-4xl w-full mx-auto">
+          <div class="shadow-box bg-white dark:bg-gray-600 rounded-lg pt-32 px-4 md:px-8 pb-8 mb-8">
+            <h1 class="text-5xl font-semibold leading-normal pb-8 mb-8 border-b-8 border-gray-700">
+              C++网络库
+            </h1>
+            <!-- 不显示 Post 中的封面图片 -->
+            
+                <div class="mb-8 flex flex-wrap">
+                  <div class="text-gray-400 text-sm mr-4">
+                    <i class="ri-calendar-2-line" style="vertical-align: middle;"></i>
+                    2022-10-23 ·
+                      <i class="ri-file-word-line" style="vertical-align: middle;"></i>
+                      3072字 ·
+                        <i class="ri-timer-line" style="vertical-align: middle;"></i>
+                        14 min read
+                  </div>
+                  🏷️&nbsp;
+                      
+                        <a href="https://blog.qxxiao.eu.org/tag/c/"
+                          class="text-indigo-500 text-sm border-b-2 border-solid border-indigo-500 hover:border-gray-600 transition-all duration-100 inline-flex mr-2">
+                          <i class="ri-hashtag" style="vertical-align: middle;"></i>
+                          C++
+                        </a>
+                        
+                </div>
+                <div class="markdown mb-8" v-pre><p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#libcurl%E9%AB%98%E5%8F%AF%E7%A7%BB%E6%A4%8D-%E5%8A%9F%E8%83%BD%E4%B8%B0%E5%AF%8C%E7%9A%84%E9%80%9A%E4%BF%A1%E5%BA%93">libcurl：高可移植、功能丰富的通信库</a></li>
+<li><a href="#font-colord44c47cpr%E6%9B%B4%E7%8E%B0%E4%BB%A3-%E6%9B%B4%E6%98%93%E7%94%A8%E7%9A%84%E9%80%9A%E4%BF%A1%E5%BA%93font"><font color='#d44c47'>cpr：更现代、更易用的通信库</font></a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85">安装</a></li>
+</ul>
+</li>
+<li><a href="#zmq%E9%AB%98%E6%95%88-%E5%A4%9A%E5%8A%9F%E8%83%BD%E7%9A%84%E9%80%9A%E4%BF%A1%E5%BA%93">ZMQ：高效、多功能的通信库</a></li>
+<li><a href="#sockpp">sockpp</a></li>
+<li><a href="#%E5%B0%8F%E7%BB%93">小结</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<blockquote>
+<p>转载和来源于：<a href="https://time.geekbang.org/column/intro/100051801?utm_source=gold_browser_extension"><strong>罗剑锋的 C++ 实战笔记</strong></a></p>
+</blockquote>
+<h2 id="libcurl高可移植-功能丰富的通信库">libcurl：高可移植、功能丰富的通信库</h2>
+<p><a href="https://curl.se/libcurl/c/">libcurl</a>，来源于著名的curl 项目，也是 curl 的底层核心。</p>
+<p>它最早只支持 HTTP 协议，但现在已经扩展到支持所有的应用层协议，比如 HTTPS、FTP、LDAP、SMTP 等，功能强大。</p>
+<p>libcurl 使用纯 C 语言开发，兼容性、可移植性非常好，基于 C 接口可以很容易写出各种语言的封装，所以 Python、PHP 等语言都有 libcurl 相关的库。</p>
+<p>ubuntu 下安装：</p>
+<pre><code class="language-bash">apt-get install libcurl4-openssl-dev
+</code></pre>
+<p><code>libcurl</code> 的接口可以粗略地分成两大类：easy 系列和 multi 系列。其中，easy 系列是同步调用，比较简单；multi 系列是异步的多线程调用。</p>
+<p>使用 <code>libcurl</code> 收发 HTTP 数据的基本步骤有 4 个：</p>
+<ol>
+<li>
+<p>使用 <code>curl_easy_init()</code> 创建一个句柄，类型是 <code>CURL*</code>。但我们完全没有必要关心句柄的类型，直接用 auto 推导就行。</p>
+</li>
+<li>
+<p>使用 <code>curl_easy_setopt()</code> 设置请求的各种参数，比如请求方法、URL、header/body 数据、超时、回调函数等。这是最关键的操作。</p>
+</li>
+<li>
+<p>使用 <code>curl_easy_perform()</code> 发送数据，返回的数据会由回调函数处理。</p>
+</li>
+<li>
+<p>使用 <code>curl_easy_cleanup()</code> 清理句柄相关的资源，结束会话。</p>
+</li>
+</ol>
+<details class="markdown">
+<summary><b><font color='#da720f'>Code示例</font></b></summary>
+<pre><code class="language-c++">#include &lt;assert.h&gt;
+#include &lt;curl/curl.h&gt;
+#include &lt;iostream&gt;
+
+using namespace std;
+
+// 回调函数的原型
+// 回调会被多次调用，每次调用都会传递一块数据;ptr指向传递的数据，该数据的大小为nmemb；size始终为1
+// size * nmemb 是缓冲区的大小
+// ptr 是缓冲区的地址
+// userdata 是用户自定义的数据
+size_t write_callback(char*, size_t, size_t, void*);
+
+int main() {
+    auto curl = curl_easy_init(); // 创建CURL句柄
+    assert(curl);
+
+    curl_easy_setopt(curl, CURLOPT_URL, &quot;http://nginx.org&quot;); // 设置请求URI
+    // 避免代理设置为长连接 Proxy-Connection:close或者不使用代理
+    curl_easy_setopt(curl, CURLOPT_PROXY, &quot;&quot;);
+    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+
+    // 没有设置回调函数时，内部的默认回调，把得到的 HTTP 响应数据输出到标准流
+    // c++11, 无捕获的 lambda 表达式可以显式转换成一个函数指针=&gt;C使用
+    curl_easy_setopt(
+        curl, CURLOPT_WRITEFUNCTION, // 设置回调函数
+        (decltype(&amp;write_callback))  // decltype获取函数指针类型，显式转换
+            [](char* ptr, size_t size, size_t nmemb, void* userdata) {
+                cout &lt;&lt; &quot;size = &quot; &lt;&lt; size &lt;&lt; &quot;*&quot; &lt;&lt; nmemb &lt;&lt; &quot;=&quot; &lt;&lt; size * nmemb &lt;&lt; endl; // 简单的处理
+                return size * nmemb;                                                      // 返回接收的字节数
+            });
+
+    auto res = curl_easy_perform(curl); // 发送数据
+    if (res != CURLE_OK) {              // 检查是否执行成功
+        cout &lt;&lt; curl_easy_strerror(res) &lt;&lt; endl;
+    }
+    curl_easy_cleanup(curl); // 清理句柄相关的资源
+    return 0;
+}
+</code></pre>
+</details>
+<p><font color='#d44c47'>推荐使用cpr代替它</font></p>
+<h2 id="font-colord44c47cpr更现代-更易用的通信库font"><font color='#d44c47'>cpr：更现代、更易用的通信库</font></h2>
+<p><a href="https://docs.libcpr.org">cpr</a> 是对 <code>libcurl</code> 的一个 C++11 封装，使用了很多现代 C++ 的高级特性，对外的接口模仿了 Python 的 <code>requests</code> 库，非常简单易用。</p>
+<h3 id="安装">安装</h3>
+<p>下载源码，用 cmake 编译安装</p>
+<pre><code class="language-bash">git clone git@github.com:whoshuu/cpr.git
+cmake . -DUSE_SYSTEM_CURL=ON -DBUILD_CPR_TESTS=OFF
+make &amp;&amp; make install
+</code></pre>
+<p>或者在 <code>cmake</code> 项目中直接使用[CMakeLists.txt]：</p>
+<pre><code class="language-makefile">include(FetchContent)
+FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/libcpr/cpr.git
+                         GIT_TAG 871ed52d350214a034f6ef8a3b8f51c5ce1bd400) # The commit hash for 1.9.0. Replace with the latest from: https://github.com/libcpr/cpr/releases
+FetchContent_MakeAvailable(cpr)
+
+target_link_libraries(cpr_example PRIVATE cpr::cpr)
+</code></pre>
+<p><font color='#458361'><strong>说明</strong></font>：<font color='#458361'>macos 下指定 clang++/clang 编译器生成项目；gcc 编译会失败</font>；</p>
+<p>在 <code>cpr</code> 里，HTTP 协议的概念都被实现为相应的函数或者类，内部再转化为 libcurl 操作，主要的有：</p>
+<ul>
+<li>
+<p>GET/HEAD/POST 等请求方法，使用同名的 Get/Head/Post 函数；</p>
+</li>
+<li>
+<p>URL 使用 Url 类，它是 string 的封装；</p>
+</li>
+<li>
+<p>URL 参数使用 Parameters 类，KV 结构，近似 map；</p>
+</li>
+<li>
+<p>请求头字段使用 Header 类，它其实是 map 的别名，使用定制的函数实现了大小写无关比较；</p>
+</li>
+<li>
+<p>Cookie 使用 Cookies 类，也是 KV 结构，近似 map；</p>
+</li>
+<li>
+<p>请求体使用 Body 类；超时设置使用 Timeout 类。</p>
+</li>
+</ul>
+<p><code>cpr</code> 也支持异步处理，但它内部没有使用 libcurl 的 <code>multi</code> 接口，而是使用了标准库里的 future 和 async。</p>
+<details class="markdown">
+<summary><b><font color='#da720f'>Code示例</font></b></summary>
+<pre><code class="language-c++">#include &lt;cpr/cpr.h&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+int main(int argc, char** argv) {
+    cpr::Response r = cpr::Get(cpr::Url{&quot;https://api.github.com/repos/whoshuu/cpr/contributors&quot;},
+                               cpr::Authentication{&quot;user&quot;, &quot;pass&quot;, cpr::AuthMode::BASIC},
+                               cpr::Parameters{{&quot;anon&quot;, &quot;true&quot;}, {&quot;key&quot;, &quot;value&quot;}});
+    std::cout &lt;&lt; &quot;Status code: &quot; &lt;&lt; r.status_code &lt;&lt; '\n';
+    std::cout &lt;&lt; &quot;Header:\n&quot;;
+    for (const std::pair&lt;const std::basic_string&lt;char&gt;, std::basic_string&lt;char&gt;&gt;&amp; kv : r.header) {
+        std::cout &lt;&lt; '\t' &lt;&lt; kv.first &lt;&lt; ':' &lt;&lt; kv.second &lt;&lt; '\n';
+    }
+    std::cout &lt;&lt; &quot;Text: &quot; &lt;&lt; r.text &lt;&lt; '\n';
+    return 0;
+}
+</code></pre>
+</details>
+<h2 id="zmq高效-多功能的通信库">ZMQ：高效、多功能的通信库</h2>
+<p><code>libcurl</code> 和 <code>cpr</code> 处理的都是 HTTP 协议，方便但协议自身也有一些限制，比如必须要一来一回，必须点对点直连，在超大数据量通信的时候就不是太合适。<u>并且 </u><u><code>libcurl</code></u><u> 和 </u><u><code>cpr</code></u><u> 只能充当 HTTP 的客户端</u>。</p>
+<p>ZMQ 不仅是一个单纯的网络通信库，更像是一个高级的异步并发框架。</p>
+<p><a href="https://zeromq.org/get-started/">https://zeromq.org/get-started/</a></p>
+<p>Zero Message Queue——零延迟的消息队列，意味着它除了可以收发数据外，还可以用作消息中间件，解耦多个应用服务之间的强依赖关系，搭建高效、有弹性的分布式系统，从而超越原生的 Socket。</p>
+<p>ubuntu 下安装</p>
+<pre><code class="language-bash">apt-get install libzmq3-dev
+</code></pre>
+<p>ZMQ 是用 C++ 开发的，但出于兼容的考虑，对外提供的是纯 C 接口。它也有很多<font color='#c04d8a'> C++ 封装，可以使用</font> <a href="https://github.com/zeromq/cppzmq">cppzmq</a>，只有头文件的封装，简单使用。</p>
+<p>ZMQ 把自身定位于更高层次的“异步消息队列”，定义了 5 种不同的工作模式，来适应实际中常见的网络通信场景。</p>
+<ul>
+<li>
+<p>原生模式（RAW），没有消息队列功能，相当于底层 Socket 的简单封装；</p>
+</li>
+<li>
+<p>结对模式（PAIR），两个端点一对一通信；</p>
+</li>
+<li>
+<p>请求响应模式（REQ-REP），也是两个端点一对一通信，但请求必须有响应；</p>
+</li>
+<li>
+<p>发布订阅模式（PUB-SUB），一对多通信，一个端点发布消息，多个端点接收处理；</p>
+</li>
+<li>
+<p>管道模式（<strong>PUSH-PULL</strong>），或者叫流水线，可以一对多，也可以多对一；</p>
+</li>
+</ul>
+<p>前四种模式类似 HTTP 协议、Client-Server 架构，<strong>管道模式</strong>非常适合<font color='#d44c47'>进程间无阻塞传送海量数据</font>。管道模式介绍示意：</p>
+<figure data-type="image" tabindex="1"><img src="https://static001.geekbang.org/resource/image/8b/2d/8b868214b032aebfcee1e0e97a8a1e2d.png?wh=360*480" alt="" loading="lazy"></figure>
+<p>在 ZMQ 里有两个基本的类。</p>
+<ul>
+<li>
+<p>第一个是 <code>context_t</code>，它是 ZMQ 的运行环境。使用 ZMQ 的任何功能前，必须要先创建它。</p>
+</li>
+<li>
+<p>第二个是 <code>socket_t</code>，表示 ZMQ 的套接字，需要<u>指定刚才说的那 5 种工作模式</u>。注意它与原生 Socket 没有任何关系，只是借用了名字来方便理解。</p>
+</li>
+</ul>
+<p>ZMQ 套接字支持 TCP/IP，还支持进程内和进程间通信，这在本机交换数据时会更高效：</p>
+<ul>
+<li>
+<p><font color='#c04d8a'>TCP 通信</font>地址的形式是 <code>tcp://…</code>，指定 IP 地址和端口号；</p>
+</li>
+<li>
+<p><font color='#c04d8a'>进程内通信</font>地址的形式是 <code>inproc://…</code>，指定一个本地可访问的路径；</p>
+</li>
+<li>
+<p><font color='#c04d8a'>进程间通信</font>地址的形式是 <code>ipc://…</code>，也是一个本地可访问的路径。</p>
+</li>
+</ul>
+<p>用 bind()/connect() 这两个函数把 ZMQ 套接字连接起来之后，就可以用 send()/recv() 来收发数据了：</p>
+<details class="markdown">
+<summary><b><font color='#da720f'>Code示例</font></b></summary>
+<pre><code class="language-c++">#include &quot;zmq.hpp&quot;
+
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+#include &lt;string&gt;
+#include &lt;thread&gt;
+
+using namespace std;
+
+int main() {
+    const auto thread_num = 1;               // 并发线程数z
+    zmq::context_t context(thread_num);      // ZMQ环境变量
+    auto make_sock = [&amp;](auto mode) {        // 定义一个lambda表达式
+        return zmq::socket_t(context, mode); // 创建ZMQ套接字
+    };
+
+    const auto addr = &quot;ipc:///tmp/shm/zmq.sock&quot;s; // 通信地址
+
+    auto receiver = [=]() {              //  lambda表达式接收数据
+        auto sock = make_sock(ZMQ_PULL); // 创建ZMQ套接字，拉数据
+
+        sock.bind(addr);                  // 绑定套接字
+        assert(sock.handle() != nullptr); // 断言套接字有效
+
+        auto buf = make_unique&lt;char[]&gt;(1024);     // 创建一个1024字节的缓冲区
+        zmq::mutable_buffer msg(buf.get(), 1024); // 创建ZMQ消息
+        sock.recv(msg, zmq::recv_flags::none);    // 接收数据
+        cout &lt;&lt; (char*)msg.data() &lt;&lt; endl;
+    };
+
+    auto sender = [=]() {                // lambda表达式发送数据
+        auto sock = make_sock(ZMQ_PUSH); // 创建ZMQ套接字，推数据
+
+        sock.connect(addr); // 连接到对端
+        assert(sock.handle() != nullptr);
+
+        string s = &quot;hello zmq&quot;;
+        sock.send(zmq::const_buffer{s.data(), s.length()}); // 发送消息
+    };
+
+    thread t1(sender);
+    thread t2(receiver);
+
+    t1.join();
+    t2.join();
+}
+</code></pre>
+</details>
+<p>使用 ZMQ 完全不需要考虑底层的 TCP/IP 通信细节，它会保证消息异步、安全、完整地到达服务器，让你关注网络通信之上的业务逻辑。</p>
+<hr>
+<p>其他说明</p>
+<ul>
+<li>
+<p>ZMQ 环境的线程数。它的默认值是 1，适当增大一些就可以提高 ZMQ 的并发处理能力。</p>
+</li>
+<li>
+<p>收发消息时的本地缓存数量，ZMQ 的术语叫 High Water Mark。如果收发的数据过多，数量超过 HWM，ZMQ 要么阻塞，要么丢弃消息。</p>
+</li>
+</ul>
+<p>HWM 需要调用套接字的成员函数 setsockopt() 来设置，注意收发使用的是两个不同的标志：</p>
+<pre><code class="language-c++">sock.setsockopt(ZMQ_RCVHWM, 1000); // 接收消息最多缓存1000条
+sock.setsockopt(ZMQ_SNDHWM, 100); // 发送消息最多缓存100条
+</code></pre>
+<p>即使设置 100 万以上的值，ZMQ 会把一切都处理得很好。</p>
+<hr>
+<h2 id="sockpp">sockpp</h2>
+<p>简单易用的C++ Socket 库，这是一个<font color='#d44c47'>低层级的 socket 包装库</font>，提供 <code>socket</code>, <code>connector</code>, <code>acceptor</code> 等相关接口。</p>
+<p><strong>下载并安装</strong></p>
+<p><a href="https://github.com/fpagliughi/sockpp">https://github.com/fpagliughi/sockpp</a></p>
+<pre><code class="language-shell">git clone https://github.com/fpagliughi/sockpp
+cd sockpp
+mkdir build &amp;&amp; cd build
+cmake .. # 默认使用 -DSOCKPP_BUILD_SHARED=ON
+cmake --build . --target install
+</code></pre>
+<p><font color='#d44c47'>MacOS 下如果使用 gcc/g++，则使用 gcc/g++ toolchain 编译安装</font></p>
+<p>使用方式非常简单，例如 TCP 编程：</p>
+<details class="markdown">
+<summary><b><font color='#da720f'>TCP Server</font></b></summary>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;thread&gt;
+#include &quot;sockpp/tcp_acceptor.h&quot;
+#include &quot;sockpp/version.h&quot;
+
+using namespace std;
+// The thread function. 
+void run_echo(sockpp::tcp_socket sock)
+{
+	ssize_t n;
+	char buf[512];
+	
+	while ((n = sock.read(buf, sizeof(buf))) &gt; 0)
+		sock.write_n(buf, n);
+	cout &lt;&lt; &quot;Connection closed from &quot; &lt;&lt; sock.peer_address() &lt;&lt; endl;
+}
+
+int main(int argc, char* argv[])
+{
+	cout &lt;&lt; &quot;Sample TCP echo server for 'sockpp' &quot;
+		&lt;&lt; sockpp::SOCKPP_VERSION &lt;&lt; '\n' &lt;&lt; endl;
+
+	in_port_t port = (argc &gt; 1) ? atoi(argv[1]) : 12345;
+
+	sockpp::socket_initializer sockInit;
+	sockpp::tcp_acceptor acc(port);
+
+	if (!acc) {
+		cerr &lt;&lt; &quot;Error creating the acceptor: &quot; &lt;&lt; acc.last_error_str() &lt;&lt; endl;
+		return 1;
+	}
+	cout &lt;&lt; &quot;Awaiting connections on port &quot; &lt;&lt; port &lt;&lt; &quot;...&quot; &lt;&lt; endl;
+
+	while (true) {
+		sockpp::inet_address peer;
+
+		// Accept a new client connection
+		sockpp::tcp_socket sock = acc.accept(&amp;peer);
+		cout &lt;&lt; &quot;Received a connection request from &quot; &lt;&lt; peer &lt;&lt; endl;
+
+		if (!sock) {
+			cerr &lt;&lt; &quot;Error accepting incoming connection: &quot; 
+				&lt;&lt; acc.last_error_str() &lt;&lt; endl;
+		}
+		else {
+			// Create a thread and transfer the new stream to it.
+			thread thr(run_echo, std::move(sock));
+			thr.detach();
+		}
+	}
+	return 0;
+}
+</code></pre>
+</details>
+<details class="markdown">
+<summary><b><font color='#da720f'>TCP Client</font></b></summary>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &quot;sockpp/tcp_connector.h&quot;
+#include &quot;sockpp/version.h&quot;
+
+using namespace std;
+using namespace std::chrono;
+
+int main(int argc, char* argv[])
+{
+	cout &lt;&lt; &quot;Sample TCP echo client for 'sockpp' &quot;
+		&lt;&lt; sockpp::SOCKPP_VERSION &lt;&lt; '\n' &lt;&lt; endl;
+
+	string host = (argc &gt; 1) ? argv[1] : &quot;localhost&quot;;
+	in_port_t port = (argc &gt; 2) ? atoi(argv[2]) : 12345;
+
+	sockpp::socket_initializer sockInit;
+	sockpp::tcp_connector conn({host, port});
+	if (!conn) {
+		cerr &lt;&lt; &quot;Error connecting to server at &quot;
+			&lt;&lt; sockpp::inet_address(host, port)
+			&lt;&lt; &quot;\n\t&quot; &lt;&lt; conn.last_error_str() &lt;&lt; endl;
+		return 1;
+	}
+
+	cout &lt;&lt; &quot;Created a connection from &quot; &lt;&lt; conn.address() &lt;&lt; endl;
+
+	// Set a timeout for the responses
+	if (!conn.read_timeout(seconds(5))) {
+	    cerr &lt;&lt; &quot;Error setting timeout on TCP stream: &quot;
+	            &lt;&lt; conn.last_error_str() &lt;&lt; endl;
+	}
+
+	string s, sret;
+	while (getline(cin, s) &amp;&amp; !s.empty()) {
+		if (conn.write(s) != ssize_t(s.length())) {
+			cerr &lt;&lt; &quot;Error writing to the TCP stream: &quot;
+				&lt;&lt; conn.last_error_str() &lt;&lt; endl;
+			break;
+		}
+
+		sret.resize(s.length());
+		ssize_t n = conn.read_n(&amp;sret[0], s.length());
+
+		if (n != ssize_t(s.length())) {
+			cerr &lt;&lt; &quot;Error reading from TCP stream: &quot;
+				&lt;&lt; conn.last_error_str() &lt;&lt; endl;
+			break;
+		}
+		cout &lt;&lt; sret &lt;&lt; endl;
+	}
+	return (!conn) ? 1 : 0;
+}
+</code></pre>
+</details>
+<h2 id="小结">小结</h2>
+<ol>
+<li>
+<p>libcurl 是一个功能完善、稳定可靠的应用层通信库，最常用的就是 HTTP 协议；</p>
+</li>
+<li>
+<p>cpr 是对 libcurl 的 C++ 封装，接口简单易用；libcurl 和 cpr 都只能作为客户端来使用，不能编写服务器端应用；</p>
+</li>
+<li>
+<p>ZMQ 是一个高级的网络通信库，支持多种通信模式，可以把消息队列功能直接嵌入应用程序，搭建出高效、灵活、免管理的分布式系统。</p>
+</li>
+<li>
+<p>sockpp 是一个简单易用的底层sock封装库。</p>
+</li>
+</ol>
+<p>最后， C++20，原本预计会加入期待已久的 networking 库，但现在已经被推迟到了下一个版本（C++23）</p>
+<p>networking 库基于已有多年实践的 <code>boost.asio</code>，采用前摄器模式（Proactor）统一封装了操作系统的各种异步机制（<code>epoll</code>、<code>kqueue</code>、<code>IOCP</code>），而且支持协程。</p>
+</div>
+
+                <!-- 新加的模块的，应该使用模版-->
+                <!-- 版权声明 -->
+                
+                  <div class="jumbotron">
+                    <div class="container">
+                      <p>
+                        <i class="ri-article-line"></i>
+                        <b>本文链接:</b>
+                        <a href="https://blog.qxxiao.eu.org/post/C++网络库/" target="_blank">
+                          C++网络库
+                        </a>
+                      </p>
+                      <p>
+                        <i class="ri-creative-commons-line"></i>
+                        <b>版权声明:</b>
+                        本博客所有文章除特别声明外，均采用
+                        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC
+                          BY-NC-SA
+                          4.0</a>
+                        许可协议，转载请注明出处。
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>发布日期:</b>
+                        2022-10-23
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>最新构建:</b>
+                        2024-12-22
+                          <!-- 使用 themeConfig.dateFormat 格式对日期格式化，例如YY-MM-DD -->
+                          <!-- {
+  &#34;content&#34;: &#34;&lt;!-- more --&gt;\n&lt;h2 id=\&#34;2024-10-02\&#34;&gt;2024-10-02&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加了代码高亮行的显示，语法：&lt;code&gt;cpp{1,4,7-10}&lt;/code&gt;, 不要有空格&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2024-06-10\&#34;&gt;2024-06-10&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加了相册的时间线样式&lt;/li&gt;\n&lt;li&gt;添加了书单页面&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2024-06-09\&#34;&gt;2024-06-09&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改了部分样式，去除了多个页面中的 css class: animated fadeIn，避免页面刷新时抖动&lt;/li&gt;\n&lt;li&gt;修改了文章 TOC 目录的宽度样式, 只限制最小/最大宽度，使其能够自适应内容宽度&lt;/li&gt;\n&lt;li&gt;统一 post 文章和 diary/gallary 页面的回到顶部/底部按钮样式和位置&lt;/li&gt;\n&lt;li&gt;简化了 明亮/黑暗模式切换代码，删除了 &lt;code&gt;ldbutton.js&lt;/code&gt;，使用 Vue 来控制样式切换。但刷新会导致页面闪屏，因为 Vue 执行完 mounted 后才会正确计算当前模式；解决：使用 js 函数来提前完成模式的初始化，避免闪屏&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2023-12-20\&#34;&gt;2023-12-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加&lt;code&gt;时光/说说&lt;/code&gt;功能，数据来源于 Memos\n&lt;ul&gt;\n&lt;li&gt;由于评论部署在 vercel，加载慢，说说评论需要在&lt;a href=\&#34;https://memos.qxxiao.eu.org\&#34;&gt;原始 Memos 页面&lt;/a&gt;打开评论 (更新：添加了页面评论，可以直接在当前页面访问)&lt;/li&gt;\n&lt;li&gt;说说服务器部署在 Azure，可能需要代理才能正常访问&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;li&gt;将仓库同步到 github，利用 github actions 进行博客同步\n&lt;ul&gt;\n&lt;li&gt;之前使用 Mac 监控脚本同步博客，gridea 每次预览可能会触发导致站点 url 是 localhost，并且有时任务触发不及时&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;li&gt;添加 &lt;a href=\&#34;https://github.com/kytrun/gridea-search\&#34;&gt;gridea-search 插件&lt;/a&gt;，对应添加了搜索框，调整了一下菜单界面&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2023-12-12\&#34;&gt;2023-12-12&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;更新评论系统 twikoo 版本到 1.6.27&lt;/li&gt;\n&lt;li&gt;更新样式，删除友链菜单，直接在&lt;a href=\&#34;/post/about\&#34;&gt;关于页面&lt;/a&gt;添加，保留了部分 css 样式&lt;/li&gt;\n&lt;li&gt;优化，使用 &lt;code&gt;v-cloak&lt;/code&gt; 避免出现 post 页面的文章目录闪烁问题&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-07-06\&#34;&gt;2022-07-06&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改样式，添加暗亮模式切换&lt;/li&gt;\n&lt;li&gt;修改默认样式查询方式，简单样式适配&lt;/li&gt;\n&lt;li&gt;修改代码主题为 &lt;code&gt;vs-dark&lt;/code&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-03-20\&#34;&gt;2022-03-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加文章列表中的标签的显示，设置标签样式(默认没有 border-indigo-500 等样式)&lt;/li&gt;\n&lt;li&gt;优化布局&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-27\&#34;&gt;2022-02-27&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加代码样式，增加行号和复制选项&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-25\&#34;&gt;2022-02-25&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改主题配置，添加友链菜单，优化了页面效果&lt;/li&gt;\n&lt;li&gt;添加导航菜单&lt;/li&gt;\n&lt;li&gt;页面样式移动和修改&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-20\&#34;&gt;2022-02-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;更新页面样式，添加版权和说明（改变字体可能会导致中文目录不能正确跳转）&lt;/li&gt;\n&lt;li&gt;更新归档页面，添加日期信息和每篇文章的相关描述&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-10\&#34;&gt;2022-02-10&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;简单使用 Rocky 主题&lt;/li&gt;\n&lt;li&gt;修改主页信息的描述以及 footer 信息&lt;/li&gt;\n&lt;li&gt;使用 Twikoo 评论&lt;/li&gt;\n&lt;/ul&gt;\n&#34;,
+  &#34;fileName&#34;: &#34;log&#34;,
+  &#34;abstract&#34;: &#34;&#34;,
+  &#34;title&#34;: &#34;更新日志&#34;,
+  &#34;tags&#34;: [],
+  &#34;date&#34;: &#34;2020-01-05 00:37:45&#34;,
+  &#34;dateFormat&#34;: &#34;2020-01-05&#34;,
+  &#34;feature&#34;: &#34;&#34;,
+  &#34;link&#34;: &#34;https://blog.qxxiao.eu.org/post/log/&#34;,
+  &#34;hideInList&#34;: true,
+  &#34;isTop&#34;: false,
+  &#34;stats&#34;: {
+    &#34;text&#34;: &#34;3 min read&#34;,
+    &#34;time&#34;: 146000,
+    &#34;words&#34;: 662,
+    &#34;minutes&#34;: 3
+  },
+  &#34;description&#34;: &#34;\n2024-10-02\n\n添加了代码高亮行的显示，语法：cpp{1,4,7-10}, 不要有空格\n\n2024-06-10\n\n添加了相册的时间线样式\n添加了书单页面\n\n2024-06-09\n\n修改了部分样式，去除了多个页面中的 css cla...&#34;,
+  &#34;toc&#34;: &#34;&lt;ul class=\&#34;markdownIt-TOC\&#34;&gt;\n&lt;li&gt;\n&lt;ul&gt;\n&lt;li&gt;&lt;a href=\&#34;#2024-10-02\&#34;&gt;2024-10-02&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2024-06-10\&#34;&gt;2024-06-10&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2024-06-09\&#34;&gt;2024-06-09&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2023-12-20\&#34;&gt;2023-12-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2023-12-12\&#34;&gt;2023-12-12&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-07-06\&#34;&gt;2022-07-06&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-03-20\&#34;&gt;2022-03-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-27\&#34;&gt;2022-02-27&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-25\&#34;&gt;2022-02-25&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-20\&#34;&gt;2022-02-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-10\&#34;&gt;2022-02-10&lt;/a&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;/ul&gt;\n&#34;
+}
+                            
+                                  2022-10-23
+                                     -->
+                      </p>
+                    </div>
+                  </div>
+                  
+                    <!-- 新加的模块的，应该使用模版-->
+                    <!--阅读次数-->
+                    <div class="text-center text-gray-400">
+                      <i class="ri-eye-line"></i>
+                      本文已被阅读
+                      <span id="twikoo_visitors">0</span>
+                      次，该数据仅供参考
+                    </div>
+
+                    <!-- Share to Twitter, Weibo, Telegram -->
+                    <div class="flex items-center">
+                      <div class="mr-4 flex items-center">
+                        <i class="ri-share-forward-line text-gray-500"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-blue-500 hover:bg-blue-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTwitter">
+                        <i class="ri-twitter-line"></i>
+                      </div>
+                      <div class="px-4 cursor-pointer text-red-500 hover:bg-red-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToWeibo">
+                        <i class="ri-weibo-line"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-indigo-500 hover:bg-indigo-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTelegram">
+                        <i class="ri-telegram-line"></i>
+                      </div>
+                    </div>
+          </div>
+
+          <!-- 新加的模块的，应该使用模版-->
+          <!-- 评论说明-->
+          <div class="jumbotron-comment">
+            <div class="container">
+              <p>
+                <i class="ri-message-3-line"></i>
+                欢迎任何与文章内容相关并保持尊重的评论😊 !
+              </p>
+            </div>
+          </div>
+
+          
+                        
+                            
+                              <div id="tcomment"></div>
+                               <footer class="py-12 text-center px-4 md:px-0" v-pre>
+  共 43 篇文章 | Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <i class="ri-rss-line"></i><a href="https://blog.qxxiao.eu.org/atom.xml" target="_blank" target="_blank">RSS</a></br>
+©2020-2024 <a href="https://blog.qxxiao.eu.org/index.html" target="_blank">Nuo</a>. All rights reserved.
+</footer>
+
+<!--没有添加/用到app 中的主题footer配置消息，如果使用，将上面的 href 替换为原地址-->
+<!---->
+
+        </div>
+
+        <!-- TOC Container -->
+        <div
+          class="fixed right-0 bottom-0 mb-40 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white dark:bg-gray-500 dark:text-gray-200 hover:shadow-lg transition-all"
+          @click="showToc = true">
+          <i class="ri-file-list-line"></i>
+        </div>
+
+        <div v-cloak
+          class="fixed right-0 top-0 bottom-0 overflow-y-auto w-16-24 bg-white dark:bg-gray-800 p-4 border-l border-gray-100 dark:border-gray-600 z-10 transition-fast"
+          :class="{ '-mr-64': !showToc }">
+          <div class="flex mb-4 justify-end">
+            <div
+              class="w-8 h-8 inline-flex justify-center items-center rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-fast"
+              @click="showToc = false">
+              <i class="ri-close-line text-lg"></i>
+            </div>
+          </div>
+          <div class="post-toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#libcurl%E9%AB%98%E5%8F%AF%E7%A7%BB%E6%A4%8D-%E5%8A%9F%E8%83%BD%E4%B8%B0%E5%AF%8C%E7%9A%84%E9%80%9A%E4%BF%A1%E5%BA%93">libcurl：高可移植、功能丰富的通信库</a></li>
+<li><a href="#font-colord44c47cpr%E6%9B%B4%E7%8E%B0%E4%BB%A3-%E6%9B%B4%E6%98%93%E7%94%A8%E7%9A%84%E9%80%9A%E4%BF%A1%E5%BA%93font"><font color='#d44c47'>cpr：更现代、更易用的通信库</font></a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85">安装</a></li>
+</ul>
+</li>
+<li><a href="#zmq%E9%AB%98%E6%95%88-%E5%A4%9A%E5%8A%9F%E8%83%BD%E7%9A%84%E9%80%9A%E4%BF%A1%E5%BA%93">ZMQ：高效、多功能的通信库</a></li>
+<li><a href="#sockpp">sockpp</a></li>
+<li><a href="#%E5%B0%8F%E7%BB%93">小结</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+
+        <!-- Back to top -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-20 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToUp" v-show="scrolled">
+          <i class="ri-arrow-up-line"></i>
+        </div>
+        <!-- Back to bottom -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-4 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToBottom" v-show="!atBottom">
+          <i class="ri-arrow-down-line"></i>
+        </div>
+    </div>
+
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- Background of PhotoSwipe. 
+        It's a separate element as animating opacity is faster than rgba(). -->
+  <div class="pswp__bg">
+  </div>
+  <!-- Slides wrapper with overflow:hidden. -->
+  <div class="pswp__scroll-wrap">
+    <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+    <div class="pswp__container">
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+    </div>
+    <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        <!--  Controls are self-explanatory. Order can be changed. -->
+        <div class="pswp__counter">
+        </div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+        <!-- element will get class pswp__preloader--active when preloader is running -->
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip">
+        </div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://blog.qxxiao.eu.org/media/scripts/main.js"></script>
+
+      <!-- Code Highlight -->
+      
+        <script src="https://blog.qxxiao.eu.org/media/prism.js"></script>
+        <script>
+          Prism.highlightAll();
+        </script>
+        <script src="https://blog.qxxiao.eu.org/media/scripts/fixcode.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/show-language/prism-show-language.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+        
+
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+          <script>
+            //拿到预览框架，也就是上面的html代码
+            var pswpElement = document.querySelectorAll('.pswp')[0]
+            //定义图片数组变量
+            var imgitems
+            /**
+             * 用于显示预览界面
+             * @param index 图片数组下标
+             */
+            function viewImg(index) {
+              var pswpoptions = {
+                index: parseInt(index, 10), // 开始幻灯片索引。0是第一张幻灯片。必须是整数，而不是字符串。
+                bgOpacity: 0.7, // 背景透明度，0-1
+                maxSpreadZoom: 3, // 缩放级别，不要太大
+              }
+              //初始化并打开PhotoSwipe，pswpElement对应上面预览框架，PhotoSwipeUI_Default为皮肤，imgitems为图片数组，pswpoptions为选项
+              var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, imgitems, pswpoptions)
+              gallery.init()
+            }
+            /**
+             * 用于添加图片点击事件
+             * @param img 图片元素
+             * @param index 所属下标（在imgitems中的位置）
+             */
+            function addImgClick(img, index) {
+              img.onclick = function () {
+                viewImg(index)
+              }
+            }
+            /**
+             * 轮询所有图片，获取src、width、height等数据，加入imgitems，并给图片元素添加事件
+             * 最好在onload中执行该方法，本站因放在最底部，所以直接初始化
+             * 异步加载图片可在图片元素创建完成后调用此方法
+             */
+            function initImg() {
+              //重置图片数组
+              imgitems = []
+              //查找class:markdown 下的所有img元素并遍历
+              var imgs = document.querySelectorAll('.markdown img')
+              for (var i = 0; i < imgs.length; i++) {
+                var img = imgs[i]
+                //本站相册初始为loading图片，真实图片放在data-src
+                var ds = img.getAttribute('data-src')
+                //创建image对象，用于获取图片宽高
+                var imgtemp = new Image()
+                //判断是否存在data-src
+                if (ds != null && ds.length > 0) {
+                  imgtemp.src = ds
+                } else {
+                  imgtemp.src = img.src
+                }
+                //判断是否存在缓存
+                if (imgtemp.complete) {
+                  var imgobj = {
+                    src: imgtemp.src,
+                    w: imgtemp.width,
+                    h: imgtemp.height,
+                  }
+                  imgitems[i] = imgobj
+                  addImgClick(img, i)
+                } else {
+                  imgtemp.index = i
+                  imgtemp.img = img
+                  imgtemp.onload = function () {
+                    var imgobj = {
+                      src: this.src,
+                      w: this.width,
+                      h: this.height,
+                    }
+                    //不要使用push，因为onload前后顺序会不同
+                    imgitems[this.index] = imgobj
+                    //添加点击事件
+                    addImgClick(this.img, this.index)
+                  }
+                }
+              }
+            }
+            //初始化
+            initImg();
+          </script>
+          
+                
+                          
+                            <script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.36/dist/twikoo.all.min.js"></script>
+                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+                              integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+                              crossorigin="anonymous" />
+                            <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+                              integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+                              crossorigin="anonymous"></script>
+                            <script defer
+                              src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+                              integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"
+                              crossorigin="anonymous"></script>
+                            <script>
+                              twikoo.init({
+                                envId: 'https://twikoo.qxxiao.eu.org/',
+                                el: '#tcomment',
+                                katex: {
+                                  delimiters: [
+                                    { left: '$$', right: '$$', display: true },
+                                    { left: '$', right: '$', display: false },
+                                    { left: '\\(', right: '\\)', display: false },
+                                    { left: '\\[', right: '\\]', display: true },
+                                  ],
+                                  throwOnError: false,
+                                },
+                                // region: 'ap-guangzhou', // 环境地域，默认为 ap-shanghai，如果您的环境地域不是上海，需传此参数
+                                // path: 'window.location.pathname', // 用于区分不同文章的自定义 js 路径，如果您的文章路径不是 location.pathname，需传此参数
+                              });
+                            </script>
+                            
+
+                              <!-- line number for code block -->
+                              <script>
+                                var pres = document.getElementsByTagName('pre')
+                                for (var i = 0; i < pres.length; i++) {
+                                  var pre = pres[i]
+                                  if (pre.childNodes[0].nodeName == 'CODE') {
+                                    pre.setAttribute('class', 'line-numbers')
+                                  }
+                                }
+                              </script>
+                              
+
+  </body>
+
+</html>
