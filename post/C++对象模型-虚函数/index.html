@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <!--每个页面都需要 head link等  -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>
+  C++对象模型-虚函数 - September&#39;s Blog
+</title>
+<link rel="shortcut icon" href="https://gh.qxxiao.eu.org/favicon.ico">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css">
+<link rel="stylesheet" href="https://gh.qxxiao.eu.org/media/css/tailwind.css">
+<link rel="stylesheet" href="https://gh.qxxiao.eu.org/media/css/ldbutton.css">
+<link rel="stylesheet" href="https://gh.qxxiao.eu.org/media/css/nav-menu.css">
+
+<link rel="stylesheet" href="https://gh.qxxiao.eu.org/styles/main.css">
+<script src="https://gh.qxxiao.eu.org/media/scripts/initTheme.js"></script>
+<link rel="stylesheet" href="https://gh.qxxiao.eu.org/media/css/light-dark.css">
+
+
+<link rel="alternate" type="application/atom+xml" title="C++对象模型-虚函数 - September&#39;s Blog - Atom Feed"
+  href="https://gh.qxxiao.eu.org/atom.xml">
+
+
+      <meta name="description" content="
+
+
+虚函数实现原理
+RTTI (run time type identification)
+参考
+
+
+
+
+
+🔖
+Reversing C++ Virtual Functions: Part 1There are a few posts i..." />
+      <meta property="og:title" content="C++对象模型-虚函数 - September&#39;s Blog" />
+      <meta property="og:description" content="
+
+
+虚函数实现原理
+RTTI (run time type identification)
+参考
+
+
+
+
+
+🔖
+Reversing C++ Virtual Functions: Part 1There are a few posts i..." />
+      <meta property="og:type" content="articles" />
+      <meta property="og:url" content="https://gh.qxxiao.eu.org/post/C++对象模型-虚函数/" />
+      <meta property="og:image"
+        content="https://gh.qxxiao.eu.org/images/avatar.png" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:width" content="1200" />
+      <meta name="twitter:title" content="C++对象模型-虚函数 - September&#39;s Blog" />
+      <meta name="twitter:description" content="
+
+
+虚函数实现原理
+RTTI (run time type identification)
+参考
+
+
+
+
+
+🔖
+Reversing C++ Virtual Functions: Part 1There are a few posts i..." />
+      <meta name="twitter:card" content="summary_large_image" />
+      <link rel="canonical" href="https://gh.qxxiao.eu.org/post/C++对象模型-虚函数/" />
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css" />
+
+      
+        <link rel="stylesheet"
+          href="https://gh.qxxiao.eu.org/media/css/prism-vs-dark.css" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.css"
+          rel="stylesheet" />
+        <link href="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.css"
+          rel="stylesheet" />
+        <link href=https://cdn.bootcdn.net/ajax/libs/prism/1.29.0/plugins/line-highlight/prism-line-highlight.min.css />
+        
+          
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" />
+            
+  </head>
+
+  <body>
+    <div class="antialiased flex flex-col min-h-screen" id="app">
+      <!-- 标题菜单 -->
+<div class="nav py-3 md:py-8 fixed w-full z-10 bg-gray-50 dark:bg-gray-700 transition-all duration-300"
+  :class="{ 'scroll': scrolled }">
+  <div class="flex justify-end px-4">
+    <div class="w-8 h-8 flex justify-center items-center rounded-full md:hidden" @click="showMenu = !showMenu">
+      <i class="ri-close-line" v-show="showMenu"></i>
+      <i class="ri-menu-3-line" v-show="!showMenu"></i>
+    </div>
+  </div>
+  <nav cloak class="max-w-4xl w-full mx-auto text-right flex flex-col md:flex-row justify-between items-center md:flex"
+    :class="`${ showMenu ? 'flex' : 'hidden' }`">
+    
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            首页
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/archives" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            归档
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/tags" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            标签
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="https://gh.qxxiao.eu.org/nav" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            导航
+          </a>
+          
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+        <div
+          class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold dark:hover:bg-gray-600 hover:bg-gray-200 nav-time1">
+          时光
+            <div class="transition font-semibold nav-time2">
+              
+                <a href="https://gh.qxxiao.eu.org/diary/" class="">
+                  说说
+                </a>
+                
+                <a href="https://gh.qxxiao.eu.org/gallery/" class="">
+                  相册
+                </a>
+                
+                <a href="https://gh.qxxiao.eu.org/post/book/" class="">
+                  书单
+                </a>
+                
+            </div>
+        </div>
+        
+            
+      <!-- 如果 menu 是 "时光"， 渲染为一个hover显示下拉框组件-->
+      
+          <a href="/post/about" target=""
+            class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+            关于
+          </a>
+          
+            
+              <!-- <a href="https://gh.qxxiao.eu.org/atom.xml" target="_blank" class="py-2 md:py-1 px-4 mx-4 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+      RSS
+    </a> -->
+              <!-- 黑色模式，和亮色模式开关-->
+<div class="py-2 md:py-1 inline-flex transition font-semibold rounded dark:hover:bg-gray-600 hover:bg-gray-200">
+  <label for="night-light-checkbox" class="night-light-label">
+    <input type="checkbox" id="night-light-checkbox" @change="toggleDarkMode" />
+    <span v-cloak class="night-light-ball" id="night-light-ball"></span>
+    <svg viewBox="0 0 512 512" class="sun-svg">
+      <path id="sun-svg"
+        d="M256 160c-52.9 0-96 43.1-96 96s43.1 96 96 96 96-43.1 96-96-43.1-96-96-96zm246.4 80.5l-94.7-47.3 33.5-100.4c4.5-13.6-8.4-26.5-21.9-21.9l-100.4 33.5-47.4-94.8c-6.4-12.8-24.6-12.8-31 0l-47.3 94.7L92.7 70.8c-13.6-4.5-26.5 8.4-21.9 21.9l33.5 100.4-94.7 47.4c-12.8 6.4-12.8 24.6 0 31l94.7 47.3-33.5 100.5c-4.5 13.6 8.4 26.5 21.9 21.9l100.4-33.5 47.3 94.7c6.4 12.8 24.6 12.8 31 0l47.3-94.7 100.4 33.5c13.6 4.5 26.5-8.4 21.9-21.9l-33.5-100.4 94.7-47.3c13-6.5 13-24.7.2-31.1zm-155.9 106c-49.9 49.9-131.1 49.9-181 0-49.9-49.9-49.9-131.1 0-181 49.9-49.9 131.1-49.9 181 0 49.9 49.9 49.9 131.1 0 181z">
+      </path>
+    </svg>
+    <svg viewBox="0 0 512 512" class="moon-svg">
+      <path id="moon-svg"
+        d="M283.211 512c78.962 0 151.079-35.925 198.857-94.792 7.068-8.708-.639-21.43-11.562-19.35-124.203 23.654-238.262-71.576-238.262-196.954 0-72.222 38.662-138.635 101.498-174.394 9.686-5.512 7.25-20.197-3.756-22.23A258.156 258.156 0 0 0 283.211 0c-141.309 0-256 114.511-256 256 0 141.309 114.511 256 256 256z">
+      </path>
+    </svg>
+  </label>
+</div>
+                <form id="gridea-search-form" class="inline-flex mx-4 px-4" action="https://gh.qxxiao.eu.org/search/">
+                  <input type="search" autocomplete='off' spellcheck='false' name="q" />
+                </form>
+  </nav>
+
+</div>
+        <a href="https://gh.qxxiao.eu.org"
+          class="fixed top-0 left-0 mt-4 bg-black text-white dark:text-gray-700 dark:bg-yellow-50 dark:hover:bg-black dark:hover:text-white inline-flex p-2 pl-8 hover:text-gray-700 hover:bg-yellow-50 font-bold z-10">
+          September&#39;s Blog
+        </a>
+        <div class="max-w-4xl w-full mx-auto">
+          <div class="shadow-box bg-white dark:bg-gray-600 rounded-lg pt-32 px-4 md:px-8 pb-8 mb-8">
+            <h1 class="text-5xl font-semibold leading-normal pb-8 mb-8 border-b-8 border-gray-700">
+              C++对象模型-虚函数
+            </h1>
+            <!-- 不显示 Post 中的封面图片 -->
+            
+                <div class="mb-8 flex flex-wrap">
+                  <div class="text-gray-400 text-sm mr-4">
+                    <i class="ri-calendar-2-line" style="vertical-align: middle;"></i>
+                    2022-04-19 ·
+                      <i class="ri-file-word-line" style="vertical-align: middle;"></i>
+                      2168字 ·
+                        <i class="ri-timer-line" style="vertical-align: middle;"></i>
+                        9 min read
+                  </div>
+                  🏷️&nbsp;
+                      
+                        <a href="https://gh.qxxiao.eu.org/tag/c/"
+                          class="text-indigo-500 text-sm border-b-2 border-solid border-indigo-500 hover:border-gray-600 transition-all duration-100 inline-flex mr-2">
+                          <i class="ri-hashtag" style="vertical-align: middle;"></i>
+                          C++
+                        </a>
+                        
+                </div>
+                <div class="markdown mb-8" v-pre><p><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E8%99%9A%E5%87%BD%E6%95%B0%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86">虚函数实现原理</a></li>
+<li><a href="#rtti-run-time-type-identification">RTTI (run time type identification)</a></li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+</li>
+</ul>
+</p>
+<div class="markdown notion" style="padding: 10px;background-color: #f8f8f8; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span style="font-size: 18px;">🔖</span></div>
+<a href=https://alschwalm.com/blog/static/2016/12/17/reversing-c-virtual-functions/ target="_blank" style="text-decoration:none"><p style="color: rgb(55, 53, 47); text-overflow: ellipsis;margin: 0px 5px 0px 38px !important"><span style="
+font-size: 14px;line-height: 20px;min-height: 24px;margin-bottom: 2px;">Reversing C++ Virtual Functions: Part 1</span><br><span style="font-size: 12px; line-height: 16px; color: rgba(55, 53, 47, 0.65);">There are a few posts in various parts of the internet discussing reverse engineering C++, and these</span> <br><span style="font-size: 12px;line-height: 16px;">https://alschwalm.com/blog/static/2016/12/17/reversing-c-virtual-functions/</span></p></a></div>
+<h2 id="虚函数实现原理">虚函数实现原理</h2>
+<p>基本的实现原理可以参考链接，不同编译器实现可以不同。</p>
+<p>gcc version 11.2.0 (Homebrew GCC 11.2.0)测试</p>
+<ol>
+<li>多重继承并且改写父类中的虚函数</li>
+</ol>
+<details class="markdown">
+<summary><b>测试代码</b></summary>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+
+class A1 {
+public:
+    virtual void a() { std::cout &lt;&lt; &quot;A1::a&quot; &lt;&lt; std::endl; }
+    virtual void b() { std::cout &lt;&lt; &quot;A1::b&quot; &lt;&lt; std::endl; }
+    virtual void c() { std::cout &lt;&lt; &quot;A1::c&quot; &lt;&lt; std::endl; }
+    int a1 = 1;
+};
+class A2 {
+public:
+    virtual void d() { std::cout &lt;&lt; &quot;A2::d&quot; &lt;&lt; std::endl; }
+    virtual void e() { std::cout &lt;&lt; &quot;A2::e&quot; &lt;&lt; std::endl; }
+    int a2 = 2;
+};
+// A1::a B::b A1::c [[B::f B::g]]
+// B::d  A2::e
+// ==&gt;
+// A1::a [B::b] A1::c [B:d B:e] [[B:f B:g]]
+// thunk:B:d  thunk:B:e
+class B : public A1, public A2 {
+public:
+    virtual void b() { std::cout &lt;&lt; &quot;B::b&quot; &lt;&lt; std::endl; }
+    virtual void d() { std::cout &lt;&lt; &quot;B::d&quot; &lt;&lt; std::endl; }
+    virtual void e() { std::cout &lt;&lt; &quot;B::e&quot; &lt;&lt; std::endl; }
+    virtual void f() { std::cout &lt;&lt; &quot;B::f&quot; &lt;&lt; std::endl; }
+    virtual void g() { std::cout &lt;&lt; &quot;B::g&quot; &lt;&lt; std::endl; }
+    int b3 = 3;
+};
+
+int main() {
+    B b;
+    long *pvptr = (long *)&amp;b;
+    long *vptr = (long *)*pvptr;
+    typedef void (*pfunc)();
+    for (unsigned i = 0; i &lt; 7; ++i) {
+        std::cout &lt;&lt; std::hex &lt;&lt; vptr + i &lt;&lt; &quot;  &quot; &lt;&lt; vptr[i] &lt;&lt; std::endl;
+        pfunc pfun = pfunc(vptr[i]);
+        pfun();
+    }
+
+    std::cout &lt;&lt; &quot;---------------------&quot; &lt;&lt; std::endl;
+    long *vptr2 = (long *)*(long *)((char *)&amp;b + sizeof(A1));
+    for (unsigned i = 0; i &lt; 2; ++i) {
+        std::cout &lt;&lt; std::hex &lt;&lt; vptr2 + i &lt;&lt; &quot;  &quot; &lt;&lt; vptr2[i] &lt;&lt; std::endl;
+        pfunc pfun = pfunc(vptr2[i]);
+        pfun();
+    }
+    return 0;
+}
+</code></pre>
+</details>
+<p>汇编后，类B的虚函数表结构：</p>
+<pre><code class="language-c++">vtable for B:
+		.quad   0
+		.quad   typeinfo for B
+		.quad   A1::a()
+		.quad   B::b()
+		.quad   A1::c()
+		.quad   B::d()
+		.quad   B::e()
+		.quad   B::f()
+		.quad   B::g()
+		.quad   -16
+		.quad   typeinfo for B
+		.quad   non-virtual thunk to B::d()
+		.quad   non-virtual thunk to B::e()
+</code></pre>
+<p>其中虚函数表中指向的B类 <code>typeinfo</code> 结构：</p>
+<pre><code class="language-c++">typeinfo for B:
+		.quad   vtable for __cxxabiv1::__vmi_class_type_info+16
+		.quad   typeinfo name for B
+		.long   0
+		.long   2
+		.quad   typeinfo for A1
+		.quad   2
+		.quad   typeinfo for A2
+		.quad   4098
+</code></pre>
+<p>在 GCC 实现中：</p>
+<ul>
+<li>
+<p>继承<strong>多个有虚函数</strong>的父类，派生类就有多个虚表指针，<strong>每个虚函数指针</strong>都位于基类存储位置中的起始地址(派生类对象中)。所以使用派生类对象向上转型的基类指针可以方便地调用虚函数-找到对应的虚指针。</p>
+</li>
+<li>
+<p>虚表指针指向的虚函数表大致是连续的，每个虚表指针指向的<strong>前一个元素</strong>是<code>type_info</code>结构体指针，用于实现RTTI(类名和子类信息)，两个表之间是分隔元素(编译器决定)这里是-16。</p>
+</li>
+<li>
+<p>第一个虚表指针指向的<strong>虚函数表</strong>很重要</p>
+<ul>
+<li>存储对应基类(第一个基类)的虚函数，如果子类改写第一个基类的虚函数则代替对应的槽位置(代替为改写的虚函数地址)；</li>
+<li>此外，<strong>改写其他基类的虚函数</strong>也会添加在第一个虚表，<strong>派生类新添加的虚函数</strong>也会添加到第一个虚表中。</li>
+</ul>
+</li>
+<li>
+<p>其余虚表类似，包含没有被覆盖的虚函数，如果其虚函数被改写了，对应槽位置是一个 thunk 函数，作用是跳转到改写的虚函数地址执行；</p>
+</li>
+</ul>
+<p>想一想为什么这么实现：</p>
+<p>可以方便地使用基类的指针来调用虚函数，在派生类被再次继承时，只需要修改它的第一个虚表的内容就作为新的派生类的虚表，实现更加方便。</p>
+<p>注意：</p>
+<p>存在多个基类时，直接使用派生类指针向上转型时，指针会赋值到该派生对象中该基类的起始地址，因此调用虚函数时，会找到它的虚表指针对应的虚表中的对应位置，如果被override改写会跳转到真实的函数地址实现多态效果。这里的多个虚表指针可以便捷编译器确定在该基类指针下找到对应函数的下标位置(生成虚表时就可以确定)，进而可以调用到实际的函数。</p>
+<p>由派生类对象地址向上转型可以确定基类的起始地址，从而可以调用对应的虚函数。如果使用：</p>
+<pre><code class="language-c++">void* p = &amp;b; // 派生类地址赋值给void*
+A1* pa = p;   // 再赋值给基类指针
+</code></pre>
+<p>这样会使得基类指针指向的位置直接变成<em>派生类的起始地址</em>，如果不是单继承或者第一个基类会出现问题，必须直接使用派生类地址<strong>向上转型</strong>得到对应基类地址指针。</p>
+<ul>
+<li>内存对齐问题</li>
+</ul>
+<p>在继承体系中，派生类会保存基类的原始布局(包括大小)；如果在满足每个基类的内存对齐情况下gcc允许紧密布局，例如上述类B占用32个字节。</p>
+<pre><code class="language-c++">// A1: vptr:8B + sizeof(a1):4B + padding:4B  total:16B
+// A2: vptr:8B + sizeof(a2):4B + [sizeof(b3)] total:16B
+// B: total:32B (b3直接和A2中的数据紧密布局)
+</code></pre>
+<p><span style='background-color: #e7f3f8' >哪些函数不能定义为虚函数？</span></p>
+<ul>
+<li>
+<p>友元函数，它不是类的成员函数</p>
+</li>
+<li>
+<p>全局函数</p>
+</li>
+<li>
+<p>静态成员函数，它没有this指针</p>
+</li>
+<li>
+<p>构造函数，拷贝构造函数以及赋值运算符重载（可以但是一般不建议作为虚函数）</p>
+</li>
+</ul>
+<p><span style='background-color: #e7f3f8' >构造函数/析构函数中可以调用虚函数吗？</span></p>
+<div class="markdown notion" style="padding: 10px; color: #37352f; background-color: #edf3ec; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span style="font-size: 18px;">💡</span></div>
+<p style="line-height: 28px; margin: 0px 5px 0px 38px !important">不能；构造派生类对象时，首先调用基类构造函数初始化对象的基类部分。在执行基类构造函数时，对象的派生类部分是未初始化的。析构派生类对象时，首先析构他的派生类部分，然后按照与构造顺序的逆序析构他的基类部分。
+在运行构造函数或者析构函数时，对象都是不完整的。为了适应这种不完整，编译器将对象的类型视为在调用构造/析构函数时发生了变换，即：视对象的类型为当前构造函数/析构函数所在的类的类类型。由此造成的结果是：在基类构造函数或者析构函数中，会将派生类对象当做基类类型对象对待。
+<font color='#dab071'>即如果在构造函数或者析构函数中调用虚函数，</font><font color='#d44c47'><strong>运行的都将是为构造函数或者析构函数自身类类型定义的虚函数版本</strong></font><font color='#dab071'><strong>。</strong></font><font color='#dab071'>对象的虚函数表地址在对象的构造和析构过程中会随着部分类的构造和析构而发生变化，这一点应该是编译器实现相关的。</font></p></div>
+<h2 id="rtti-run-time-type-identification">RTTI (run time type identification)</h2>
+<p>RTTI，即运行时类型检查，其主要作用：</p>
+<ul>
+<li>向下类型转换：将父类指针转换为子类指针
+<ul>
+<li>异常处理</li>
+<li>数据存储</li>
+</ul>
+</li>
+</ul>
+<p>相关的运算符：</p>
+<ol>
+<li>
+<p>typeid: 返回type_info结构体的对象（如果没有虚函数实现多态，返回的是静态类型而不是运行时类型的type_info结构体）</p>
+</li>
+<li>
+<p>dynamic_cast: 向下类型转换，成功返回子类指针，失败返回nullptr（<font color='#d44c47'>如果没有实现多态，编译器报错</font>）</p>
+</li>
+</ol>
+<details class="markdown">
+<summary><b>代码示例</b></summary>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+
+class Base {
+public:
+    virtual ~Base() {}
+};
+class Derive : public Base {};
+
+int main() {
+    Base* pBase = new Derive();
+    std::cout &lt;&lt; typeid(*pBase).name() &lt;&lt; std::endl;
+
+    Derive* pDerive = nullptr;
+    if ((pDerive = dynamic_cast&lt;Derive*&gt;(pBase)) != nullptr) {
+        std::cout &lt;&lt; &quot;dynamic_cast success&quot; &lt;&lt; std::endl;
+    } else {
+        std::cout &lt;&lt; &quot;dynamic_cast failed&quot; &lt;&lt; std::endl;
+    }
+    return 0;
+}
+</code></pre>
+</details>
+<p><strong>RTTI的实现原理</strong></p>
+<p>虚函数表中vptr[-1]是<code>type_info</code>结构体指针，<code>dynamic_cast</code>也要依据<code>type_info</code>运行，所以使用<code>typeid</code>和<code>dynamic_cast</code>都要有虚函数表，也就是虚函数。</p>
+<h2 id="参考">参考</h2>
+<div class="markdown notion" style="padding: 10px;background-color: #f8f8f8; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span style="font-size: 18px;">🔖</span></div>
+<a href=https://book.douban.com/subject/1091086/ target="_blank" style="text-decoration:none"><p style="color: rgb(55, 53, 47); text-overflow: ellipsis;margin: 0px 5px 0px 38px !important"><span style="
+font-size: 14px;line-height: 20px;min-height: 24px;margin-bottom: 2px;">book.douban.com</span><br><span style="font-size: 12px;line-height: 16px;">https://book.douban.com/subject/1091086/</span></p></a></div>
+<div class="markdown notion" style="padding: 10px;background-color: #f8f8f8; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span style="font-size: 18px;">🔖</span></div>
+<a href=https://cloud.tencent.com/developer/article/1599283 target="_blank" style="text-decoration:none"><p style="color: rgb(55, 53, 47); text-overflow: ellipsis;margin: 0px 5px 0px 38px !important"><span style="
+font-size: 14px;line-height: 20px;min-height: 24px;margin-bottom: 2px;">C++虚函数表深入探索(详细全面)-腾讯云开发者社区-腾讯云</span><br><span style="font-size: 12px; line-height: 16px; color: rgba(55, 53, 47, 0.65);">       这篇博客可能有一点点长，代码也有一点点多，但是仔细阅读分析完，会对虚函数表有一个深刻的认识。</span> <br><span style="font-size: 12px;line-height: 16px;">https://cloud.tencent.com/developer/article/1599283</span></p></a></div>
+<div class="markdown notion" style="padding: 10px;background-color: #f8f8f8; border-radius: 6px; border:1px solid #dfdfde">
+<div style="width: 28px;height: 28px;margin-left: 0px;margin-right: 10px;position: absolute;"><span><img style="height: 28px" src="https://g.csdnimg.cn/static/logo/favicon32.ico" /></span></div>
+<a href=https://blog.csdn.net/shichao1470/article/details/91563282 target="_blank" style="text-decoration:none"><p style="color: rgb(55, 53, 47); text-overflow: ellipsis;margin: 0px 5px 0px 38px !important"><span style="
+font-size: 14px;line-height: 20px;min-height: 24px;margin-bottom: 2px;">C++在gcc下的单继承，多继承，虚继承的内存布局_LupinLeo的博客-CSDN博客</span><br><span style="font-size: 12px; line-height: 16px; color: rgba(55, 53, 47, 0.65);">一览本文目的gcc下不同继承方式的存储模型单继承单继承无重写：单继承重写多重继承多继承无重写：多继承重写：虚继承多重继承无法解决的模型真正的菱形继承尾语本文目的&nbsp;  最近看了《深入探索c++</span> <br><span style="font-size: 12px;line-height: 16px;">https://blog.csdn.net/shichao1470/article/details/91563282</span></p></a></div>
+</div>
+
+                <!-- 新加的模块的，应该使用模版-->
+                <!-- 版权声明 -->
+                
+                  <div class="jumbotron">
+                    <div class="container">
+                      <p>
+                        <i class="ri-article-line"></i>
+                        <b>本文链接:</b>
+                        <a href="https://gh.qxxiao.eu.org/post/C++对象模型-虚函数/" target="_blank">
+                          C++对象模型-虚函数
+                        </a>
+                      </p>
+                      <p>
+                        <i class="ri-creative-commons-line"></i>
+                        <b>版权声明:</b>
+                        本博客所有文章除特别声明外，均采用
+                        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">CC
+                          BY-NC-SA
+                          4.0</a>
+                        许可协议，转载请注明出处。
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>发布日期:</b>
+                        2022-04-19
+                      </p>
+                      <p>
+                        <i class="ri-time-line"></i>
+                        <b>最新构建:</b>
+                        2025-11-23
+                          <!-- 使用 themeConfig.dateFormat 格式对日期格式化，例如YY-MM-DD -->
+                          <!-- {
+  &#34;content&#34;: &#34;&lt;!-- more --&gt;\n&lt;h2 id=\&#34;2024-10-02\&#34;&gt;2024-10-02&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加了代码高亮行的显示，语法：&lt;code&gt;cpp{1,4,7-10}&lt;/code&gt;, 不要有空格&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2024-06-10\&#34;&gt;2024-06-10&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加了相册的时间线样式&lt;/li&gt;\n&lt;li&gt;添加了书单页面&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2024-06-09\&#34;&gt;2024-06-09&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改了部分样式，去除了多个页面中的 css class: animated fadeIn，避免页面刷新时抖动&lt;/li&gt;\n&lt;li&gt;修改了文章 TOC 目录的宽度样式, 只限制最小/最大宽度，使其能够自适应内容宽度&lt;/li&gt;\n&lt;li&gt;统一 post 文章和 diary/gallary 页面的回到顶部/底部按钮样式和位置&lt;/li&gt;\n&lt;li&gt;简化了 明亮/黑暗模式切换代码，删除了 &lt;code&gt;ldbutton.js&lt;/code&gt;，使用 Vue 来控制样式切换。但刷新会导致页面闪屏，因为 Vue 执行完 mounted 后才会正确计算当前模式；解决：使用 js 函数来提前完成模式的初始化，避免闪屏&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2023-12-20\&#34;&gt;2023-12-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加&lt;code&gt;时光/说说&lt;/code&gt;功能，数据来源于 Memos\n&lt;ul&gt;\n&lt;li&gt;由于评论部署在 vercel，加载慢，说说评论需要在&lt;a href=\&#34;https://memos.qxxiao.eu.org\&#34;&gt;原始 Memos 页面&lt;/a&gt;打开评论 (更新：添加了页面评论，可以直接在当前页面访问)&lt;/li&gt;\n&lt;li&gt;说说服务器部署在 Azure，可能需要代理才能正常访问&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;li&gt;将仓库同步到 github，利用 github actions 进行博客同步\n&lt;ul&gt;\n&lt;li&gt;之前使用 Mac 监控脚本同步博客，gridea 每次预览可能会触发导致站点 url 是 localhost，并且有时任务触发不及时&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;li&gt;添加 &lt;a href=\&#34;https://github.com/kytrun/gridea-search\&#34;&gt;gridea-search 插件&lt;/a&gt;，对应添加了搜索框，调整了一下菜单界面&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2023-12-12\&#34;&gt;2023-12-12&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;更新评论系统 twikoo 版本到 1.6.27&lt;/li&gt;\n&lt;li&gt;更新样式，删除友链菜单，直接在&lt;a href=\&#34;/post/about\&#34;&gt;关于页面&lt;/a&gt;添加，保留了部分 css 样式&lt;/li&gt;\n&lt;li&gt;优化，使用 &lt;code&gt;v-cloak&lt;/code&gt; 避免出现 post 页面的文章目录闪烁问题&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-07-06\&#34;&gt;2022-07-06&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改样式，添加暗亮模式切换&lt;/li&gt;\n&lt;li&gt;修改默认样式查询方式，简单样式适配&lt;/li&gt;\n&lt;li&gt;修改代码主题为 &lt;code&gt;vs-dark&lt;/code&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-03-20\&#34;&gt;2022-03-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加文章列表中的标签的显示，设置标签样式(默认没有 border-indigo-500 等样式)&lt;/li&gt;\n&lt;li&gt;优化布局&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-27\&#34;&gt;2022-02-27&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;添加代码样式，增加行号和复制选项&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-25\&#34;&gt;2022-02-25&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;修改主题配置，添加友链菜单，优化了页面效果&lt;/li&gt;\n&lt;li&gt;添加导航菜单&lt;/li&gt;\n&lt;li&gt;页面样式移动和修改&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-20\&#34;&gt;2022-02-20&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;更新页面样式，添加版权和说明（改变字体可能会导致中文目录不能正确跳转）&lt;/li&gt;\n&lt;li&gt;更新归档页面，添加日期信息和每篇文章的相关描述&lt;/li&gt;\n&lt;/ul&gt;\n&lt;h2 id=\&#34;2022-02-10\&#34;&gt;2022-02-10&lt;/h2&gt;\n&lt;ul&gt;\n&lt;li&gt;简单使用 Rocky 主题&lt;/li&gt;\n&lt;li&gt;修改主页信息的描述以及 footer 信息&lt;/li&gt;\n&lt;li&gt;使用 Twikoo 评论&lt;/li&gt;\n&lt;/ul&gt;\n&#34;,
+  &#34;fileName&#34;: &#34;log&#34;,
+  &#34;abstract&#34;: &#34;&#34;,
+  &#34;title&#34;: &#34;更新日志&#34;,
+  &#34;tags&#34;: [],
+  &#34;date&#34;: &#34;2020-01-05 00:37:45&#34;,
+  &#34;dateFormat&#34;: &#34;2020-01-05&#34;,
+  &#34;feature&#34;: &#34;&#34;,
+  &#34;link&#34;: &#34;https://gh.qxxiao.eu.org/post/log/&#34;,
+  &#34;hideInList&#34;: true,
+  &#34;isTop&#34;: false,
+  &#34;stats&#34;: {
+    &#34;text&#34;: &#34;3 min read&#34;,
+    &#34;time&#34;: 146000,
+    &#34;words&#34;: 662,
+    &#34;minutes&#34;: 3
+  },
+  &#34;description&#34;: &#34;\n2024-10-02\n\n添加了代码高亮行的显示，语法：cpp{1,4,7-10}, 不要有空格\n\n2024-06-10\n\n添加了相册的时间线样式\n添加了书单页面\n\n2024-06-09\n\n修改了部分样式，去除了多个页面中的 css cla...&#34;,
+  &#34;toc&#34;: &#34;&lt;ul class=\&#34;markdownIt-TOC\&#34;&gt;\n&lt;li&gt;\n&lt;ul&gt;\n&lt;li&gt;&lt;a href=\&#34;#2024-10-02\&#34;&gt;2024-10-02&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2024-06-10\&#34;&gt;2024-06-10&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2024-06-09\&#34;&gt;2024-06-09&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2023-12-20\&#34;&gt;2023-12-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2023-12-12\&#34;&gt;2023-12-12&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-07-06\&#34;&gt;2022-07-06&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-03-20\&#34;&gt;2022-03-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-27\&#34;&gt;2022-02-27&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-25\&#34;&gt;2022-02-25&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-20\&#34;&gt;2022-02-20&lt;/a&gt;&lt;/li&gt;\n&lt;li&gt;&lt;a href=\&#34;#2022-02-10\&#34;&gt;2022-02-10&lt;/a&gt;&lt;/li&gt;\n&lt;/ul&gt;\n&lt;/li&gt;\n&lt;/ul&gt;\n&#34;
+}
+                            
+                                  2022-04-19
+                                     -->
+                      </p>
+                    </div>
+                  </div>
+                  
+                    <!-- 新加的模块的，应该使用模版-->
+                    <!--阅读次数-->
+                    
+                    <div class="text-center text-gray-400">
+                      <i class="ri-eye-line"></i>
+                      本文已被阅读
+                      <span id="twikoo_visitors">0</span>
+                      次，该数据仅供参考
+                    </div>
+                    
+
+                    <!-- Share to Twitter, Weibo, Telegram -->
+                    <div class="flex items-center">
+                      <div class="mr-4 flex items-center">
+                        <i class="ri-share-forward-line text-gray-500"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-blue-500 hover:bg-blue-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTwitter">
+                        <i class="ri-twitter-line"></i>
+                      </div>
+                      <div class="px-4 cursor-pointer text-red-500 hover:bg-red-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToWeibo">
+                        <i class="ri-weibo-line"></i>
+                      </div>
+                      <div
+                        class="px-4 cursor-pointer text-indigo-500 hover:bg-indigo-100 dark:hover:bg-gray-600 inline-flex"
+                        @click="shareToTelegram">
+                        <i class="ri-telegram-line"></i>
+                      </div>
+                    </div>
+          </div>
+
+          <!-- 新加的模块的，应该使用模版-->
+          <!-- 评论说明-->
+          <div class="jumbotron-comment">
+            <div class="container">
+              <p>
+                <i class="ri-message-3-line"></i>
+                欢迎任何与文章内容相关并保持尊重的评论😊 !
+              </p>
+            </div>
+          </div>
+
+          
+                        
+                            
+                              <div id="tcomment"></div>
+                               <footer class="py-12 text-center px-4 md:px-0" v-pre>
+  共 44 篇文章 | Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <i class="ri-rss-line"></i><a href="https://gh.qxxiao.eu.org/atom.xml" target="_blank" target="_blank">RSS</a></br>
+©2020-2025 <a href="https://gh.qxxiao.eu.org/index.html" target="_blank">September</a>. All rights reserved.
+</footer>
+
+<!--没有添加/用到app 中的主题footer配置消息，如果使用，将上面的 href 替换为原地址-->
+<!--2020-2025-->
+
+        </div>
+
+        <!-- TOC Container -->
+        <div
+          class="fixed right-0 bottom-0 mb-40 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white dark:bg-gray-500 dark:text-gray-200 hover:shadow-lg transition-all"
+          @click="showToc = true">
+          <i class="ri-file-list-line"></i>
+        </div>
+
+        <div v-cloak
+          class="fixed right-0 top-0 bottom-0 overflow-y-auto w-16-24 bg-white dark:bg-gray-800 p-4 border-l border-gray-100 dark:border-gray-600 z-10 transition-fast"
+          :class="{ '-mr-64': !showToc }">
+          <div class="flex mb-4 justify-end">
+            <div
+              class="w-8 h-8 inline-flex justify-center items-center rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-fast"
+              @click="showToc = false">
+              <i class="ri-close-line text-lg"></i>
+            </div>
+          </div>
+          <div class="post-toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E8%99%9A%E5%87%BD%E6%95%B0%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86">虚函数实现原理</a></li>
+<li><a href="#rtti-run-time-type-identification">RTTI (run time type identification)</a></li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+
+        <!-- Back to top -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-20 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToUp" v-show="scrolled">
+          <i class="ri-arrow-up-line"></i>
+        </div>
+        <!-- Back to bottom -->
+        <div v-cloak
+          class="fixed right-0 bottom-0 mb-4 mr-4 shadow w-10 h-10 rounded-full flex justify-center items-center z-10 cursor-pointer bg-white hover:shadow-lg dark:bg-gray-500 dark:text-gray-200"
+          @click="backToBottom" v-show="!atBottom">
+          <i class="ri-arrow-down-line"></i>
+        </div>
+    </div>
+
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- Background of PhotoSwipe. 
+        It's a separate element as animating opacity is faster than rgba(). -->
+  <div class="pswp__bg">
+  </div>
+  <!-- Slides wrapper with overflow:hidden. -->
+  <div class="pswp__scroll-wrap">
+    <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+    <div class="pswp__container">
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+    </div>
+    <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+    <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+        <!--  Controls are self-explanatory. Order can be changed. -->
+        <div class="pswp__counter">
+        </div>
+        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+        <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+        <!-- element will get class pswp__preloader--active when preloader is running -->
+        <div class="pswp__preloader">
+          <div class="pswp__preloader__icn">
+            <div class="pswp__preloader__cut">
+              <div class="pswp__preloader__donut">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+        <div class="pswp__share-tooltip">
+        </div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+        <div class="pswp__caption__center">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://gh.qxxiao.eu.org/media/scripts/main.js"></script>
+
+      <!-- Code Highlight -->
+      
+        <script src="https://gh.qxxiao.eu.org/media/prism.js"></script>
+        <script>
+          Prism.highlightAll();
+        </script>
+        <script src="https://gh.qxxiao.eu.org/media/scripts/fixcode.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/show-language/prism-show-language.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+        <script defer
+          src="https://cdn.bootcdn.net/ajax/libs/prism/1.19.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+        
+
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+          <script>
+            //拿到预览框架，也就是上面的html代码
+            var pswpElement = document.querySelectorAll('.pswp')[0]
+            //定义图片数组变量
+            var imgitems
+            /**
+             * 用于显示预览界面
+             * @param index 图片数组下标
+             */
+            function viewImg(index) {
+              var pswpoptions = {
+                index: parseInt(index, 10), // 开始幻灯片索引。0是第一张幻灯片。必须是整数，而不是字符串。
+                bgOpacity: 0.7, // 背景透明度，0-1
+                maxSpreadZoom: 3, // 缩放级别，不要太大
+              }
+              //初始化并打开PhotoSwipe，pswpElement对应上面预览框架，PhotoSwipeUI_Default为皮肤，imgitems为图片数组，pswpoptions为选项
+              var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, imgitems, pswpoptions)
+              gallery.init()
+            }
+            /**
+             * 用于添加图片点击事件
+             * @param img 图片元素
+             * @param index 所属下标（在imgitems中的位置）
+             */
+            function addImgClick(img, index) {
+              img.onclick = function () {
+                viewImg(index)
+              }
+            }
+            /**
+             * 轮询所有图片，获取src、width、height等数据，加入imgitems，并给图片元素添加事件
+             * 最好在onload中执行该方法，本站因放在最底部，所以直接初始化
+             * 异步加载图片可在图片元素创建完成后调用此方法
+             */
+            function initImg() {
+              //重置图片数组
+              imgitems = []
+              //查找class:markdown 下的所有img元素并遍历
+              var imgs = document.querySelectorAll('.markdown img')
+              for (var i = 0; i < imgs.length; i++) {
+                var img = imgs[i]
+                //本站相册初始为loading图片，真实图片放在data-src
+                var ds = img.getAttribute('data-src')
+                //创建image对象，用于获取图片宽高
+                var imgtemp = new Image()
+                //判断是否存在data-src
+                if (ds != null && ds.length > 0) {
+                  imgtemp.src = ds
+                } else {
+                  imgtemp.src = img.src
+                }
+                //判断是否存在缓存
+                if (imgtemp.complete) {
+                  var imgobj = {
+                    src: imgtemp.src,
+                    w: imgtemp.width,
+                    h: imgtemp.height,
+                  }
+                  imgitems[i] = imgobj
+                  addImgClick(img, i)
+                } else {
+                  imgtemp.index = i
+                  imgtemp.img = img
+                  imgtemp.onload = function () {
+                    var imgobj = {
+                      src: this.src,
+                      w: this.width,
+                      h: this.height,
+                    }
+                    //不要使用push，因为onload前后顺序会不同
+                    imgitems[this.index] = imgobj
+                    //添加点击事件
+                    addImgClick(this.img, this.index)
+                  }
+                }
+              }
+            }
+            //初始化
+            initImg();
+          </script>
+          
+                
+                          
+                            <script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.36/dist/twikoo.all.min.js"></script>
+                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css"
+                              integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X"
+                              crossorigin="anonymous" />
+                            <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"
+                              integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4"
+                              crossorigin="anonymous"></script>
+                            <script defer
+                              src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+                              integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa"
+                              crossorigin="anonymous"></script>
+                            <script>
+                              twikoo.init({
+                                envId: 'https://twikoo.qxxiao.eu.org/.netlify/functions/twikoo',
+                                el: '#tcomment',
+                                katex: {
+                                  delimiters: [
+                                    { left: '$$', right: '$$', display: true },
+                                    { left: '$', right: '$', display: false },
+                                    { left: '\\(', right: '\\)', display: false },
+                                    { left: '\\[', right: '\\]', display: true },
+                                  ],
+                                  throwOnError: false,
+                                },
+                                // region: 'ap-guangzhou', // 环境地域，默认为 ap-shanghai，如果您的环境地域不是上海，需传此参数
+                                // path: 'window.location.pathname', // 用于区分不同文章的自定义 js 路径，如果您的文章路径不是 location.pathname，需传此参数
+                              });
+                            </script>
+                            
+
+                              <!-- line number for code block -->
+                              <script>
+                                var pres = document.getElementsByTagName('pre')
+                                for (var i = 0; i < pres.length; i++) {
+                                  var pre = pres[i]
+                                  if (pre.childNodes[0].nodeName == 'CODE') {
+                                    pre.setAttribute('class', 'line-numbers')
+                                  }
+                                }
+                              </script>
+                              
+
+  </body>
+
+</html>
