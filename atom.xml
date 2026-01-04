@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://gh.qxxiao.eu.org</id>
+    <title>September&apos;s Blog</title>
+    <updated>2026-01-04T01:33:01.801Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://gh.qxxiao.eu.org"/>
+    <link rel="self" href="https://gh.qxxiao.eu.org/atom.xml"/>
+    <subtitle>温故而知新 &lt;h1&gt;console.log(😊);&lt;/h1&gt;</subtitle>
+    <logo>https://gh.qxxiao.eu.org/images/avatar.png</logo>
+    <icon>https://gh.qxxiao.eu.org/favicon.ico</icon>
+    <rights>All rights reserved 2026, September&apos;s Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[Python小结]]></title>
+        <id>https://gh.qxxiao.eu.org/post/Python小结/</id>
+        <link href="https://gh.qxxiao.eu.org/post/Python小结/">
+        </link>
+        <updated>2025-07-31T16:00:00.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[汇编基础和函数调用ABI]]></title>
+        <id>https://gh.qxxiao.eu.org/post/汇编基础和函数调用ABI/</id>
+        <link href="https://gh.qxxiao.eu.org/post/汇编基础和函数调用ABI/">
+        </link>
+        <updated>2024-07-23T02:57:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>内容：简单总结 x86 汇编基础和函数调用的过程，但只涉及可用指令和汇编指令的一小部分，但非常有用。主要采用 GNU 汇编器(GAS) 的 AT&amp;T 语法进行说明。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>内容：简单总结 x86 汇编基础和函数调用的过程，但只涉及可用指令和汇编指令的一小部分，但非常有用。主要采用 GNU 汇编器(GAS) 的 AT&amp;T 语法进行说明。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Linux网络命令]]></title>
+        <id>https://gh.qxxiao.eu.org/post/Linux网络命令/</id>
+        <link href="https://gh.qxxiao.eu.org/post/Linux网络命令/">
+        </link>
+        <updated>2024-06-06T11:44:59.000Z</updated>
+        <summary type="html"><![CDATA[<p>常见的网络命令</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>常见的网络命令</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Delta 压缩]]></title>
+        <id>https://gh.qxxiao.eu.org/post/Delta 压缩/</id>
+        <link href="https://gh.qxxiao.eu.org/post/Delta 压缩/">
+        </link>
+        <updated>2024-05-26T05:00:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>译：<a href="https://hashnode.com/post/delta-compression-a-practical-guide-to-diff-algorithms-and-delta-file-formats-ckcbslwu9001281s1acm2fhz2">https://hashnode.com/post/delta-compression-a-practical-guide-to-diff-algorithms-and-delta-file-formats-ckcbslwu9001281s1acm2fhz2</a></p>
+]]></summary>
+        <content type="html"><![CDATA[<p>译：<a href="https://hashnode.com/post/delta-compression-a-practical-guide-to-diff-algorithms-and-delta-file-formats-ckcbslwu9001281s1acm2fhz2">https://hashnode.com/post/delta-compression-a-practical-guide-to-diff-algorithms-and-delta-file-formats-ckcbslwu9001281s1acm2fhz2</a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Enabling Encrypted Delta Compression for Outsourced Storage Systems via Preserving Similarity]]></title>
+        <id>https://gh.qxxiao.eu.org/post/Enabling Encrypted Delta Compression for Outsourced Storage Systems via Preserving Similarity/</id>
+        <link href="https://gh.qxxiao.eu.org/post/Enabling Encrypted Delta Compression for Outsourced Storage Systems via Preserving Similarity/">
+        </link>
+        <updated>2024-05-25T05:14:00.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Leetcode]]></title>
+        <id>https://gh.qxxiao.eu.org/post/Leetcode/</id>
+        <link href="https://gh.qxxiao.eu.org/post/Leetcode/">
+        </link>
+        <updated>2024-05-19T08:30:22.000Z</updated>
+        <summary type="html"><![CDATA[<p>Leetcode 算法题分析</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>Leetcode 算法题分析</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[PBC｜PBCWrapper 密码学库]]></title>
+        <id>https://gh.qxxiao.eu.org/post/PBC｜PBCWrapper 密码学库/</id>
+        <link href="https://gh.qxxiao.eu.org/post/PBC｜PBCWrapper 密码学库/">
+        </link>
+        <updated>2024-03-06T06:23:23.000Z</updated>
+        <summary type="html"><![CDATA[<p>pcb密码学库的简单介绍和示例使用</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>pcb密码学库的简单介绍和示例使用</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[博客链接]]></title>
+        <id>https://gh.qxxiao.eu.org/post/博客链接/</id>
+        <link href="https://gh.qxxiao.eu.org/post/博客链接/">
+        </link>
+        <updated>2023-06-10T01:37:44.000Z</updated>
+        <summary type="html"><![CDATA[<p>更新一些技术博客链接，如果有 RSS 链接也会附在后面。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>更新一些技术博客链接，如果有 RSS 链接也会附在后面。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Mac 定时任务和脚本]]></title>
+        <id>https://gh.qxxiao.eu.org/post/mac定时任务和脚本/</id>
+        <link href="https://gh.qxxiao.eu.org/post/mac定时任务和脚本/">
+        </link>
+        <updated>2023-06-03T13:42:32.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[纠删码基础]]></title>
+        <id>https://gh.qxxiao.eu.org/post/纠删码基础/</id>
+        <link href="https://gh.qxxiao.eu.org/post/纠删码基础/">
+        </link>
+        <updated>2023-05-13T12:37:15.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[MinHash]]></title>
+        <id>https://gh.qxxiao.eu.org/post/minhash/</id>
+        <link href="https://gh.qxxiao.eu.org/post/minhash/">
+        </link>
+        <updated>2023-05-10T09:21:20.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Understanding and implementing CRC]]></title>
+        <id>https://gh.qxxiao.eu.org/post/understanding-and-implementing-crc/</id>
+        <link href="https://gh.qxxiao.eu.org/post/understanding-and-implementing-crc/">
+        </link>
+        <updated>2023-05-01T08:29:24.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[信息论基础]]></title>
+        <id>https://gh.qxxiao.eu.org/post/信息论基础/</id>
+        <link href="https://gh.qxxiao.eu.org/post/信息论基础/">
+        </link>
+        <updated>2023-04-27T09:48:27.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[密码学简介]]></title>
+        <id>https://gh.qxxiao.eu.org/post/密码学简介/</id>
+        <link href="https://gh.qxxiao.eu.org/post/密码学简介/">
+        </link>
+        <updated>2023-04-25T15:54:32.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Shamir’s Secret Sharing]]></title>
+        <id>https://gh.qxxiao.eu.org/post/shamirs-secret-sharing/</id>
+        <link href="https://gh.qxxiao.eu.org/post/shamirs-secret-sharing/">
+        </link>
+        <updated>2023-04-13T07:50:21.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Mac 字典和翻译]]></title>
+        <id>https://gh.qxxiao.eu.org/post/mac字典和翻译/</id>
+        <link href="https://gh.qxxiao.eu.org/post/mac字典和翻译/">
+        </link>
+        <updated>2023-04-05T11:32:35.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Go 内存模型]]></title>
+        <id>https://gh.qxxiao.eu.org/post/go内存模型/</id>
+        <link href="https://gh.qxxiao.eu.org/post/go内存模型/">
+        </link>
+        <updated>2023-04-04T01:50:43.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[LaTeX 数学公式]]></title>
+        <id>https://gh.qxxiao.eu.org/post/latex数学公式/</id>
+        <link href="https://gh.qxxiao.eu.org/post/latex数学公式/">
+        </link>
+        <updated>2023-03-19T11:15:10.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[图论-最短路问题]]></title>
+        <id>https://gh.qxxiao.eu.org/post/最短路问题/</id>
+        <link href="https://gh.qxxiao.eu.org/post/最短路问题/">
+        </link>
+        <updated>2023-03-15T09:35:00.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[背包九讲]]></title>
+        <id>https://gh.qxxiao.eu.org/post/背包九讲/</id>
+        <link href="https://gh.qxxiao.eu.org/post/背包九讲/">
+        </link>
+        <updated>2023-03-10T11:44:59.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[迭代器和生成器]]></title>
+        <id>https://gh.qxxiao.eu.org/post/迭代器和生成器/</id>
+        <link href="https://gh.qxxiao.eu.org/post/迭代器和生成器/">
+        </link>
+        <updated>2022-11-22T16:57:00.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Java动态代理]]></title>
+        <id>https://gh.qxxiao.eu.org/post/Java动态代理/</id>
+        <link href="https://gh.qxxiao.eu.org/post/Java动态代理/">
+        </link>
+        <updated>2022-11-11T06:58:00.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[cmake示例]]></title>
+        <id>https://gh.qxxiao.eu.org/post/cmake示例/</id>
+        <link href="https://gh.qxxiao.eu.org/post/cmake示例/">
+        </link>
+        <updated>2022-10-29T04:23:00.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[C++网络库]]></title>
+        <id>https://gh.qxxiao.eu.org/post/C++网络库/</id>
+        <link href="https://gh.qxxiao.eu.org/post/C++网络库/">
+        </link>
+        <updated>2022-10-23T13:42:00.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[理解Git和实战]]></title>
+        <id>https://gh.qxxiao.eu.org/post/理解Git和实战/</id>
+        <link href="https://gh.qxxiao.eu.org/post/理解Git和实战/">
+        </link>
+        <updated>2022-10-17T07:48:00.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Java线程池实现原理]]></title>
+        <id>https://gh.qxxiao.eu.org/post/Java线程池实现原理/</id>
+        <link href="https://gh.qxxiao.eu.org/post/Java线程池实现原理/">
+        </link>
+        <updated>2022-10-14T02:24:29.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Java SE基础]]></title>
+        <id>https://gh.qxxiao.eu.org/post/Java SE基础/</id>
+        <link href="https://gh.qxxiao.eu.org/post/Java SE基础/">
+        </link>
+        <updated>2022-09-04T04:27:00.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Vue 基础]]></title>
+        <id>https://gh.qxxiao.eu.org/post/Vue 基础/</id>
+        <link href="https://gh.qxxiao.eu.org/post/Vue 基础/">
+        </link>
+        <updated>2022-06-08T19:00:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>基于官方文档总结</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>基于官方文档总结</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Rust Workspace]]></title>
+        <id>https://gh.qxxiao.eu.org/post/Rust Workspace/</id>
+        <link href="https://gh.qxxiao.eu.org/post/Rust Workspace/">
+        </link>
+        <updated>2022-06-02T12:42:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>多 package 的 Rust Workspace 组织和配置。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>多 package 的 Rust Workspace 组织和配置。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[notion2md]]></title>
+        <id>https://gh.qxxiao.eu.org/post/notion2md/</id>
+        <link href="https://gh.qxxiao.eu.org/post/notion2md/">
+        </link>
+        <updated>2022-06-01T04:15:00.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Rust基础（二）]]></title>
+        <id>https://gh.qxxiao.eu.org/post/Rust基础（二）/</id>
+        <link href="https://gh.qxxiao.eu.org/post/Rust基础（二）/">
+        </link>
+        <updated>2022-05-30T09:37:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>Hello Rust.</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>Hello Rust.</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Rust基础（一）]]></title>
+        <id>https://gh.qxxiao.eu.org/post/Rust基础（一）/</id>
+        <link href="https://gh.qxxiao.eu.org/post/Rust基础（一）/">
+        </link>
+        <updated>2022-05-27T18:59:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>hello rust.</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>hello rust.</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Software Engineering for Systems Hackers]]></title>
+        <id>https://gh.qxxiao.eu.org/post/software-engineering-for-systems-hackers/</id>
+        <link href="https://gh.qxxiao.eu.org/post/software-engineering-for-systems-hackers/">
+        </link>
+        <updated>2022-04-30T01:25:28.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[C++对象模型-虚函数]]></title>
+        <id>https://gh.qxxiao.eu.org/post/C++对象模型-虚函数/</id>
+        <link href="https://gh.qxxiao.eu.org/post/C++对象模型-虚函数/">
+        </link>
+        <updated>2022-04-19T12:08:00.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[B+ 树]]></title>
+        <id>https://gh.qxxiao.eu.org/post/b+tree/</id>
+        <link href="https://gh.qxxiao.eu.org/post/b+tree/">
+        </link>
+        <updated>2022-04-13T12:25:49.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[C++值的类型]]></title>
+        <id>https://gh.qxxiao.eu.org/post/C++值的类型/</id>
+        <link href="https://gh.qxxiao.eu.org/post/C++值的类型/">
+        </link>
+        <updated>2022-04-10T15:22:18.000Z</updated>
+        <summary type="html"><![CDATA[<p>C++值的类型说明</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>C++值的类型说明</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[MySQL笔记]]></title>
+        <id>https://gh.qxxiao.eu.org/post/mysql-notes/</id>
+        <link href="https://gh.qxxiao.eu.org/post/mysql-notes/">
+        </link>
+        <updated>2022-03-09T16:47:45.000Z</updated>
+        <summary type="html"><![CDATA[<p>MySQL学习笔记</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>MySQL学习笔记</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Markdown主题测试]]></title>
+        <id>https://gh.qxxiao.eu.org/post/markdown-test/</id>
+        <link href="https://gh.qxxiao.eu.org/post/markdown-test/">
+        </link>
+        <updated>2022-01-06T15:22:18.000Z</updated>
+        <summary type="html"><![CDATA[<p>Markdown测试</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>Markdown测试</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Rocky主题记录]]></title>
+        <id>https://gh.qxxiao.eu.org/post/rocky-theme/</id>
+        <link href="https://gh.qxxiao.eu.org/post/rocky-theme/">
+        </link>
+        <updated>2022-01-05T12:11:19.000Z</updated>
+        <summary type="html"><![CDATA[<p>基于 Gridea 的 Rocky 主题使用记录，修改了部分样式，主要变更可以查看<a href="https://blog.qxxiao.eu.org/post/log/">更新日志</a>。部分参考引用博客<a href="#%E5%8F%82%E8%80%83">参考</a>，向这些作者表示感谢。<br>
+最近的更新：查看<a href="/post/log">更新日志</a></p>
+]]></summary>
+        <content type="html"><![CDATA[<p>基于 Gridea 的 Rocky 主题使用记录，修改了部分样式，主要变更可以查看<a href="https://blog.qxxiao.eu.org/post/log/">更新日志</a>。部分参考引用博客<a href="#%E5%8F%82%E8%80%83">参考</a>，向这些作者表示感谢。<br>
+最近的更新：查看<a href="/post/log">更新日志</a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[missing-semester]]></title>
+        <id>https://gh.qxxiao.eu.org/post/missing-semester/</id>
+        <link href="https://gh.qxxiao.eu.org/post/missing-semester/">
+        </link>
+        <updated>2021-06-09T02:00:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>总结 missing-semester 的内容，包括 shell,git,vim...</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>总结 missing-semester 的内容，包括 shell,git,vim...</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[矩阵的运算]]></title>
+        <id>https://gh.qxxiao.eu.org/post/矩阵的运算/</id>
+        <link href="https://gh.qxxiao.eu.org/post/矩阵的运算/">
+        </link>
+        <updated>2021-05-02T05:00:11.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Simple Regenerating Codes: Network Coding for Cloud Storage]]></title>
+        <id>https://gh.qxxiao.eu.org/post/simple-regenerating-codes-network-coding-for-cloud-storage/</id>
+        <link href="https://gh.qxxiao.eu.org/post/simple-regenerating-codes-network-coding-for-cloud-storage/">
+        </link>
+        <updated>2021-04-20T08:29:40.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote>
+<p>简单再生码，能够以较低成本简单快速地精确修复，编码效率接近<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mfrac><mn>2</mn><mn>3</mn></mfrac></mrow><annotation encoding="application/x-tex">\frac{2}{3}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.190108em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.845108em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></p>
+</blockquote>
+]]></summary>
+        <content type="html"><![CDATA[<blockquote>
+<p>简单再生码，能够以较低成本简单快速地精确修复，编码效率接近<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mfrac><mn>2</mn><mn>3</mn></mfrac></mrow><annotation encoding="application/x-tex">\frac{2}{3}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.190108em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.845108em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></p>
+</blockquote>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Jerasure-1.2]]></title>
+        <id>https://gh.qxxiao.eu.org/post/Jerasure-1.2/</id>
+        <link href="https://gh.qxxiao.eu.org/post/Jerasure-1.2/">
+        </link>
+        <updated>2021-04-11T07:31:10.000Z</updated>
+    </entry>
+</feed>
