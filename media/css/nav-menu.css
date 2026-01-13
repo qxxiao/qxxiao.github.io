@@ -1,0 +1,81 @@
+/* 导航菜单下拉框样式 */
+.nav-time1 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-time2 {
+  position: absolute;
+  top: calc(100% - 2px);
+  left: 0;
+  min-width: 120px;
+  background: #ffffff;
+  border-radius: 0 0 4px 4px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  z-index: 50;
+}
+
+.nav-time1:hover .nav-time2 {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.nav-time2 a {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  transition: all 0.15s ease;
+  text-align: left;
+  white-space: nowrap;
+  text-decoration: none !important;
+  border-bottom: none !important;
+  color: inherit !important;
+}
+
+.nav-time2 a:hover {
+  background-color: #f3f4f6;
+}
+
+/* 深色模式样式 */
+.dark .nav-time2 {
+  background: #555;
+}
+
+.dark .nav-time2 a:hover {
+  background-color: #666;
+}
+
+/* 添加箭头指示器 */
+.nav-time1::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: transform 0.2s ease;
+  opacity: 0.6;
+}
+
+.nav-time1:hover::after {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+/* 添加分隔线 */
+.nav-time2 a:not(:last-child) {
+  border-bottom: 1px solid #f3f4f6 !important;
+}
+
+.dark .nav-time2 a:not(:last-child) {
+  border-bottom: 1px solid #5a5a5a !important;
+}
